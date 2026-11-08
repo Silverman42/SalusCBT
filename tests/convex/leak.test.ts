@@ -148,6 +148,8 @@ const STAFF_ONLY: Record<
     role: "tutor",
     args: (i) => ({ versionId: i.versionId, section: "mcq", questionIds: [] }),
   },
+  "editor:validate": { role: "tutor", args: (i) => ({ versionId: i.versionId }) }, // issue text may quote keys (author only)
+  "editor:publish": { role: "tutor", args: (i) => ({ versionId: i.versionId }) },
 };
 
 /** Better Auth's routes (`/api/auth/*`): no exam data; covered by the auth tests. */
@@ -660,7 +662,13 @@ describe("answer-key leak test (T-209, SE-1)", () => {
         ].sort(),
       );
       expect(sites(/\breadContent\(/g)).toEqual(
-        ["editor.ts#createDraft", "editor.ts#getDraft", "editor.ts#readContent"].sort(),
+        [
+          "editor.ts#createDraft",
+          "editor.ts#getDraft",
+          "editor.ts#publish",
+          "editor.ts#readContent",
+          "editor.ts#validate",
+        ].sort(),
       );
       expect(sites(/\bkeysOf\(/g)).toEqual(
         ["editor.ts#deleteQuestion", "editor.ts#keysOf", "editor.ts#saveQuestion"].sort(),

@@ -20,6 +20,11 @@
  * (through `requireEditableDraft`) that keep each question and its key in
  * step and keep `order` / `displayNumber` dense.
  *
+ * T-603 adds `validate` (every LLD §10.2 rule, including the ED-2 recompute of
+ * generated answers) and `publish` (blocked by any error; freezes the draft,
+ * sets `totalPoints`, and for the admin moves the exam's default). Restore
+ * (ED-3) is `createDraft` from an older version.
+ *
  * SE-1: answer keys are returned by `getDraft` only, and only to the version's
  * author (a tutor's own version, or any version for the admin). No student
  * path reaches this module.
@@ -27,10 +32,14 @@
 import { ConvexError, v, type Infer } from "convex/values";
 import type { Doc, Id } from "./_generated/dataModel";
 import { mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server";
+import { hashCheckTampered } from "./generators/hashCheck";
+import { sshLogAnswers } from "./generators/sshLog";
+import { writeAudit } from "./lib/audit";
 import { fail } from "./lib/errors";
 import { requireProfile } from "./lib/guards";
+import { norm } from "./marking/normalise";
 import schema from "./schema";
-import type { PbqPayload } from "../shared/content";
+import type { PbqKey, PbqPayload, TextPart } from "../shared/content";
 import {
   pbqTemplateValidator,
   validatePayload,
@@ -661,5 +670,362 @@ export const reorder = mutation({
     await renumber(ctx, sections);
     await touch(ctx, version._id);
     return null;
+  },
+});
+
+// ---------------------------------------------------------------------------
+// T-603: validate, publish and restore (LLD §10.1, §10.2; PRD ED-1 to ED-3, ED-9, ED-10)
+// ---------------------------------------------------------------------------
+
+/** PBQs per set (one per template; LLD §10.2). */
+export const PBQS_PER_SET = 5;
+
+/** SY0-701 domain weights (the seed's domain table). */
+export const DOMAIN_WEIGHTS: Record<Doc<"questions">["domain"], number> = {
+  "1.0": 0.12,
+  "2.0": 0.22,
+  "3.0": 0.18,
+  "4.0": 0.28,
+  "5.0": 0.2,
+};
+
+/** How far a domain's share of the points may drift from its weight before a warning. */
+export const DOMAIN_SPREAD_TOLERANCE = 0.1;
+
+export const issueRuleValidator = v.union(
+  v.literal("shape"), // save-time checks (checkQuestion) re-run on the stored row
+  v.literal("key.missing"),
+  v.literal("key.duplicate"),
+  v.literal("explanation"),
+  v.literal("mcq.chooseCount"),
+  v.literal("pbq.recompute"), // ED-2
+  v.literal("points"),
+  v.literal("total"),
+  v.literal("sets.balance"),
+  v.literal("sets.incomplete"),
+  v.literal("domains.spread"),
+);
+
+export const issueValidator = v.object({
+  severity: v.union(v.literal("error"), v.literal("warning")),
+  rule: issueRuleValidator,
+  /** `null` for version-level issues. */
+  questionId: v.union(v.id("questions"), v.null()),
+  displayNumber: v.union(v.string(), v.null()),
+  message: v.string(),
+});
+
+export type Issue = Infer<typeof issueValidator>;
+type IssueRule = Issue["rule"];
+
+/** `question 47: message` / `version: message`, worded like other `VALIDATION_FAILED` issues. */
+export function formatIssue(issue: Issue): string {
+  const where = issue.displayNumber === null ? "version" : `question ${issue.displayNumber}`;
+  return `${where}: ${issue.message}`;
+}
+
+/** A stored row back in `saveQuestion`'s input shape, so `checkQuestion` can re-run on it. */
+function asInput(question: Doc<"questions">): QuestionInput | string {
+  if (question.kind === "mcq") {
+    if (question.section !== "mcq") return "an MCQ must be in the mcq section";
+    return {
+      kind: "mcq",
+      section: "mcq",
+      domain: question.domain,
+      stem: question.stem,
+      options: question.options ?? [],
+      chooseCount: question.chooseCount ?? 0,
+    };
+  }
+  if (question.section === "mcq") return "a PBQ must be in set A or set B";
+  if (question.template === undefined) return "a PBQ needs a template";
+  return {
+    kind: "pbq",
+    section: question.section,
+    domain: question.domain,
+    stem: question.stem,
+    template: question.template,
+    payload: question.payload,
+  };
+}
+
+/** The key answer for `partId`, if it is a single string. */
+function keyed(key: PbqKey, partId: string): string | undefined {
+  if (!("parts" in key)) return undefined;
+  const answer = key.parts[partId];
+  return typeof answer === "string" ? answer : undefined;
+}
+
+/**
+ * ED-2: answers recomputed from the question text must match the key.
+ * sshLog: the source IP (`ip` part), the account it got into (the scored
+ * `text` part) and its `Failed password` count (`integer` part), each compared
+ * only when the payload has exactly one scored part of that kind. hashCheck:
+ * the `pick` part names the one file whose hashes differ. Compared with the
+ * marking normalisers, so a key the marker treats as equal passes.
+ */
+export function recomputeIssues(payload: PbqPayload, key: PbqKey): string[] {
+  const issues: string[] = [];
+  if (payload.template === "sshLog") {
+    const answers = sshLogAnswers(payload.log);
+    if (!answers)
+      return [
+        "log: no single source has the most `Failed password` lines and then an `Accepted password`, so the answers can't be worked out",
+      ];
+    const scored = payload.parts.filter((p) => p.scored);
+    const checks: [TextPart["kind"], string, string][] = [
+      ["ip", answers.ip, "source IP"],
+      ["text", answers.account, "account"],
+      ["integer", String(answers.failures), "failure count"],
+    ];
+    for (const [kind, expected, what] of checks) {
+      const parts = scored.filter((p) => p.kind === kind);
+      if (parts.length !== 1) continue;
+      const part = parts[0]!;
+      const got = keyed(key, part.id);
+      if (!norm.equal(kind, got, expected))
+        issues.push(
+          `part ${part.id}: the log gives ${what} "${expected}", the key says "${got ?? ""}"`,
+        );
+    }
+    return issues;
+  }
+  if (payload.template === "hashCheck") {
+    const pick = payload.parts.find((p) => p.kind === "pick");
+    if (!pick) return issues;
+    const tampered = hashCheckTampered(payload.vendorHashes, payload.computed);
+    if (tampered.length !== 1)
+      return [
+        `hashes: expected exactly one file whose computed hash differs from the vendor's, found ${tampered.length}`,
+      ];
+    const got = keyed(key, pick.id);
+    if (!norm.equal("pick", got, tampered[0]))
+      issues.push(
+        `part ${pick.id}: the hashes show "${tampered[0]}" was altered, the key says "${got ?? ""}"`,
+      );
+  }
+  return issues;
+}
+
+const SECTION_RANK = { pbqA: 0, pbqB: 1, mcq: 2 } as const;
+
+/**
+ * Every §10.2 rule over a version's rows (pure; shared by `validate` and
+ * `publish`). Errors block publishing; warnings don't. `totalPoints` is the
+ * standard sitting, set A PBQs plus the MCQs, as `seed.importExam` computes it
+ * (ED-10); set B (the retake) must be worth the same as set A.
+ */
+export function checkVersion(
+  questions: Doc<"questions">[],
+  keys: Doc<"answerKeys">[],
+): { issues: Issue[]; totalPoints: number } {
+  const issues: Issue[] = [];
+  const add = (
+    severity: Issue["severity"],
+    rule: IssueRule,
+    question: Doc<"questions"> | null,
+    message: string,
+  ) => {
+    issues.push({
+      severity,
+      rule,
+      questionId: question?._id ?? null,
+      displayNumber: question?.displayNumber ?? null,
+      message,
+    });
+  };
+
+  const keysByQuestion = new Map<Id<"questions">, Doc<"answerKeys">[]>();
+  for (const k of keys) {
+    const list = keysByQuestion.get(k.questionId) ?? [];
+    list.push(k);
+    keysByQuestion.set(k.questionId, list);
+  }
+  const ordered = [...questions].sort(
+    (a, b) => SECTION_RANK[a.section] - SECTION_RANK[b.section] || a.order - b.order,
+  );
+
+  for (const question of ordered) {
+    const err = (rule: IssueRule, message: string) => add("error", rule, question, message);
+    const [key, ...extra] = keysByQuestion.get(question._id) ?? [];
+    if (!key) {
+      err("key.missing", "has no answer key");
+      continue;
+    }
+    if (extra.length > 0) err("key.duplicate", `has ${extra.length + 1} answer keys`);
+    if (key.explanation.trim() === "") err("explanation", "needs an explanation");
+
+    const input = asInput(question);
+    if (typeof input === "string") {
+      err("shape", input);
+      continue;
+    }
+    const checked = checkQuestion(input, {
+      ...(key.correct !== undefined ? { correct: key.correct } : {}),
+      ...(key.parts !== undefined ? { parts: key.parts } : {}),
+      explanation: key.explanation,
+    });
+    if (!checked.ok) {
+      for (const issue of checked.issues) err("shape", issue);
+      continue;
+    }
+    const { question: value, key: keyValue } = checked.value;
+    if (question.points !== value.points)
+      err(
+        "points",
+        `is stored as worth ${question.points} points; its content is worth ${value.points}`,
+      );
+
+    if (value.kind === "mcq") {
+      const want = value.chooseCount ?? 1;
+      const got = keyValue.correct?.length ?? 0;
+      if (got !== want)
+        err(
+          "mcq.chooseCount",
+          want === 2
+            ? `Choose TWO needs exactly 2 correct answers; the key has ${got}`
+            : `needs exactly 1 correct answer; the key has ${got}`,
+        );
+      continue;
+    }
+    for (const message of recomputeIssues(value.payload as PbqPayload, keyValue.parts as PbqKey))
+      err("pbq.recompute", message);
+  }
+
+  // Totals and sets (ED-10, LLD §10.2).
+  const pointsOf = (section: Section) =>
+    questions.filter((q) => q.section === section).reduce((sum, q) => sum + q.points, 0);
+  const countOf = (section: Section) => questions.filter((q) => q.section === section).length;
+  const totalPoints = pointsOf("pbqA") + pointsOf("mcq");
+  if (totalPoints <= 0) add("error", "total", null, "has no scored questions");
+  if (countOf("pbqB") > 0 && pointsOf("pbqB") !== pointsOf("pbqA"))
+    add(
+      "error",
+      "sets.balance",
+      null,
+      `set B is worth ${pointsOf("pbqB")} points and set A ${pointsOf("pbqA")}; a retake must be worth the same`,
+    );
+  if (countOf("pbqA") !== PBQS_PER_SET)
+    add(
+      "warning",
+      "sets.incomplete",
+      null,
+      `set A has ${countOf("pbqA")} PBQs, expected ${PBQS_PER_SET}`,
+    );
+  if (countOf("pbqB") !== PBQS_PER_SET)
+    add(
+      "warning",
+      "sets.incomplete",
+      null,
+      `set B has ${countOf("pbqB")} PBQs, expected ${PBQS_PER_SET}; the retake is disabled until it is complete`,
+    );
+
+  if (totalPoints > 0) {
+    for (const [domain, weight] of Object.entries(DOMAIN_WEIGHTS)) {
+      const points = questions
+        .filter((q) => q.section !== "pbqB" && q.domain === domain)
+        .reduce((sum, q) => sum + q.points, 0);
+      const share = points / totalPoints;
+      if (Math.abs(share - weight) > DOMAIN_SPREAD_TOLERANCE)
+        add(
+          "warning",
+          "domains.spread",
+          null,
+          `domain ${domain} has ${Math.round(share * 100)}% of the points; its SY0-701 weight is ${Math.round(weight * 100)}%`,
+        );
+    }
+  }
+  return { issues, totalPoints };
+}
+
+/**
+ * Every §10.2 issue with a version (ED-2, ED-9): errors first, in question
+ * order, then warnings. Author only (the owner, or the admin); any status, so
+ * a published version can be re-checked.
+ */
+export const validate = query({
+  args: { versionId: v.id("examVersions") },
+  returns: v.array(issueValidator),
+  handler: async (ctx, { versionId }) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const version = await requireAuthoredVersion(ctx, profile, versionId);
+    const { questions, keys } = await readContent(ctx, version._id);
+    const { issues } = checkVersion(questions, keys);
+    return [
+      ...issues.filter((i) => i.severity === "error"),
+      ...issues.filter((i) => i.severity === "warning"),
+    ];
+  },
+});
+
+/**
+ * Publish a draft (LLD §10.1; ED-1, ED-3, ED-10). Fails `VALIDATION_FAILED`
+ * with the error issues (as `formatIssue` strings) if `validate` reports any;
+ * warnings don't block. Otherwise sets `totalPoints`, `status = published` and
+ * `publishedAt`; from then on `requireEditableDraft` refuses every write
+ * (frozen, ED-4). Only this draft row is written, so older versions and the
+ * attempts pinned to them are untouched. A default-line draft (the admin's)
+ * becomes the exam's default version (`exam.default_changed`); the previous
+ * default stays published, because classes and `attempts.start` only accept
+ * published versions. Restore (ED-3) is `createDraft` from an older version,
+ * then `publish`.
+ */
+export const publish = mutation({
+  args: { versionId: v.id("examVersions") },
+  returns: v.object({
+    versionId: v.id("examVersions"),
+    versionNo: v.number(),
+    totalPoints: v.number(),
+    publishedAt: v.number(),
+    isDefault: v.boolean(),
+    warnings: v.array(issueValidator),
+  }),
+  handler: async (ctx, { versionId }) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const version = await requireEditableDraft(ctx, profile, versionId);
+    const { questions, keys } = await readContent(ctx, version._id);
+    const { issues, totalPoints } = checkVersion(questions, keys);
+    const errors = issues.filter((i) => i.severity === "error");
+    if (errors.length > 0) invalid(...errors.map(formatIssue));
+
+    const now = Date.now();
+    await ctx.db.patch("examVersions", version._id, {
+      status: "published",
+      totalPoints,
+      publishedAt: now,
+      updatedAt: now,
+    });
+    await writeAudit(ctx, {
+      actorId: profile._id,
+      action: "version.published",
+      target: version._id,
+      meta: {
+        versionNo: version.versionNo,
+        totalPoints,
+        ownerId: version.ownerId ?? null,
+        parentVersionId: version.parentVersionId ?? null,
+      },
+    });
+
+    const isDefault = version.ownerId === undefined;
+    if (isDefault) {
+      const exam = await ctx.db.get("exams", version.examId);
+      if (!exam) fail("NOT_FOUND");
+      await ctx.db.patch("exams", exam._id, { defaultVersionId: version._id });
+      await writeAudit(ctx, {
+        actorId: profile._id,
+        action: "exam.default_changed",
+        target: exam._id,
+        meta: { from: exam.defaultVersionId ?? null, to: version._id },
+      });
+    }
+    return {
+      versionId: version._id,
+      versionNo: version.versionNo,
+      totalPoints,
+      publishedAt: now,
+      isDefault,
+      warnings: issues.filter((i) => i.severity === "warning"),
+    };
   },
 });
