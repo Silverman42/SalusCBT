@@ -39,6 +39,19 @@ export default defineNuxtConfig({
     "/admin/**": { ssr: false },
     "/sign-in": { ssr: false },
     "/invite/**": { ssr: false },
+    // Share pages (CL-9, LLD §14.1): SSR, cached at the CDN for 60 s and never
+    // in the browser, so a revoked link stops working within a minute. No
+    // stale-while-revalidate: that would serve a revoked result past 60 s.
+    // Cached HTML can't carry per-request CSP nonces (LLD §18.1 finding 5):
+    // T-218 must use hashes for these pages.
+    "/r/**": {
+      headers: {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "netlify-cdn-cache-control": "public, s-maxage=60",
+        "x-robots-tag": "noindex, nofollow",
+        "referrer-policy": "no-referrer",
+      },
+    },
   },
 
   // Mockup defaults to the light theme; the header toggle switches to dark.
