@@ -1,4 +1,4 @@
-import { makeFunctionReference, type FunctionReturnType } from "convex/server";
+import type { FunctionReturnType } from "convex/server";
 import { computed, onScopeDispose, ref, shallowRef, watch } from "vue";
 import { api } from "~~/convex/_generated/api";
 import type { Id } from "~~/convex/_generated/dataModel";
@@ -15,16 +15,6 @@ import {
 
 export type AttemptPaper = FunctionReturnType<typeof api.attempts.getPaper>;
 export type AttemptPaperQuestion = AttemptPaper["questions"][number];
-
-/**
- * `attempts.submit` comes with T-207. Referenced by name so this compiles
- * before it lands; switch to `api.attempts.submit` once it is on main.
- */
-const submitRef = makeFunctionReference<
-  "mutation",
-  { attemptId: Id<"attempts">; anonToken: string },
-  unknown
->("attempts:submit");
 
 /** `submit()` refused because answers are still unsaved (pass `force` to submit anyway). */
 export class SavesPendingError extends Error {
@@ -245,7 +235,7 @@ export function useAttempt(attemptIdInput: string) {
     if (!anonToken) throw new Error("NO_TOKEN");
     const saved = await sync.flush();
     if (!saved && !opts.force) throw new SavesPendingError(sync.pendingCount);
-    const result = await $convex.mutation(submitRef, { attemptId, anonToken });
+    const result = await $convex.mutation(api.attempts.submit, { attemptId, anonToken });
     serverStatus.value = "submitted";
     sync.close();
     sync.clearCache();
