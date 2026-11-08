@@ -4,6 +4,11 @@
 import { ref } from "vue";
 import { useAuth } from "~/composables/useAuth";
 
+defineProps<{
+  /** Icon only (the staff sidebar's profile chip), labelled for screen readers. */
+  compact?: boolean;
+}>();
+
 const auth = useAuth();
 const busy = ref(false);
 
@@ -22,6 +27,18 @@ async function signOut() {
 
 <template>
   <button
+    v-if="compact"
+    type="button"
+    class="grid size-9 flex-none place-items-center rounded-full text-muted-fg hover:bg-surface hover:text-fg disabled:opacity-60"
+    :disabled="busy"
+    :aria-label="busy ? 'Signing out' : 'Sign out'"
+    title="Sign out"
+    @click="signOut"
+  >
+    <UIcon name="i-lucide-log-out" class="size-4" />
+  </button>
+  <button
+    v-else
     type="button"
     class="flex items-center gap-2 rounded-full border-[1.5px] border-line px-4 py-[11px] text-sm font-semibold whitespace-nowrap text-fg hover:border-brand disabled:opacity-60 sm:px-5"
     :disabled="busy"
