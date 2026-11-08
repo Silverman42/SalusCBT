@@ -1,0 +1,16 @@
+{
+  /* Build-time scripts (parser) and their unit tests, type-checked outside the Nuxt app. */
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["./**/*", "../shared/**/*", "../tests/unit/parser.test.ts"]
+}
