@@ -18,11 +18,26 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Server-only. Target of the /api/auth proxy (LLD §15.2): NUXT_CONVEX_SITE_URL
+    // on Netlify, CONVEX_SITE_URL from .env.local during local development.
+    convexSiteUrl: process.env.NUXT_CONVEX_SITE_URL ?? process.env.CONVEX_SITE_URL ?? "",
+    // Server-only. Shared with Convex as SERVER_SECRET (LLD §18.1 finding 4).
+    // Nuxt also overrides it at runtime from NUXT_SERVER_SECRET.
+    serverSecret: process.env.NUXT_SERVER_SECRET ?? "",
     public: {
       // Set by `convex deploy --cmd-url-env-var-name NUXT_PUBLIC_CONVEX_URL` on Netlify (LLD §15.3),
       // or taken from CONVEX_URL in .env.local during local development.
       convexUrl: process.env.NUXT_PUBLIC_CONVEX_URL ?? process.env.CONVEX_URL ?? "",
     },
+  },
+
+  // Tutor and admin pages render in the browser only (LLD §14.1), so their
+  // route guards always run where the Better Auth client is.
+  routeRules: {
+    "/tutor": { ssr: false },
+    "/tutor/**": { ssr: false },
+    "/admin/**": { ssr: false },
+    "/sign-in": { ssr: false },
   },
 
   // Mockup defaults to the light theme; the header toggle switches to dark.
