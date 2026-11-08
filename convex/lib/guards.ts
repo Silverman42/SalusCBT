@@ -7,27 +7,26 @@
  * revealed.
  */
 import type { Doc, Id } from "../_generated/dataModel";
-import type { QueryCtx } from "../_generated/server";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
+import { authComponent } from "../auth";
 import { fail } from "./errors";
 
 export type Role = Doc<"profiles">["role"];
 
-type ReaderCtx = Pick<QueryCtx, "db" | "auth">;
+type ReaderCtx = QueryCtx | MutationCtx;
 
 /**
  * The Better Auth user id behind the current request, or `null`.
  *
- * SEAM (T-402): Better Auth isn't configured yet, so this reads the JWT
- * subject directly. The Convex plugin issues JWTs whose `sub` is the Better
- * Auth user id (`@convex-dev/better-auth` does the same in `safeGetAuthUser`).
- * When `convex/auth.ts` lands, replace the body with
- * `(await authComponent.safeGetAuthUser(ctx))?._id ?? null`, which also checks
- * that the session still exists and hasn't expired (AU-4). Until then a removed
- * tutor is still refused by the `status` check below.
+ * Goes through the component rather than trusting the JWT alone: the
+ * session named in the token must still exist and be unexpired, so deleting
+ * a removed tutor's sessions signs them out at once (AU-4). A token without
+ * a `sessionId` claim (not one Better Auth issued) counts as signed out.
  */
-export async function getAuthUserId(ctx: Pick<QueryCtx, "auth">): Promise<string | null> {
+export async function getAuthUserId(ctx: ReaderCtx): Promise<string | null> {
   const identity = await ctx.auth.getUserIdentity();
-  return identity?.subject ?? null;
+  if (typeof identity?.sessionId !== "string") return null;
+  return (await authComponent.safeGetAuthUser(ctx))?._id ?? null;
 }
 
 /**

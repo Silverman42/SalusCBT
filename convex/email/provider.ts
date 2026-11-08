@@ -48,20 +48,20 @@ export class EmailSendError extends Error {
   }
 }
 
-type EnvLike = Record<string, string | undefined>;
+/** The email settings `getProvider` reads (declared in `convex.config.ts`). */
+export type EmailEnv = {
+  EMAIL_PROVIDER?: string | undefined;
+  RESEND_API_KEY?: string | undefined;
+  EMAIL_FROM?: string | undefined;
+};
 
-// `env` is `process.env` at runtime. Its generated type lists only variables
-// declared in `convex.config.ts`; until EMAIL_PROVIDER, RESEND_API_KEY and
-// EMAIL_FROM are declared there, read it as a plain record.
-const deploymentEnv = env as unknown as EnvLike;
-
-function required(env: EnvLike, name: string): string {
-  const value = env[name];
+function required(source: EmailEnv, name: keyof EmailEnv): string {
+  const value = source[name];
   if (!value) throw new EmailSendError(`${name} is not set`, false);
   return value;
 }
 
-export function getProvider(source: EnvLike = deploymentEnv): EmailProvider {
+export function getProvider(source: EmailEnv = env): EmailProvider {
   const name = source.EMAIL_PROVIDER ?? "console";
   switch (name) {
     case "resend":

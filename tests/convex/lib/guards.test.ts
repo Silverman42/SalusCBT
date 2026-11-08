@@ -1,7 +1,8 @@
 import { ConvexError } from "convex/values";
 import { describe, expect, it } from "vitest";
 import { requireClassOwner, requireProfile } from "../../../convex/lib/guards";
-import { seedProfile, seedVersion, setup } from "./fixtures";
+import { components } from "../../../convex/_generated/api";
+import { seedAuthSession, seedSignedIn, seedVersion, setup } from "./fixtures";
 
 async function codeOf(p: Promise<unknown>): Promise<unknown> {
   const err = await p.then(
@@ -20,39 +21,60 @@ describe("requireProfile", () => {
 
   it("throws FORBIDDEN for a signed-in user with no profile", async () => {
     const t = setup();
-    const as = t.withIdentity({ subject: "nobody" });
+    const { userId, sessionId } = await seedAuthSession(t, "nobody@example.com");
+    const as = t.withIdentity({ subject: userId, sessionId });
     expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["tutor"])))).toBe("FORBIDDEN");
   });
 
   it("returns an active tutor's profile", async () => {
     const t = setup();
-    const id = await seedProfile(t, { authUserId: "tutor-1", role: "tutor" });
-    const profile = await t
-      .withIdentity({ subject: "tutor-1" })
-      .run((ctx) => requireProfile(ctx, ["tutor"]));
-    expect(profile._id).toBe(id);
+    const { profileId, as } = await seedSignedIn(t, { label: "tutor-1", role: "tutor" });
+    const profile = await as.run((ctx) => requireProfile(ctx, ["tutor"]));
+    expect(profile._id).toBe(profileId);
   });
 
   it("throws FORBIDDEN for a removed tutor", async () => {
     const t = setup();
-    await seedProfile(t, { authUserId: "tutor-2", role: "tutor", status: "removed" });
-    const as = t.withIdentity({ subject: "tutor-2" });
+    const { as } = await seedSignedIn(t, { label: "tutor-2", role: "tutor", status: "removed" });
     expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["tutor"])))).toBe("FORBIDDEN");
+  });
+
+  it("throws UNAUTHENTICATED once the session is deleted, even with a valid token (AU-4)", async () => {
+    const t = setup();
+    const { sessionId, as } = await seedSignedIn(t, { label: "tutor-4", role: "tutor" });
+    await t.run((ctx) =>
+      ctx.runMutation(components.betterAuth.adapter.deleteOne, {
+        input: { model: "session", where: [{ field: "_id", value: sessionId }] },
+      }),
+    );
+    expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["tutor"])))).toBe("UNAUTHENTICATED");
+  });
+
+  it("throws UNAUTHENTICATED for an expired session", async () => {
+    const t = setup();
+    const { userId, sessionId } = await seedAuthSession(t, "late@example.com", {
+      sessionExpiresAt: Date.now() - 1,
+    });
+    const as = t.withIdentity({ subject: userId, sessionId });
+    expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["tutor"])))).toBe("UNAUTHENTICATED");
+  });
+
+  it("throws UNAUTHENTICATED for a token without a Better Auth session id", async () => {
+    const t = setup();
+    const as = t.withIdentity({ subject: "made-up-user" });
+    expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["tutor"])))).toBe("UNAUTHENTICATED");
   });
 
   it("throws FORBIDDEN when a tutor calls an admin function", async () => {
     const t = setup();
-    await seedProfile(t, { authUserId: "tutor-3", role: "tutor" });
-    const as = t.withIdentity({ subject: "tutor-3" });
+    const { as } = await seedSignedIn(t, { label: "tutor-3", role: "tutor" });
     expect(await codeOf(as.run((ctx) => requireProfile(ctx, ["admin"])))).toBe("FORBIDDEN");
   });
 
   it("lets admin pass tutor checks", async () => {
     const t = setup();
-    await seedProfile(t, { authUserId: "admin-1", role: "admin" });
-    const profile = await t
-      .withIdentity({ subject: "admin-1" })
-      .run((ctx) => requireProfile(ctx, ["tutor"]));
+    const { as } = await seedSignedIn(t, { label: "admin-1", role: "admin" });
+    const profile = await as.run((ctx) => requireProfile(ctx, ["tutor"]));
     expect(profile.role).toBe("admin");
   });
 });
@@ -60,9 +82,10 @@ describe("requireProfile", () => {
 describe("requireClassOwner", () => {
   it("returns the class to its owner and to admin, NOT_FOUND to other tutors", async () => {
     const t = setup();
-    const ownerId = await seedProfile(t, { authUserId: "owner", role: "tutor" });
-    await seedProfile(t, { authUserId: "other", role: "tutor" });
-    await seedProfile(t, { authUserId: "admin", role: "admin" });
+    const owner = await seedSignedIn(t, { label: "owner", role: "tutor" });
+    const other = await seedSignedIn(t, { label: "other", role: "tutor" });
+    const admin = await seedSignedIn(t, { label: "admin", role: "admin" });
+    const ownerId = owner.profileId;
     const versionId = await seedVersion(t);
     const classId = await t.run((ctx) =>
       ctx.db.insert("classes", {
@@ -76,20 +99,21 @@ describe("requireClassOwner", () => {
       }),
     );
 
-    const check = (subject: string) =>
-      t.withIdentity({ subject }).run(async (ctx) => {
+    const check = (who: typeof owner) =>
+      who.as.run(async (ctx) => {
         const profile = await requireProfile(ctx, ["tutor"]);
         return await requireClassOwner(ctx, profile, classId);
       });
 
-    expect((await check("owner"))._id).toBe(classId);
-    expect((await check("admin"))._id).toBe(classId);
-    expect(await codeOf(check("other"))).toBe("NOT_FOUND");
+    expect((await check(owner))._id).toBe(classId);
+    expect((await check(admin))._id).toBe(classId);
+    expect(await codeOf(check(other))).toBe("NOT_FOUND");
   });
 
   it("throws NOT_FOUND for a deleted class (same as not owned)", async () => {
     const t = setup();
-    const ownerId = await seedProfile(t, { authUserId: "owner", role: "tutor" });
+    const owner = await seedSignedIn(t, { label: "owner", role: "tutor" });
+    const ownerId = owner.profileId;
     const versionId = await seedVersion(t);
     const classId = await t.run(async (ctx) => {
       const id = await ctx.db.insert("classes", {
@@ -104,7 +128,7 @@ describe("requireClassOwner", () => {
       await ctx.db.delete(id);
       return id;
     });
-    const result = t.withIdentity({ subject: "owner" }).run(async (ctx) => {
+    const result = owner.as.run(async (ctx) => {
       const profile = await requireProfile(ctx, ["tutor"]);
       return await requireClassOwner(ctx, profile, classId);
     });
