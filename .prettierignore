@@ -7,3 +7,5 @@ mockup
 docs
 tasks
 package-lock.json
+.agents
+.claude
