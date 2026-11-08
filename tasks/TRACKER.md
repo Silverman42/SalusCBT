@@ -21,10 +21,10 @@ Single source of truth for task status. Task details live in the linked files; r
 | 3 · Interactive PBQs | 9 | 1 | 0 | 0 | 0 | 8 |
 | 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
 | 5 · Classes | 10 | 1 | 0 | 0 | 3 | 6 |
-| 6 · Question editor | 9 | 1 | 0 | 0 | 1 | 7 |
+| 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 4 | 0 | 0 | 1 | 2 |
 | X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **13** | 0 | 0 | **12** | **56** |
+| **Total** | **81** | **12** | 0 | 0 | **13** | **56** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -37,7 +37,7 @@ From the PRD release plan. Tick when the gate task passes.
 - [x] **Stage 3 · Interactive PBQs** — All 10 PBQs mark correctly against the Part 6 solutions
 - [x] **Stage 4 · Admin and tutor sign-in** — An invited tutor can register and sign in by code; expired, reused and wrong codes are rejected; a removed tutor is signed out
 - [ ] **Stage 5 · Classes** — A tutor sees a student's attempt within 5 seconds of submission; tutors can't see each other's classes
-- [ ] **Stage 6 · Question editor** — A generated version passes validation, previews and marks correctly; old attempts still mark against their own version
+- [x] **Stage 6 · Question editor** — A generated version passes validation, previews and marks correctly; old attempts still mark against their own version
 - [ ] **Stage 7 · Terminal lab** — Every command in the lab steps gives the expected output; Labs A–C give the answers in Part 6
 
 ## Tasks
@@ -145,7 +145,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-606 | [editor.generate and preview attempts](stage-6-editor/T-606-editor-generate-preview.md) | T-603, T-604, T-605 | Done | | 2026-11-08 | Share links refused for preview attempts (c65676d) |
 | T-607 | [Editor UI: versions list and MCQ form](stage-6-editor/T-607-editor-ui-versions-mcq.md) | T-603 | Done | | 2026-11-08 |  |
 | T-608 | [Editor UI: PBQ template forms, generate, preview, publish](stage-6-editor/T-608-editor-ui-pbq.md) | T-606, T-607 | In review | | 2026-11-08 | Committed; signed-in generate/preview/publish not run live |
-| T-609 | [Editor tests and Stage 6 gate](stage-6-editor/T-609-editor-tests.md) | T-608 | Not started | | |  |
+| T-609 | [Editor tests and Stage 6 gate](stage-6-editor/T-609-editor-tests.md) | T-608 | In review | Claude (subagent) | 2026-11-08 | Stage 6 gate passes in convex-test (tests/convex/editor/gate.test.ts); Playwright editor spec gated by E2E_EDITOR=1, not run live |
 
 ### Stage 7 · Terminal lab
 
