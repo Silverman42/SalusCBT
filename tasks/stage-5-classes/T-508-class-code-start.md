@@ -24,4 +24,10 @@ Students join a class before starting.
 
 ## Acceptance criteria
 
-- [ ] Closed or unknown codes show inline messages.
+- [x] Closed or unknown codes show inline messages.
+
+## Notes
+
+- Done 2026-11-08 (code in the T-211 commit, since the landing form and `/start` share `app/components/start/DetailsFields.vue`). The code is normalised as typed (`4k7q`, `sec4k7q` → `SEC-4K7Q`, `app/lib/start.ts`), looked up with `classes.lookupCode` 300 ms after it is complete (cached, stale answers dropped) and the field shows "Joining <class>", "Class not found…", "<class> is closed…", or a format hint, in an `aria-live` region linked by `aria-describedby`. With a code the display name is required (1–40); the start route's `CLASS_UNKNOWN` / `CLASS_CLOSED` / `VALIDATION_FAILED` land on the matching field. `/start?class=SEC-XXXX` pre-fills the code.
+- Verified live: `/start?class=sec-zzzz` shows "Class not found"; Start then focuses the display name with "Enter a display name…". The closed message is covered by unit tests only (no closed class on the dev deployment).
+- EX-21: `lookupCode` doesn't return the class's `timeMultiplier`, so the instructions always say 90 minutes. `StartInstructions` takes a `minutes` prop ready for it.
