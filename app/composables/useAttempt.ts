@@ -15,6 +15,8 @@ import {
 
 export type AttemptPaper = FunctionReturnType<typeof api.attempts.getPaper>;
 export type AttemptPaperQuestion = AttemptPaper["questions"][number];
+export type AttemptPaperMcq = Extract<AttemptPaperQuestion, { kind: "mcq" }>;
+export type AttemptPaperPbq = Extract<AttemptPaperQuestion, { kind: "pbq" }>;
 
 /** `submit()` refused because answers are still unsaved (pass `force` to submit anyway). */
 export class SavesPendingError extends Error {

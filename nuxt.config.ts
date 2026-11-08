@@ -38,6 +38,9 @@ export default defineNuxtConfig({
     "/tutor/**": { ssr: false },
     "/admin/**": { ssr: false },
     "/sign-in": { ssr: false },
+    // The exam runner and its result/review pages read the anon token from
+    // localStorage, so they render in the browser only (LLD §14.1).
+    "/exam/**": { ssr: false },
   },
 
   // Mockup defaults to the light theme; the header toggle switches to dark.
