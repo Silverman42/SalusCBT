@@ -119,6 +119,8 @@ const STAFF_ONLY: Record<
   "classes:stats": { role: "tutor", args: (i) => ({ classId: i.classId }) },
   "classes:attemptResult": { role: "tutor", args: (i) => ({ attemptId: i.attemptId }) },
   "classes:attemptReview": { role: "tutor", args: (i) => ({ attemptId: i.attemptId }) }, // keys, by design (CL-7)
+  "classes:exportCsv": { role: "tutor", args: (i) => ({ classId: i.classId }) },
+  "classes:deleteAttempts": { role: "tutor", args: (i) => ({ attemptIds: [i.attemptId] }) },
   "editor:myVersions": { role: "tutor", args: () => ({}) },
   "editor:createDraft": {
     role: "tutor",
@@ -444,7 +446,13 @@ describe("answer-key leak test (T-209, SE-1)", () => {
       const { t, ids } = await staffFixture();
       const other = await seedSignedIn(t, { label: "other", role: "tutor" });
       await t.run((ctx) => ctx.db.patch("attempts", ids.attemptId, { status: "submitted" }));
-      for (const name of ["classes:attemptReview", "classes:attemptResult", "classes:stats"]) {
+      for (const name of [
+        "classes:attemptReview",
+        "classes:attemptResult",
+        "classes:stats",
+        "classes:exportCsv",
+        "classes:deleteAttempts",
+      ]) {
         const out = await callByName(other.as, kinds, name, STAFF_ONLY[name]!.args(ids));
         expect(out.ok, name).toBe(false);
         if (!out.ok) expect(errorCodeOf(out.error), name).toBe("NOT_FOUND");
