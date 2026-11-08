@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/*
+ * Salus design tokens, taken from mockup/Salus Mockups.dc.html.
+ * Flat surfaces, generous curves, no shadows. Every colour is a tint or shade
+ * of #6140FF, except pass/fail and warning states.
+ */
+
+@theme static {
+  --font-sans: "Figtree", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Brand violet, built around #6140FF (500). */
+  --color-salus-50: #f5f3ff;
+  --color-salus-100: #eae5ff;
+  --color-salus-200: #d6ccff;
+  --color-salus-300: #c3b6ff;
+  --color-salus-400: #9c88ff;
+  --color-salus-500: #6140ff;
+  --color-salus-600: #5130f0;
+  --color-salus-700: #4a2be0;
+  --color-salus-800: #3a1fc9;
+  --color-salus-900: #2a2160;
+  --color-salus-950: #17122f;
+
+  /* Violet-tinted neutrals for text, borders and dark surfaces. */
+  --color-ink-50: #f5f3ff;
+  --color-ink-100: #efebff;
+  --color-ink-200: #e3ddfb;
+  --color-ink-300: #c9c3e6;
+  --color-ink-400: #a39dc6;
+  --color-ink-500: #7d76a8;
+  --color-ink-600: #605a7e;
+  --color-ink-700: #2d2652;
+  --color-ink-800: #211b3e;
+  --color-ink-900: #17132c;
+  --color-ink-950: #0e0b1d;
+}
+
+/* Mockup tokens as utilities (bg-surface, text-muted-fg, bg-ok-soft …). They follow the theme. */
+@theme inline {
+  --color-canvas: var(--salus-bg);
+  --color-surface: var(--salus-sf);
+  --color-surface-2: var(--salus-sf2);
+  --color-line: var(--salus-bd);
+  --color-fg: var(--salus-tx);
+  --color-muted-fg: var(--salus-mu);
+  --color-brand: var(--salus-pr);
+  --color-brand-soft: var(--salus-prs);
+  --color-brand-ink: var(--salus-pri);
+  --color-ok: var(--salus-ok);
+  --color-ok-soft: var(--salus-oks);
+  --color-bad: var(--salus-bad);
+  --color-bad-soft: var(--salus-bads);
+  --color-warn: var(--salus-warn);
+  --color-warn-soft: var(--salus-warns);
+  --color-code: var(--salus-code);
+  --color-code-fg: var(--salus-codetx);
+  --color-code-muted: var(--salus-codemu);
+}
+
+:root {
+  /* Mockup .th-light */
+  --salus-bg: #f5f3ff;
+  --salus-sf: #ffffff;
+  --salus-sf2: #efebff;
+  --salus-bd: #e3ddfb;
+  --salus-tx: #17122f;
+  --salus-mu: #605a7e;
+  --salus-pr: #6140ff;
+  --salus-prs: #eae5ff;
+  --salus-pri: #4a2be0;
+  --salus-ok: #0f8f63;
+  --salus-oks: #dcf5eb;
+  --salus-bad: #d33a47;
+  --salus-bads: #fde6e8;
+  --salus-warn: #9a6408;
+  --salus-warns: #fcefd6;
+  --salus-code: #17122f;
+  --salus-codetx: #dcd5ff;
+  --salus-codemu: #8c84b8;
+}
+
+.dark {
+  /* Mockup .th-dark */
+  --salus-bg: #0e0b1d;
+  --salus-sf: #17132c;
+  --salus-sf2: #211b3e;
+  --salus-bd: #2d2652;
+  --salus-tx: #f2f0ff;
+  --salus-mu: #a39dc6;
+  --salus-pr: #7457ff;
+  --salus-prs: #2a2160;
+  --salus-pri: #c3b6ff;
+  --salus-ok: #3dd39b;
+  --salus-oks: #123a2d;
+  --salus-bad: #ff7a84;
+  --salus-bads: #3d1a25;
+  --salus-warn: #f2b94b;
+  --salus-warns: #3a2d12;
+  --salus-code: #08061a;
+  --salus-codetx: #d9d2ff;
+  --salus-codemu: #7d76a8;
+}
+
+/* Map Nuxt UI's semantic variables onto the mockup tokens so its components match. */
+:root,
+.dark {
+  --ui-primary: var(--salus-pr);
+  --ui-success: var(--salus-ok);
+  --ui-error: var(--salus-bad);
+  --ui-warning: var(--salus-warn);
+
+  --ui-bg: var(--salus-bg);
+  --ui-bg-muted: var(--salus-sf2);
+  --ui-bg-elevated: var(--salus-sf);
+  --ui-bg-accented: var(--salus-bd);
+  --ui-bg-inverted: var(--salus-tx);
+
+  --ui-text: var(--salus-tx);
+  --ui-text-highlighted: var(--salus-tx);
+  --ui-text-toned: var(--salus-tx);
+  --ui-text-muted: var(--salus-mu);
+  --ui-text-dimmed: var(--salus-mu);
+  --ui-text-inverted: var(--salus-bg);
+
+  --ui-border: var(--salus-bd);
+  --ui-border-muted: var(--salus-bd);
+  --ui-border-accented: var(--salus-bd);
+  --ui-border-inverted: var(--salus-tx);
+
+  --ui-radius: 1rem;
+}
+
+body {
+  background: var(--salus-bg);
+  color: var(--salus-tx);
+  -webkit-font-smoothing: antialiased;
+}

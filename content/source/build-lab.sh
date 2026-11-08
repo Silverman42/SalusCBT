@@ -1,0 +1,209 @@
+#!/usr/bin/env bash
+# Security+ practice lab: creates ~/secplus-lab with log, hash and permission exercises
+set -e
+LAB="$HOME/secplus-lab"
+rm -rf "$LAB" && mkdir -p "$LAB"/{log,downloads,etc/ssh,home/deploy/.ssh}
+cd "$LAB"
+
+# ---- Lab A: authentication log ----
+cat > log/auth.log <<'EOF'
+Nov  3 01:48:56 web01 CRON[1834]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 01:54:05 web01 sshd[1843]: Accepted publickey for adaeze from 10.0.2.15 port 48034 ssh2: ED25519 SHA256:q8fC2v...
+Nov  3 01:54:06 web01 sshd[1844]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)
+Nov  3 01:55:09 web01 CRON[1835]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 01:58:00 web01 sshd[1851]: Invalid user test from 45.155.205.233 port 61210
+Nov  3 01:58:01 web01 sshd[1852]: Failed password for invalid user test from 45.155.205.233 port 61210 ssh2
+Nov  3 01:58:05 web01 sshd[1853]: Invalid user guest from 45.155.205.233 port 38235
+Nov  3 01:58:06 web01 sshd[1854]: Failed password for invalid user guest from 45.155.205.233 port 38235 ssh2
+Nov  3 01:58:08 web01 sshd[1855]: Invalid user guest from 45.155.205.233 port 31897
+Nov  3 01:58:09 web01 sshd[1856]: Failed password for invalid user guest from 45.155.205.233 port 31897 ssh2
+Nov  3 01:58:12 web01 sshd[1857]: Invalid user test from 45.155.205.233 port 41342
+Nov  3 01:58:13 web01 sshd[1858]: Failed password for invalid user test from 45.155.205.233 port 41342 ssh2
+Nov  3 01:58:16 web01 sshd[1859]: Invalid user user from 45.155.205.233 port 51655
+Nov  3 01:58:17 web01 sshd[1860]: Failed password for invalid user user from 45.155.205.233 port 51655 ssh2
+Nov  3 01:58:20 web01 sshd[1861]: Invalid user user from 45.155.205.233 port 42102
+Nov  3 01:58:21 web01 sshd[1862]: Failed password for invalid user user from 45.155.205.233 port 42102 ssh2
+Nov  3 01:58:24 web01 sshd[1863]: Invalid user guest from 45.155.205.233 port 56361
+Nov  3 01:58:25 web01 sshd[1864]: Failed password for invalid user guest from 45.155.205.233 port 56361 ssh2
+Nov  3 01:58:28 web01 sshd[1865]: Invalid user admin from 45.155.205.233 port 50090
+Nov  3 01:58:29 web01 sshd[1866]: Failed password for invalid user admin from 45.155.205.233 port 50090 ssh2
+Nov  3 01:58:34 web01 sshd[1867]: Invalid user admin from 45.155.205.233 port 33551
+Nov  3 01:58:35 web01 sshd[1868]: Failed password for invalid user admin from 45.155.205.233 port 33551 ssh2
+Nov  3 01:58:41 web01 sshd[1869]: Invalid user guest from 45.155.205.233 port 35176
+Nov  3 01:58:42 web01 sshd[1870]: Failed password for invalid user guest from 45.155.205.233 port 35176 ssh2
+Nov  3 01:58:46 web01 sshd[1871]: Invalid user guest from 45.155.205.233 port 59880
+Nov  3 01:58:47 web01 sshd[1872]: Failed password for invalid user guest from 45.155.205.233 port 59880 ssh2
+Nov  3 01:58:49 web01 sshd[1873]: Invalid user pi from 45.155.205.233 port 43574
+Nov  3 01:58:50 web01 sshd[1874]: Failed password for invalid user pi from 45.155.205.233 port 43574 ssh2
+Nov  3 02:02:00 web01 CRON[1836]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:03:24 web01 sshd[1875]: Failed password for chidi from 102.89.34.12 port 32070 ssh2
+Nov  3 02:03:39 web01 sshd[1876]: Failed password for chidi from 102.89.34.12 port 30076 ssh2
+Nov  3 02:03:48 web01 sshd[1877]: Accepted password for chidi from 102.89.34.12 port 50838 ssh2
+Nov  3 02:09:41 web01 CRON[1837]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:13:00 web01 sshd[1878]: Invalid user oracle from 185.220.101.47 port 44687
+Nov  3 02:13:01 web01 sshd[1879]: Failed password for invalid user oracle from 185.220.101.47 port 44687 ssh2
+Nov  3 02:13:02 web01 sshd[1880]: Failed password for root from 185.220.101.47 port 48743 ssh2
+Nov  3 02:13:06 web01 sshd[1881]: Failed password for backup from 185.220.101.47 port 56334 ssh2
+Nov  3 02:13:09 web01 sshd[1882]: Invalid user test from 185.220.101.47 port 57652
+Nov  3 02:13:10 web01 sshd[1883]: Failed password for invalid user test from 185.220.101.47 port 57652 ssh2
+Nov  3 02:13:12 web01 sshd[1884]: Failed password for backup from 185.220.101.47 port 37123 ssh2
+Nov  3 02:13:18 web01 sshd[1885]: Invalid user admin from 185.220.101.47 port 61080
+Nov  3 02:13:19 web01 sshd[1886]: Failed password for invalid user admin from 185.220.101.47 port 61080 ssh2
+Nov  3 02:13:20 web01 sshd[1887]: Invalid user admin from 185.220.101.47 port 63855
+Nov  3 02:13:21 web01 sshd[1888]: Failed password for invalid user admin from 185.220.101.47 port 63855 ssh2
+Nov  3 02:13:23 web01 sshd[1889]: Invalid user oracle from 185.220.101.47 port 40606
+Nov  3 02:13:24 web01 sshd[1890]: Failed password for invalid user oracle from 185.220.101.47 port 40606 ssh2
+Nov  3 02:13:27 web01 sshd[1891]: Invalid user ubuntu from 185.220.101.47 port 56170
+Nov  3 02:13:28 web01 sshd[1892]: Failed password for invalid user ubuntu from 185.220.101.47 port 56170 ssh2
+Nov  3 02:13:29 web01 sshd[1893]: Failed password for backup from 185.220.101.47 port 48670 ssh2
+Nov  3 02:13:35 web01 sshd[1894]: Failed password for backup from 185.220.101.47 port 33751 ssh2
+Nov  3 02:13:39 web01 sshd[1895]: Invalid user oracle from 185.220.101.47 port 37334
+Nov  3 02:13:40 web01 sshd[1896]: Failed password for invalid user oracle from 185.220.101.47 port 37334 ssh2
+Nov  3 02:13:45 web01 sshd[1897]: Invalid user admin from 185.220.101.47 port 31881
+Nov  3 02:13:46 web01 sshd[1898]: Failed password for invalid user admin from 185.220.101.47 port 31881 ssh2
+Nov  3 02:13:48 web01 sshd[1899]: Invalid user test from 185.220.101.47 port 59069
+Nov  3 02:13:49 web01 sshd[1845]: Accepted publickey for adaeze from 10.0.2.15 port 52836 ssh2: ED25519 SHA256:q8fC2v...
+Nov  3 02:13:49 web01 sshd[1900]: Failed password for invalid user test from 185.220.101.47 port 59069 ssh2
+Nov  3 02:13:50 web01 sshd[1846]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)
+Nov  3 02:13:52 web01 sshd[1901]: Invalid user admin from 185.220.101.47 port 38770
+Nov  3 02:13:53 web01 sshd[1902]: Failed password for invalid user admin from 185.220.101.47 port 38770 ssh2
+Nov  3 02:13:54 web01 sshd[1903]: Invalid user postgres from 185.220.101.47 port 33769
+Nov  3 02:13:55 web01 sshd[1904]: Failed password for invalid user postgres from 185.220.101.47 port 33769 ssh2
+Nov  3 02:13:58 web01 sshd[1905]: Invalid user ubuntu from 185.220.101.47 port 36373
+Nov  3 02:13:59 web01 sshd[1906]: Failed password for invalid user ubuntu from 185.220.101.47 port 36373 ssh2
+Nov  3 02:14:03 web01 sshd[1907]: Invalid user admin from 185.220.101.47 port 41685
+Nov  3 02:14:04 web01 sshd[1908]: Failed password for invalid user admin from 185.220.101.47 port 41685 ssh2
+Nov  3 02:14:08 web01 sshd[1909]: Invalid user ubuntu from 185.220.101.47 port 56698
+Nov  3 02:14:09 web01 sshd[1910]: Failed password for invalid user ubuntu from 185.220.101.47 port 56698 ssh2
+Nov  3 02:14:11 web01 sshd[1911]: Failed password for root from 185.220.101.47 port 50509 ssh2
+Nov  3 02:14:13 web01 sshd[1912]: Invalid user oracle from 185.220.101.47 port 52871
+Nov  3 02:14:14 web01 sshd[1913]: Failed password for invalid user oracle from 185.220.101.47 port 52871 ssh2
+Nov  3 02:14:15 web01 sshd[1914]: Invalid user oracle from 185.220.101.47 port 63740
+Nov  3 02:14:16 web01 sshd[1915]: Failed password for invalid user oracle from 185.220.101.47 port 63740 ssh2
+Nov  3 02:14:17 web01 sshd[1916]: Invalid user admin from 185.220.101.47 port 53119
+Nov  3 02:14:18 web01 sshd[1917]: Failed password for invalid user admin from 185.220.101.47 port 53119 ssh2
+Nov  3 02:14:23 web01 sshd[1918]: Invalid user oracle from 185.220.101.47 port 61052
+Nov  3 02:14:24 web01 sshd[1919]: Failed password for invalid user oracle from 185.220.101.47 port 61052 ssh2
+Nov  3 02:14:25 web01 sshd[1920]: Failed password for root from 185.220.101.47 port 33720 ssh2
+Nov  3 02:14:27 web01 sshd[1921]: Invalid user oracle from 185.220.101.47 port 35019
+Nov  3 02:14:28 web01 sshd[1922]: Failed password for invalid user oracle from 185.220.101.47 port 35019 ssh2
+Nov  3 02:14:32 web01 sshd[1923]: Invalid user test from 185.220.101.47 port 56740
+Nov  3 02:14:33 web01 sshd[1924]: Failed password for invalid user test from 185.220.101.47 port 56740 ssh2
+Nov  3 02:14:36 web01 sshd[1925]: Failed password for root from 185.220.101.47 port 30045 ssh2
+Nov  3 02:14:41 web01 sshd[1926]: Invalid user ubuntu from 185.220.101.47 port 42892
+Nov  3 02:14:42 web01 sshd[1927]: Failed password for invalid user ubuntu from 185.220.101.47 port 42892 ssh2
+Nov  3 02:14:46 web01 sshd[1928]: Failed password for root from 185.220.101.47 port 33762 ssh2
+Nov  3 02:14:49 web01 sshd[1929]: Invalid user ubuntu from 185.220.101.47 port 51692
+Nov  3 02:14:50 web01 sshd[1930]: Failed password for invalid user ubuntu from 185.220.101.47 port 51692 ssh2
+Nov  3 02:14:51 web01 sshd[1931]: Failed password for root from 185.220.101.47 port 45404 ssh2
+Nov  3 02:14:55 web01 sshd[1932]: Invalid user test from 185.220.101.47 port 57422
+Nov  3 02:14:56 web01 sshd[1933]: Failed password for invalid user test from 185.220.101.47 port 57422 ssh2
+Nov  3 02:15:00 web01 sshd[1934]: Invalid user test from 185.220.101.47 port 52970
+Nov  3 02:15:01 web01 sshd[1935]: Failed password for invalid user test from 185.220.101.47 port 52970 ssh2
+Nov  3 02:15:02 web01 sshd[1936]: Failed password for backup from 185.220.101.47 port 54750 ssh2
+Nov  3 02:15:07 web01 sshd[1937]: Invalid user oracle from 185.220.101.47 port 41303
+Nov  3 02:15:08 web01 sshd[1938]: Failed password for invalid user oracle from 185.220.101.47 port 41303 ssh2
+Nov  3 02:15:09 web01 sshd[1939]: Invalid user ubuntu from 185.220.101.47 port 34969
+Nov  3 02:15:10 web01 sshd[1940]: Failed password for invalid user ubuntu from 185.220.101.47 port 34969 ssh2
+Nov  3 02:15:12 web01 sshd[1941]: Invalid user ubuntu from 185.220.101.47 port 58960
+Nov  3 02:15:13 web01 sshd[1942]: Failed password for invalid user ubuntu from 185.220.101.47 port 58960 ssh2
+Nov  3 02:15:16 web01 sshd[1943]: Invalid user test from 185.220.101.47 port 62929
+Nov  3 02:15:17 web01 sshd[1944]: Failed password for invalid user test from 185.220.101.47 port 62929 ssh2
+Nov  3 02:15:19 web01 sshd[1945]: Invalid user ubuntu from 185.220.101.47 port 57924
+Nov  3 02:15:20 web01 sshd[1946]: Failed password for invalid user ubuntu from 185.220.101.47 port 57924 ssh2
+Nov  3 02:15:25 web01 sshd[1947]: Invalid user admin from 185.220.101.47 port 30188
+Nov  3 02:15:26 web01 sshd[1948]: Failed password for invalid user admin from 185.220.101.47 port 30188 ssh2
+Nov  3 02:15:27 web01 sshd[1949]: Invalid user test from 185.220.101.47 port 47213
+Nov  3 02:15:28 web01 sshd[1950]: Failed password for invalid user test from 185.220.101.47 port 47213 ssh2
+Nov  3 02:15:29 web01 sshd[1951]: Invalid user ubuntu from 185.220.101.47 port 53083
+Nov  3 02:15:30 web01 sshd[1952]: Failed password for invalid user ubuntu from 185.220.101.47 port 53083 ssh2
+Nov  3 02:15:33 web01 sshd[1953]: Invalid user postgres from 185.220.101.47 port 47168
+Nov  3 02:15:34 web01 sshd[1954]: Failed password for invalid user postgres from 185.220.101.47 port 47168 ssh2
+Nov  3 02:15:38 web01 sshd[1955]: Failed password for backup from 185.220.101.47 port 47128 ssh2
+Nov  3 02:15:42 web01 sshd[1956]: Invalid user oracle from 185.220.101.47 port 48092
+Nov  3 02:15:43 web01 sshd[1957]: Failed password for invalid user oracle from 185.220.101.47 port 48092 ssh2
+Nov  3 02:15:47 web01 sshd[1958]: Failed password for backup from 185.220.101.47 port 53661 ssh2
+Nov  3 02:15:52 web01 sshd[1959]: Failed password for backup from 185.220.101.47 port 34441 ssh2
+Nov  3 02:15:55 web01 sshd[1960]: Failed password for backup from 185.220.101.47 port 37931 ssh2
+Nov  3 02:15:58 web01 sshd[1961]: Failed password for backup from 185.220.101.47 port 60650 ssh2
+Nov  3 02:16:01 web01 sshd[1962]: Accepted password for backup from 185.220.101.47 port 34929 ssh2
+Nov  3 02:16:02 web01 sshd[1963]: pam_unix(sshd:session): session opened for user backup(uid=1001) by (uid=0)
+Nov  3 02:16:38 web01 CRON[1838]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:23:33 web01 CRON[1839]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:30:44 web01 CRON[1840]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:31:26 web01 sshd[1847]: Accepted publickey for adaeze from 10.0.2.15 port 57931 ssh2: ED25519 SHA256:q8fC2v...
+Nov  3 02:31:27 web01 sshd[1848]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)
+Nov  3 02:37:01 web01 CRON[1841]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:44:55 web01 CRON[1842]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Nov  3 02:51:19 web01 sshd[1849]: Accepted publickey for adaeze from 10.0.2.15 port 38433 ssh2: ED25519 SHA256:q8fC2v...
+Nov  3 02:51:20 web01 sshd[1850]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)
+EOF
+
+# ---- Lab B: installer integrity (random tampered file each build) ----
+cd downloads
+for f in agent-installer-v4.2.exe vpn-client-3.1.msi backup-tool-1.8.deb pdf-reader-2026.2.exe; do
+  head -c 2097152 /dev/urandom > "$f"
+done
+sha256sum *.exe *.msi *.deb > vendor_hashes.txt
+victim=$(ls *.exe *.msi *.deb | shuf -n1)
+printf 'injected-payload' >> "$victim"
+echo "$victim" > "$LAB/.answer-lab-b"
+cd ..
+
+# ---- Lab C: permissions and SSH hardening ----
+cat > etc/passwd <<'EOF'
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+syslog:x:104:110::/home/syslog:/usr/sbin/nologin
+sshd:x:110:65534::/run/sshd:/usr/sbin/nologin
+adaeze:x:1002:1002:Adaeze O.:/home/adaeze:/bin/bash
+deploy:x:1001:1001:Deploy user:/home/deploy:/bin/bash
+analyst:x:1003:1003:Security analyst:/home/analyst:/bin/bash
+EOF
+chmod 644 etc/passwd
+cat > etc/group <<'EOF'
+root:x:0:
+adm:x:4:syslog,adaeze
+sudo:x:27:adaeze
+shadow:x:42:
+deploy:x:1001:
+analyst:x:1003:
+EOF
+chmod 644 etc/group
+cat > etc/shadow <<'EOF'
+root:$y$j9T$4dd03c0cc945e50a3265c9$4421e807491242206a734f426d2db165d48490ed87a:20390:0:99999:7:::
+daemon:*:20390:0:99999:7:::
+syslog:*:20390:0:99999:7:::
+adaeze:$y$j9T$16432b4411dfad4437fd83$460d69bcbe05ed3eead403c731a2dc9bbb9870828bf:20401:0:99999:7:::
+deploy:$y$j9T$cea034810a22978ce9d110$ff5460d50f9da44cd31b32676191dea3283f0dc08a7:20388:0:99999:7:::
+analyst:$y$j9T$a26850374ff15cd5b3b5d1$40a69d5ebb8c7e7c7f7b5aa13b1f2f26d8bb7df1034:20410:0:99999:7:::
+EOF
+chmod 646 etc/shadow
+cat > etc/ssh/sshd_config <<'EOF'
+# This is the sshd server system-wide configuration file.
+# See sshd_config(5) for more information.
+Include /etc/ssh/sshd_config.d/*.conf
+
+Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+
+PermitRootLogin yes
+MaxAuthTries 6
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+UsePAM yes
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server
+EOF
+chmod 644 etc/ssh/sshd_config
+printf 'Defaults env_reset\nroot ALL=(ALL:ALL) ALL\n' > etc/sudoers && chmod 440 etc/sudoers
+printf -- '-----BEGIN OPENSSH PRIVATE KEY-----\n(practice key, not real)\n-----END OPENSSH PRIVATE KEY-----\n' > home/deploy/.ssh/id_rsa && chmod 644 home/deploy/.ssh/id_rsa
+printf 'ssh-ed25519 AAAAC3Nza... deploy@web01\n' > home/deploy/.ssh/id_rsa.pub && chmod 644 home/deploy/.ssh/id_rsa.pub
+touch home/deploy/.ssh/authorized_keys && chmod 600 home/deploy/.ssh/authorized_keys
+
+echo "Lab ready in $LAB"

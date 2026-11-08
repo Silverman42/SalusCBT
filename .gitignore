@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+
+# Nuxt / Nitro build output
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+
+# Netlify
+.netlify
+
+# Convex local state
+.convex
+
+# Environment and secrets (SE-8): never commit
+.env
+.env.*
+!.env.example
+
+# Tests
+test-results
+playwright-report
+coverage
+
+# Logs and OS files
+logs
+*.log
+.DS_Store
+.fleet
+.idea

@@ -1,0 +1,9 @@
+.nuxt
+.output
+node_modules
+convex/_generated
+content/source
+mockup
+docs
+tasks
+package-lock.json

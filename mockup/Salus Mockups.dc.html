@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E6E2F5;font-family:'Figtree',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#6140FF;text-decoration:none}a:hover{color:#4A2BE0}
+.th-light{--bg:#F5F3FF;--sf:#FFFFFF;--sf2:#EFEBFF;--bd:#E3DDFB;--tx:#17122F;--mu:#605A7E;--pr:#6140FF;--prs:#EAE5FF;--pri:#4A2BE0;--ok:#0F8F63;--oks:#DCF5EB;--bad:#D33A47;--bads:#FDE6E8;--warn:#9A6408;--warns:#FCEFD6;--code:#17122F;--codetx:#DCD5FF;--codemu:#8C84B8}
+.th-dark{--bg:#0E0B1D;--sf:#17132C;--sf2:#211B3E;--bd:#2D2652;--tx:#F2F0FF;--mu:#A39DC6;--pr:#7457FF;--prs:#2A2160;--pri:#C3B6FF;--ok:#3DD39B;--oks:#123A2D;--bad:#FF7A84;--bads:#3D1A25;--warn:#F2B94B;--warns:#3A2D12;--code:#08061A;--codetx:#D9D2FF;--codemu:#7D76A8}
+</style>
+</helmet>
+<div style="padding:72px 72px 120px;display:flex;flex-direction:column;gap:48px;font-family:'Figtree',system-ui,sans-serif;color:#17122F">
+<div style="display:flex;flex-direction:column;gap:10px;max-width:900px">
+<div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:14px;background:#6140FF;color:#fff;display:grid;place-items:center"><svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-size:32px;font-weight:800;letter-spacing:-0.03em">Salus — UI mockups</span></div>
+<p style="margin:0;font-size:17px;line-height:1.55;color:#5B557A;text-wrap:pretty">Security+ style mock exam platform. 12 screens from the PRD covering the student exam flow (EX, PB), results and review, staff sign-in (AU), tutor classes (CL), admin, question editor (ED) and terminal lab (LB). Flat surfaces, generous curves, no shadows — every colour is a tint or shade of #6140FF, except pass/fail and warning states. Use the Tweaks panel to show light, dark or both.</p>
+</div>
+<div style="display:flex;gap:72px;align-items:flex-start">
+<sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+<div class="{{ t.cls }}" style="display:flex;flex-direction:column;gap:56px;width:1280px;flex:none">
+<div style="font-size:15px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5B557A">{{ t.label }}</div>
+
+<!-- 01 LANDING -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">01</span>Landing · EX-1, EX-19</div>
+<div data-screen-label="01 Landing" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:80px;flex:none;display:flex;align-items:center;gap:32px;padding:0 48px">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:22px;letter-spacing:-0.02em">Salus</span></div>
+<div style="display:flex;gap:28px;font-size:15px;font-weight:500;color:var(--mu)"><span>Practice lab</span><span>How scoring works</span><span>Privacy</span></div>
+<div style="flex:1"></div>
+<div style="width:42px;height:42px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+<div style="padding:11px 20px;border-radius:999px;border:1.5px solid var(--bd);font-weight:600;font-size:14px">Staff sign in</div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 520px;gap:40px;padding:16px 48px 48px;min-height:0">
+<div style="display:flex;flex-direction:column;justify-content:center;gap:28px">
+<span style="align-self:flex-start;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--prs);color:var(--pri);font-size:13px;font-weight:600"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#zap"></use></svg>Security+ style practice exam · SY0-701</span>
+<h1 style="margin:0;font-size:60px;line-height:1.02;letter-spacing:-0.035em;font-weight:800;text-wrap:balance">Sit a full mock exam. No sign-up.</h1>
+<p style="margin:0;font-size:19px;line-height:1.55;color:var(--mu);max-width:520px;text-wrap:pretty">Five performance-based questions, then 85 multiple-choice. 90 minutes, marked the moment you submit.</p>
+<div style="display:flex;flex-direction:column;gap:16px;padding:24px;border-radius:28px;background:var(--sf);max-width:560px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:var(--mu)">Display name <span style="font-weight:400">· optional</span></span><div style="height:48px;border-radius:16px;background:var(--sf2);display:flex;align-items:center;padding:0 16px;font-size:15px">Amara</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:var(--mu)">Class code <span style="font-weight:400">· optional</span></span><div style="height:48px;border-radius:16px;background:var(--sf2);display:flex;align-items:center;padding:0 16px;font-size:15px;color:var(--mu);font-family:'JetBrains Mono',monospace">SEC-4K7Q</div></div>
+</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;height:54px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px">Start mock exam<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-right"></use></svg></div>
+<div style="height:54px;padding:0 22px;border-radius:999px;background:var(--prs);color:var(--pri);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#rotate-ccw"></use></svg>Retake (set B)</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:14px;font-size:14px;color:var(--mu)"><span style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--oks);color:var(--ok);font-weight:700">814 · Pass</span>Your last attempt, 7 Nov · <a style="color:var(--pri);font-weight:600">View history</a></div>
+</div>
+<div style="border-radius:36px;background:#6140FF;overflow:hidden;position:relative">
+<svg viewBox="0 0 520 600" width="520" height="100%" preserveAspectRatio="xMidYMid slice" style="display:block;height:100%">
+<circle cx="430" cy="110" r="190" fill="#7457FF"></circle>
+<circle cx="60" cy="560" r="150" fill="#5130F0"></circle>
+<g stroke="#9C88FF" stroke-width="3"><line x1="72" y1="96" x2="152" y2="62"></line><line x1="72" y1="96" x2="118" y2="176"></line><line x1="152" y1="62" x2="118" y2="176"></line></g>
+<circle cx="72" cy="96" r="14" fill="#C3B6FF"></circle><circle cx="152" cy="62" r="10" fill="#fff"></circle><circle cx="118" cy="176" r="18" fill="#9C88FF"></circle><circle cx="118" cy="176" r="7" fill="#fff"></circle>
+<path d="M260 140 L372 184 V282 C372 358 322 412 260 440 C198 412 148 358 148 282 V184 Z" fill="#fff"></path>
+<path d="M260 172 L344 205 V284 C344 342 307 384 260 406 C213 384 176 342 176 284 V205 Z" fill="#EAE5FF"></path>
+<path d="M216 286 L250 320 L310 250" fill="none" stroke="#6140FF" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"></path>
+<rect x="36" y="402" width="236" height="150" rx="24" fill="#3A1FC9"></rect>
+<circle cx="62" cy="428" r="6" fill="#C3B6FF"></circle><circle cx="80" cy="428" r="6" fill="#9C88FF"></circle><circle cx="98" cy="428" r="6" fill="#7457FF"></circle>
+<path d="M60 464 l12 10 l-12 10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+<rect x="84" y="468" width="120" height="12" rx="6" fill="#9C88FF"></rect>
+<rect x="60" y="496" width="170" height="12" rx="6" fill="#7457FF"></rect>
+<rect x="60" y="520" width="96" height="12" rx="6" fill="#7457FF"></rect><rect x="164" y="518" width="12" height="16" rx="3" fill="#fff"></rect>
+<circle cx="412" cy="468" r="72" fill="#fff"></circle>
+<circle cx="412" cy="468" r="50" fill="none" stroke="#EAE5FF" stroke-width="14"></circle>
+<circle cx="412" cy="468" r="50" fill="none" stroke="#6140FF" stroke-width="14" stroke-dasharray="230 400" stroke-linecap="round" transform="rotate(-90 412 468)"></circle>
+<path d="M412 446 V470 L428 480" fill="none" stroke="#17122F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+<g fill="#fff"><rect x="448" y="292" width="6" height="26" rx="3"></rect><rect x="438" y="302" width="26" height="6" rx="3"></rect></g>
+<g fill="#C3B6FF"><rect x="96" y="300" width="5" height="20" rx="2.5"></rect><rect x="88.5" y="307.5" width="20" height="5" rx="2.5"></rect></g>
+<circle cx="470" cy="226" r="7" fill="#C3B6FF"></circle><circle cx="300" cy="80" r="5" fill="#fff"></circle>
+</svg>
+<div style="position:absolute;left:28px;right:28px;top:28px;display:flex;gap:8px;flex-wrap:wrap">
+<span style="padding:8px 14px;border-radius:999px;background:#fff;color:#4A2BE0;font-size:13px;font-weight:700">90 min</span>
+<span style="padding:8px 14px;border-radius:999px;background:#fff;color:#4A2BE0;font-size:13px;font-weight:700">102 points</span>
+<span style="padding:8px 14px;border-radius:999px;background:#fff;color:#4A2BE0;font-size:13px;font-weight:700">750 to pass</span>
+</div>
+</div>
+</div>
+<div style="flex:none;padding:0 48px 22px;font-size:12px;color:var(--mu)">Independent practice material. Not affiliated with or endorsed by CompTIA.</div>
+</div>
+</div>
+
+<!-- 02 EXAM MCQ -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">02</span>Exam · multiple choice · EX-3 to EX-8</div>
+<div data-screen-label="02 Exam MCQ" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<span style="font-size:13px;color:var(--mu);padding:7px 12px;border-radius:999px;background:var(--sf2)">SY0-701 · Standard</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--prs);color:var(--pri);font-weight:800;font-variant-numeric:tabular-nums;font-size:18px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#clock"></use></svg>44:58</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+<div style="padding:11px 20px;border-radius:999px;background:var(--pr);color:#fff;font-weight:700;font-size:14px">Review &amp; submit</div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 360px;gap:20px;padding:20px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:20px;background:var(--prs);color:var(--pri)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#bell"></use></svg><span style="font-weight:700;font-size:15px">Time call — 45 minutes remaining.</span><span style="font-size:14px;color:var(--tx)">You're on Q42. Aim to reach Q60 by 1:05 elapsed.</span><div style="flex:1"></div><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#x"></use></svg></div>
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:36px 40px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-weight:800;font-size:15px">Question 42</span><span style="color:var(--mu);font-size:14px">of 90</span><span style="padding:5px 12px;border-radius:999px;background:var(--sf2);color:var(--mu);font-size:13px;font-weight:600">4.0 Security Operations</span></div>
+<p style="margin:0;font-size:22px;line-height:1.45;font-weight:600;max-width:720px;text-wrap:pretty">A SOC analyst sees repeated outbound DNS queries with long, random-looking subdomains to a single external domain. Which attack is MOST likely occurring?</p>
+<div style="display:flex;flex-direction:column;gap:10px;max-width:720px">
+<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;border:2px solid var(--bd)"><span style="width:32px;height:32px;border-radius:10px;background:var(--sf2);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--mu)">A</span><span style="font-size:16px">DNS cache poisoning</span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;border:2px solid var(--pr);background:var(--prs)"><span style="width:32px;height:32px;border-radius:10px;background:var(--pr);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff">B</span><span style="font-size:16px;font-weight:600">DNS tunnelling used for data exfiltration</span><div style="flex:1"></div><span style="color:var(--pr)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#check"></use></svg></span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;border:2px solid var(--bd)"><span style="width:32px;height:32px;border-radius:10px;background:var(--sf2);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--mu)">C</span><span style="font-size:16px">Domain hijacking</span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;border:2px solid var(--bd)"><span style="width:32px;height:32px;border-radius:10px;background:var(--sf2);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--mu)">D</span><span style="font-size:16px">Typosquatting</span></div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="height:48px;padding:0 20px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-left"></use></svg>Previous</div>
+<div style="height:48px;padding:0 20px;border-radius:999px;border:1.5px solid var(--bd);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#flag"></use></svg>Flag for review</div>
+<div style="flex:1"></div>
+<div style="height:48px;padding:0 24px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px">Next<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-right"></use></svg></div>
+</div>
+</div>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:24px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-weight:800;font-size:17px">Navigator</span><span style="font-size:13px;color:var(--mu)">39 answered</span></div>
+<div style="height:8px;border-radius:999px;background:var(--sf2);overflow:hidden"><div style="width:43%;height:100%;border-radius:999px;background:var(--pr)"></div></div>
+<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px">
+<sc-for list="{{ nav }}" as="c" hint-placeholder-count="90"><div style="aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font-size:11px;font-weight:700;background:{{ c.bg }};color:{{ c.fg }};box-shadow:{{ c.ring }}">{{ c.l }}</div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:13px;color:var(--mu)">
+<span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:12px;border-radius:4px;background:var(--pr)"></i>Answered</span>
+<span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:12px;border-radius:4px;background:var(--warn)"></i>Flagged</span>
+<span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:12px;border-radius:4px;background:var(--sf2);border:1px solid var(--bd)"></i>Unanswered</span>
+<span style="display:flex;align-items:center;gap:8px"><i style="width:12px;height:12px;border-radius:4px;border:2px solid var(--tx)"></i>Current</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 03 PBQ 1 -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">03</span>PBQ 1 · SSH brute-force alert · PB-1, PB-2</div>
+<div data-screen-label="03 PBQ 1" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<span style="font-size:13px;color:var(--mu);padding:7px 12px;border-radius:999px;background:var(--sf2)">PBQ 1 of 5 · 3 points</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--prs);color:var(--pri);font-weight:800;font-variant-numeric:tabular-nums;font-size:18px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#clock"></use></svg>84:12</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+<div style="padding:11px 20px;border-radius:999px;background:var(--pr);color:#fff;font-weight:700;font-size:14px">Review &amp; submit</div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 420px;gap:20px;padding:20px;min-height:0">
+<div style="border-radius:28px;background:var(--code);color:var(--codetx);display:flex;flex-direction:column;overflow:hidden;min-height:0">
+<div style="display:flex;align-items:center;gap:12px;padding:16px 20px">
+<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#file-text"></use></svg><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600">/var/log/auth.log</span><span style="font-size:12px;color:var(--codemu)">1,284 lines</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,0.08);width:260px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#search"></use></svg><span style="font-family:'JetBrains Mono',monospace;font-size:13px;flex:1">185.220.101.47</span><span style="font-size:12px;padding:3px 8px;border-radius:999px;background:#6140FF;color:#fff;font-weight:700">50</span></div>
+</div>
+<div style="flex:1;padding:4px 0 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2;overflow:hidden">
+<sc-for list="{{ log }}" as="r" hint-placeholder-count="16"><div style="display:flex;gap:16px;padding:0 20px;background:{{ r.rowBg }}"><span style="width:36px;text-align:right;color:var(--codemu);flex:none">{{ r.n }}</span><span style="white-space:nowrap">{{ r.a }}<span style="background:{{ r.ipBg }};color:{{ r.ipFg }};border-radius:5px;padding:1px 4px">{{ r.ip }}</span>{{ r.b }}</span></div></sc-for>
+</div>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:28px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--pri);letter-spacing:0.04em;text-transform:uppercase">Scenario</span><p style="margin:0;font-size:15px;line-height:1.55;color:var(--mu)">Your SIEM raised an alert on the bastion host overnight. Use the log to answer each part.</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;font-weight:600">1a · Source IP of the brute-force attempt</span><div style="height:48px;border-radius:16px;border:2px solid var(--pr);display:flex;align-items:center;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:14px">185.220.101.47</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;font-weight:600">1b · Account targeted</span><div style="height:48px;border-radius:16px;background:var(--sf2);display:flex;align-items:center;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:14px">backup</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:14px;font-weight:600">1c · Number of failed password entries</span><div style="height:48px;border-radius:16px;background:var(--sf2);display:flex;align-items:center;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--mu)">e.g. 12</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600">1d · Write a one-line command <span style="padding:3px 9px;border-radius:999px;background:var(--sf2);color:var(--mu);font-size:11px;font-weight:700">Practice · not scored</span></span><div style="height:72px;border-radius:16px;background:var(--sf2);padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mu);box-sizing:border-box">grep "Failed password" auth.log | …</div></div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:10px"><div style="height:48px;padding:0 18px;border-radius:999px;border:1.5px solid var(--bd);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#flag"></use></svg>Flag</div><div style="flex:1"></div><div style="height:48px;padding:0 24px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px">Next PBQ<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-right"></use></svg></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 04 PBQ 5 -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">04</span>PBQ 5 · Perimeter firewall · PB-3</div>
+<div data-screen-label="04 PBQ 5" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<span style="font-size:13px;color:var(--mu);padding:7px 12px;border-radius:999px;background:var(--sf2)">PBQ 5 of 5 · 4 points</span>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--prs);color:var(--pri);font-weight:800;font-variant-numeric:tabular-nums;font-size:18px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#clock"></use></svg>67:30</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+<div style="padding:11px 20px;border-radius:999px;background:var(--pr);color:#fff;font-weight:700;font-size:14px">Review &amp; submit</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;padding:20px;min-height:0">
+<div style="border-radius:28px;background:var(--sf);padding:24px 28px;display:flex;gap:32px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:8px;width:300px;flex:none"><span style="font-size:13px;font-weight:700;color:var(--pri);letter-spacing:0.04em;text-transform:uppercase">Network</span><p style="margin:0;font-size:15px;line-height:1.55;color:var(--mu)">Set the port and action for each perimeter rule. A rule scores only if both are correct.</p></div>
+<svg viewBox="0 0 820 170" width="820" height="170" style="flex:1">
+<g style="stroke:var(--bd)" stroke-width="3" stroke-dasharray="6 7"><line x1="120" y1="85" x2="320" y2="85"></line><line x1="420" y1="85" x2="560" y2="40"></line><line x1="420" y1="85" x2="560" y2="130"></line></g>
+<rect x="20" y="45" width="120" height="80" rx="40" style="fill:var(--sf2)"></rect><text x="80" y="82" text-anchor="middle" style="fill:var(--tx);font:700 15px Figtree">Internet</text><text x="80" y="102" text-anchor="middle" style="fill:var(--mu);font:500 12px Figtree">untrusted</text>
+<rect x="300" y="35" width="130" height="100" rx="28" style="fill:var(--pr)"></rect><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="330" y1="64" x2="400" y2="64"></line><line x1="330" y1="85" x2="400" y2="85"></line><line x1="330" y1="106" x2="400" y2="106"></line><line x1="352" y1="64" x2="352" y2="85"></line><line x1="378" y1="85" x2="378" y2="106"></line></g>
+<rect x="540" y="10" width="260" height="62" rx="22" style="fill:var(--prs)"></rect><text x="566" y="38" style="fill:var(--pri);font:700 14px Figtree">DMZ web · 203.0.113.10</text><text x="566" y="57" style="fill:var(--mu);font:500 12px Figtree">HTTPS, SSH from admins</text>
+<rect x="540" y="100" width="260" height="62" rx="22" style="fill:var(--sf2)"></rect><text x="566" y="128" style="fill:var(--tx);font:700 14px Figtree">Internal · 10.0.0.0/16</text><text x="566" y="147" style="fill:var(--mu);font:500 12px Figtree">Admin subnet 10.0.9.0/24</text>
+</svg>
+</div>
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:12px 12px;display:flex;flex-direction:column">
+<div style="display:grid;grid-template-columns:60px 1fr 200px 200px;gap:16px;padding:12px 16px;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.05em"><span>Rule</span><span>Requirement</span><span>Port</span><span>Action</span></div>
+<div style="display:grid;grid-template-columns:60px 1fr 200px 200px;gap:16px;padding:14px 16px;align-items:center;border-radius:20px"><span style="font-weight:800;color:var(--pri)">5a</span><span style="font-size:15px">Allow web traffic from the Internet to the DMZ web server over TLS</span><div style="height:46px;border-radius:14px;background:var(--prs);color:var(--pri);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700;font-family:'JetBrains Mono',monospace">443 / tcp<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div><div style="height:46px;border-radius:14px;background:var(--oks);color:var(--ok);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700">Allow<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div></div>
+<div style="display:grid;grid-template-columns:60px 1fr 200px 200px;gap:16px;padding:14px 16px;align-items:center;border-radius:20px;background:var(--sf2)"><span style="font-weight:800;color:var(--pri)">5b</span><span style="font-size:15px">Allow remote administration of the web server from the admin subnet only</span><div style="height:46px;border-radius:14px;background:var(--prs);color:var(--pri);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700;font-family:'JetBrains Mono',monospace">22 / tcp<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div><div style="height:46px;border-radius:14px;background:var(--oks);color:var(--ok);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700">Allow<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div></div>
+<div style="display:grid;grid-template-columns:60px 1fr 200px 200px;gap:16px;padding:14px 16px;align-items:center;border-radius:20px"><span style="font-weight:800;color:var(--pri)">5c</span><span style="font-size:15px">Block cleartext remote login to every DMZ host</span><div style="height:46px;border-radius:14px;background:var(--prs);color:var(--pri);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700;font-family:'JetBrains Mono',monospace">23 / tcp<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div><div style="height:46px;border-radius:14px;background:var(--bads);color:var(--bad);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:700">Deny<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div></div>
+<div style="display:grid;grid-template-columns:60px 1fr 200px 200px;gap:16px;padding:14px 16px;align-items:center;border-radius:20px;background:var(--sf2)"><span style="font-weight:800;color:var(--pri)">5d</span><span style="font-size:15px">Allow the internal resolver to query external DNS servers</span><div style="height:46px;border-radius:14px;border:2px dashed var(--bd);color:var(--mu);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:600;box-sizing:border-box">Choose port<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div><div style="height:46px;border-radius:14px;border:2px dashed var(--bd);color:var(--mu);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-weight:600;box-sizing:border-box">Choose action<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div></div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:10px;padding:8px"><div style="height:48px;padding:0 20px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-left"></use></svg>PBQ 4</div><div style="flex:1"></div><div style="height:48px;padding:0 24px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px">Start multiple choice<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-right"></use></svg></div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 05 REVIEW BEFORE SUBMIT -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">05</span>Review before submitting · EX-12</div>
+<div data-screen-label="05 Pre-submit review" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--warns);color:var(--warn);font-weight:800;font-variant-numeric:tabular-nums;font-size:18px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#clock"></use></svg>08:20</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+</div>
+<div style="flex:1;display:flex;justify-content:center;padding:36px 20px;min-height:0">
+<div style="width:760px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:8px"><h2 style="margin:0;font-size:36px;letter-spacing:-0.03em;font-weight:800">Ready to submit?</h2><p style="margin:0;font-size:16px;color:var(--mu)">Marking happens straight away. You can't change answers after submitting.</p></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div style="border-radius:24px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:4px"><span style="font-size:36px;font-weight:800;letter-spacing:-0.03em">84</span><span style="font-size:14px;color:var(--mu)">Answered</span></div>
+<div style="border-radius:24px;background:var(--warns);color:var(--warn);padding:20px 22px;display:flex;flex-direction:column;gap:4px"><span style="font-size:36px;font-weight:800;letter-spacing:-0.03em">4</span><span style="font-size:14px;font-weight:600">Flagged</span></div>
+<div style="border-radius:24px;background:var(--bads);color:var(--bad);padding:20px 22px;display:flex;flex-direction:column;gap:4px"><span style="font-size:36px;font-weight:800;letter-spacing:-0.03em">2</span><span style="font-size:14px;font-weight:600">Unanswered · score zero</span></div>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:10px;display:flex;flex-direction:column">
+<sc-for list="{{ pending }}" as="p" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px"><span style="width:52px;height:34px;border-radius:12px;background:{{ p.bg }};color:{{ p.fg }};display:grid;place-items:center;font-weight:800;font-size:13px">{{ p.q }}</span><span style="flex:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.stem }}</span><span style="font-size:13px;font-weight:600;color:{{ p.fg }}">{{ p.state }}</span><span style="color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-right"></use></svg></span></div></sc-for>
+</div>
+<div style="display:flex;gap:10px"><div style="height:54px;padding:0 24px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-left"></use></svg>Back to exam</div><div style="flex:1"></div><div style="height:54px;padding:0 28px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#send"></use></svg>Submit exam</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 06 RESULTS -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">06</span>Results · EX-14 to EX-16, EX-20, CL-9</div>
+<div data-screen-label="06 Results" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<div style="flex:1"></div>
+<div style="height:40px;padding:0 16px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#download"></use></svg>Export progress</div>
+<div style="height:40px;padding:0 16px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#share-2"></use></svg>Share link</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 400px;gap:20px;padding:20px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:20px;min-height:0">
+<div style="border-radius:32px;background:#6140FF;color:#fff;display:flex;align-items:center;overflow:hidden;height:280px;flex:none">
+<div style="flex:1;padding:36px 40px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:8px"><span style="padding:7px 14px;border-radius:999px;background:#fff;color:#0F8F63;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#check"></use></svg>Pass</span><span style="padding:7px 14px;border-radius:999px;background:#7C62FF;font-weight:700;font-size:14px">Comfortable margin</span></div>
+<div style="display:flex;align-items:baseline;gap:14px"><span style="font-size:104px;font-weight:800;letter-spacing:-0.05em;line-height:1">814</span><span style="font-size:20px;color:#DCD5FF;font-weight:600">/ 900 scaled</span></div>
+<span style="font-size:16px;color:#E6E0FF">91 of 102 points · pass mark 750 (83 points)</span>
+</div>
+<svg viewBox="0 0 340 280" width="340" height="280" style="flex:none">
+<circle cx="250" cy="60" r="130" fill="#7457FF"></circle>
+<rect x="60" y="170" width="44" height="80" rx="16" fill="#8F7BFF"></rect>
+<rect x="118" y="130" width="44" height="120" rx="16" fill="#A898FF"></rect>
+<rect x="176" y="96" width="44" height="154" rx="16" fill="#C3B6FF"></rect>
+<rect x="234" y="56" width="44" height="194" rx="16" fill="#fff"></rect>
+<circle cx="256" cy="34" r="26" fill="#3A1FC9"></circle>
+<path d="M244 34 l8 8 l16 -16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+<g fill="#fff"><rect x="78" y="92" width="5" height="22" rx="2.5"></rect><rect x="69.5" y="100.5" width="22" height="5" rx="2.5"></rect></g>
+<circle cx="140" cy="70" r="6" fill="#C3B6FF"></circle><circle cx="310" cy="160" r="8" fill="#C3B6FF"></circle>
+</svg>
+</div>
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:26px 30px;display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-weight:800;font-size:18px">Domain breakdown</span><span style="font-size:13px;color:var(--mu)">Highlighted under 81%</span></div>
+<sc-for list="{{ domains }}" as="d" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:7px"><div style="display:flex;align-items:center;gap:10px;font-size:14px"><span style="font-weight:600;flex:1">{{ d.name }}</span><sc-if value="{{ d.low }}" hint-placeholder-val="{{ false }}"><span style="padding:3px 9px;border-radius:999px;background:var(--warns);color:var(--warn);font-size:11px;font-weight:700">Weak domain</span></sc-if><span style="color:var(--mu);font-variant-numeric:tabular-nums">{{ d.pts }}</span><span style="font-weight:800;width:44px;text-align:right;font-variant-numeric:tabular-nums">{{ d.pct }}</span></div><div style="height:10px;border-radius:999px;background:var(--sf2);overflow:hidden"><div style="height:100%;border-radius:999px;width:{{ d.pct }};background:{{ d.fill }}"></div></div></div></sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px;min-height:0">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div style="border-radius:24px;background:var(--sf);padding:20px;display:flex;flex-direction:column;gap:6px"><span style="color:var(--pri)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#clock"></use></svg></span><span style="font-size:26px;font-weight:800;letter-spacing:-0.02em">1:21:40</span><span style="font-size:13px;color:var(--mu)">Time used</span></div>
+<div style="border-radius:24px;background:var(--sf);padding:20px;display:flex;flex-direction:column;gap:6px"><span style="color:var(--pri)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#flag"></use></svg></span><span style="font-size:26px;font-weight:800;letter-spacing:-0.02em">4</span><span style="font-size:13px;color:var(--mu)">Flagged</span></div>
+</div>
+<div style="height:56px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#book-open"></use></svg>Review answers</div>
+<div style="height:56px;border-radius:999px;background:var(--prs);color:var(--pri);display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#rotate-ccw"></use></svg>Retake with PBQ set B</div>
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+<span style="font-weight:800;font-size:16px">Attempt history</span>
+<sc-for list="{{ history }}" as="h" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;font-size:14px"><span style="flex:1;color:var(--mu)">{{ h.date }}</span><span style="font-weight:800;font-variant-numeric:tabular-nums">{{ h.score }}</span><span style="padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{ h.bg }};color:{{ h.fg }}">{{ h.res }}</span></div></sc-for>
+<div style="flex:1"></div>
+<div style="display:flex;gap:10px;padding:14px;border-radius:18px;background:var(--sf2);font-size:13px;line-height:1.5;color:var(--mu)"><span style="color:var(--pri);flex:none"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#info"></use></svg></span>History lives in this browser only. Export it to keep it — the file holds your private ID.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 07 ANSWER REVIEW -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">07</span>Answer review · EX-17, EX-18</div>
+<div data-screen-label="07 Answer review" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<span style="font-size:13px;color:var(--mu);padding:7px 12px;border-radius:999px;background:var(--sf2)">Review · 814 Pass</span>
+<div style="flex:1"></div>
+<div style="display:flex;gap:6px;padding:5px;border-radius:999px;background:var(--sf2)">
+<span style="padding:8px 16px;border-radius:999px;background:var(--pr);color:#fff;font-size:14px;font-weight:700">All 90</span>
+<span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu)">Wrong 11</span>
+<span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu)">Flagged 4</span>
+</div>
+<div style="height:42px;padding:0 16px;border-radius:999px;border:1.5px solid var(--bd);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--mu)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#filter"></use></svg>All domains<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px;min-height:0">
+<div style="border-radius:28px;background:var(--sf);padding:10px;display:flex;flex-direction:column;gap:2px;overflow:hidden">
+<sc-for list="{{ reviewList }}" as="r" hint-placeholder-count="10"><div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:{{ r.rowBg }}"><span style="width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:{{ r.bg }};color:{{ r.fg }};flex:none"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ r.icon }}"></use></svg></span><span style="font-weight:800;font-size:14px;width:34px">{{ r.q }}</span><span style="font-size:14px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.stem }}</span></div></sc-for>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:34px 40px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-weight:800;font-size:15px">Question 26</span><span style="padding:5px 12px;border-radius:999px;background:var(--prs);color:var(--pri);font-size:13px;font-weight:700">Choose TWO</span><span style="padding:5px 12px;border-radius:999px;background:var(--sf2);color:var(--mu);font-size:13px;font-weight:600">2.0 Threats, Vulnerabilities &amp; Mitigations</span><div style="flex:1"></div><span style="padding:5px 12px;border-radius:999px;background:var(--bads);color:var(--bad);font-size:13px;font-weight:700">0 / 1 point</span></div>
+<p style="margin:0;font-size:21px;line-height:1.45;font-weight:600;max-width:760px;text-wrap:pretty">Which TWO controls best reduce the risk of credential stuffing against a public customer portal?</p>
+<div style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:var(--oks)"><span style="width:30px;height:30px;border-radius:10px;background:var(--ok);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff">A</span><span style="font-size:16px;flex:1">Multifactor authentication</span><span style="font-size:12px;font-weight:700;color:var(--ok)">Your answer · Correct</span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:var(--bads)"><span style="width:30px;height:30px;border-radius:10px;background:var(--bad);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff">B</span><span style="font-size:16px;flex:1">Password expiry every 30 days</span><span style="font-size:12px;font-weight:700;color:var(--bad)">Your answer · Wrong</span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;border:2px dashed var(--ok)"><span style="width:30px;height:30px;border-radius:10px;background:var(--oks);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--ok)">C</span><span style="font-size:16px;flex:1">Login rate limiting and bot detection</span><span style="font-size:12px;font-weight:700;color:var(--ok)">Correct answer</span></div>
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:var(--sf2)"><span style="width:30px;height:30px;border-radius:10px;background:var(--sf);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--mu)">D</span><span style="font-size:16px;flex:1;color:var(--mu)">Full-disk encryption on web servers</span></div>
+</div>
+<div style="border-radius:22px;background:var(--prs);padding:20px 22px;display:flex;flex-direction:column;gap:8px;max-width:760px;box-sizing:border-box"><span style="display:flex;align-items:center;gap:8px;font-weight:800;color:var(--pri)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#help-circle"></use></svg>Why</span><p style="margin:0;font-size:15px;line-height:1.6;text-wrap:pretty">Credential stuffing replays leaked username and password pairs. MFA makes a correct password insufficient, and rate limiting slows automated replays. Frequent expiry doesn't stop reuse of a currently valid leaked password. Choose TWO questions score only when both picks are correct.</p></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 08 SIGN IN -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">08</span>Staff sign-in with email code · AU-1 to AU-3</div>
+<div data-screen-label="08 Staff sign in" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:grid;grid-template-columns:560px 1fr;gap:20px;padding:20px;box-sizing:border-box">
+<div style="border-radius:32px;background:#6140FF;color:#fff;display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:32px 36px;display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:12px;background:#fff;color:#6140FF;display:grid;place-items:center"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:22px;letter-spacing:-0.02em">Salus</span><span style="margin-left:6px;padding:5px 12px;border-radius:999px;background:#7C62FF;font-size:12px;font-weight:700">Staff</span></div>
+<svg viewBox="0 0 520 420" width="520" height="420" style="display:block;margin:auto">
+<circle cx="260" cy="210" r="190" fill="#7457FF"></circle>
+<rect x="110" y="140" width="300" height="200" rx="36" fill="#fff"></rect>
+<path d="M126 162 L260 258 L394 162" fill="none" stroke="#C3B6FF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M130 322 L222 244 M390 322 L298 244" fill="none" stroke="#EAE5FF" stroke-width="10" stroke-linecap="round"></path>
+<rect x="228" y="52" width="250" height="78" rx="39" fill="#3A1FC9"></rect>
+<g fill="#fff"><circle cx="268" cy="91" r="9"></circle><circle cx="302" cy="91" r="9"></circle><circle cx="336" cy="91" r="9"></circle><circle cx="370" cy="91" r="9"></circle><circle cx="404" cy="91" r="9"></circle></g><rect x="428" y="78" width="6" height="26" rx="3" fill="#C3B6FF"></rect>
+<circle cx="96" cy="330" r="46" fill="#3A1FC9"></circle><circle cx="96" cy="330" r="18" fill="none" stroke="#fff" stroke-width="8"></circle><path d="M110 344 L160 394 M140 374 l14 -14 M152 386 l12 -12" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"></path>
+<g fill="#fff"><rect x="452" y="282" width="6" height="26" rx="3"></rect><rect x="442" y="292" width="26" height="6" rx="3"></rect></g>
+<circle cx="80" cy="110" r="8" fill="#C3B6FF"></circle>
+</svg>
+<div style="padding:0 40px 40px;display:flex;flex-direction:column;gap:8px"><span style="font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1.15">No passwords. Just a code in your inbox.</span><span style="font-size:15px;color:#DCD5FF">Tutors join by invitation from the admin.</span></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;position:relative">
+<div style="position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+<div style="width:440px;display:flex;flex-direction:column;gap:24px">
+<div style="width:56px;height:56px;border-radius:18px;background:var(--prs);color:var(--pri);display:grid;place-items:center"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#mail"></use></svg></div>
+<div style="display:flex;flex-direction:column;gap:8px"><h2 style="margin:0;font-size:34px;letter-spacing:-0.03em;font-weight:800">Check your email</h2><p style="margin:0;font-size:16px;line-height:1.55;color:var(--mu);text-wrap:pretty">If <b style="color:var(--tx)">ngozi@hizo.africa</b> belongs to an active account, we've sent a 6-digit code. It expires in 10 minutes.</p></div>
+<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+<div style="height:64px;border-radius:18px;background:var(--sf);display:grid;place-items:center;font-size:28px;font-weight:800">4</div>
+<div style="height:64px;border-radius:18px;background:var(--sf);display:grid;place-items:center;font-size:28px;font-weight:800">8</div>
+<div style="height:64px;border-radius:18px;background:var(--sf);display:grid;place-items:center;font-size:28px;font-weight:800">1</div>
+<div style="height:64px;border-radius:18px;border:2px solid var(--pr);background:var(--sf);display:grid;place-items:center;font-size:28px;font-weight:800;box-sizing:border-box">0<span style="width:2px;height:30px;background:var(--pr);margin-left:2px"></span></div>
+<div style="height:64px;border-radius:18px;background:var(--sf2)"></div>
+<div style="height:64px;border-radius:18px;background:var(--sf2)"></div>
+</div>
+<div style="height:56px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:16px;opacity:0.5">Sign in</div>
+<div style="display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--mu)"><span>Resend code in <b style="color:var(--tx);font-variant-numeric:tabular-nums">0:42</b></span><a style="color:var(--pri);font-weight:600">Use a different email</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 09 TUTOR CLASS -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">09</span>Tutor · class dashboard · CL-1 to CL-8, CL-11</div>
+<div data-screen-label="09 Tutor class" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex">
+<div style="width:248px;flex:none;background:var(--sf);display:flex;flex-direction:column;gap:6px;padding:24px 16px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px 22px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--prs);color:var(--pri);font-weight:700;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#users"></use></svg>Classes</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#edit-3"></use></svg>Question editor</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#message-circle"></use></svg>Oral questions</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#terminal"></use></svg>Terminal lab</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:var(--sf2)"><div style="width:36px;height:36px;border-radius:999px;background:var(--pr);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px">NO</div><div style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-weight:700;font-size:14px">Ngozi Obi</span><span style="font-size:12px;color:var(--mu)">Tutor</span></div><span style="color:var(--mu)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#log-out"></use></svg></span></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:18px;padding:22px 24px;min-width:0">
+<div style="border-radius:28px;background:#6140FF;color:#fff;display:flex;align-items:center;gap:20px;padding:0 0 0 30px;height:132px;overflow:hidden;flex:none">
+<div style="display:flex;flex-direction:column;gap:8px;flex:1"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px;font-weight:800;letter-spacing:-0.02em">Cyber Ops · Evening cohort</span><span style="padding:4px 10px;border-radius:999px;background:#fff;color:#0F8F63;font-size:12px;font-weight:800">Open</span></div><span style="font-size:14px;color:#DCD5FF">Default exam · SY0-701 · created 12 Oct</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 10px 10px 18px;border-radius:999px;background:#fff;color:#4A2BE0"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;letter-spacing:0.06em">SEC-4K7Q</span><span style="width:34px;height:34px;border-radius:999px;background:#EAE5FF;display:grid;place-items:center"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#copy"></use></svg></span></div>
+<svg viewBox="0 0 200 132" width="200" height="132" style="flex:none">
+<circle cx="150" cy="40" r="90" fill="#7457FF"></circle>
+<circle cx="100" cy="58" r="20" fill="#fff"></circle><path d="M64 132 C64 104 80 88 100 88 C120 88 136 104 136 132 Z" fill="#fff"></path>
+<circle cx="52" cy="76" r="14" fill="#C3B6FF"></circle><path d="M26 132 C26 112 38 100 52 100 C66 100 78 112 78 132 Z" fill="#C3B6FF"></path>
+<circle cx="150" cy="76" r="14" fill="#A898FF"></circle><path d="M124 132 C124 112 136 100 150 100 C164 100 176 112 176 132 Z" fill="#A898FF"></path>
+</svg>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr) 1.4fr;gap:14px;flex:none">
+<div style="border-radius:24px;background:var(--sf);padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:var(--mu)">Attempts</span><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em">24</span></div>
+<div style="border-radius:24px;background:var(--sf);padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:var(--mu)">Average score</span><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em">768</span></div>
+<div style="border-radius:24px;background:var(--sf);padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:var(--mu)">Pass rate</span><span style="font-size:30px;font-weight:800;letter-spacing:-0.02em">63%</span></div>
+<div style="border-radius:24px;background:var(--sf);padding:16px 20px;display:flex;flex-direction:column;gap:7px;justify-content:center"><span style="font-size:13px;color:var(--mu)">Class domains</span><div style="display:flex;align-items:flex-end;gap:8px;height:46px"><sc-for list="{{ classDomains }}" as="d" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end"><div style="width:100%;border-radius:8px;height:{{ d.h }};background:{{ d.fill }}"></div><span style="font-size:10px;font-weight:700;color:var(--mu)">{{ d.k }}</span></div></sc-for></div></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 290px;gap:14px;min-height:0">
+<div style="border-radius:28px;background:var(--sf);padding:10px 14px;display:flex;flex-direction:column;min-height:0">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 6px 12px"><span style="font-weight:800;font-size:16px;flex:1">Attempts</span><span style="padding:8px 14px;border-radius:999px;background:var(--bads);color:var(--bad);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#trash-2"></use></svg>Delete 2</span><span style="padding:8px 14px;border-radius:999px;background:var(--sf2);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#download"></use></svg>CSV</span></div>
+<div style="display:grid;grid-template-columns:28px 1.4fr 1fr 70px 100px 80px;gap:12px;padding:8px 10px;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:0.05em"><span></span><span>Name</span><span>Submitted</span><span>Score</span><span>Result</span><span>Time</span></div>
+<sc-for list="{{ attempts }}" as="a" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:28px 1.4fr 1fr 70px 100px 80px;gap:12px;padding:11px 10px;align-items:center;border-radius:14px;font-size:14px;background:{{ a.rowBg }}"><span style="width:20px;height:20px;border-radius:7px;display:grid;place-items:center;background:{{ a.cbBg }};color:#fff;box-shadow:{{ a.cbRing }}"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ a.cbIcon }}"></use></svg></span><span style="font-weight:600">{{ a.name }}</span><span style="color:var(--mu)">{{ a.date }}</span><span style="font-weight:800;font-variant-numeric:tabular-nums">{{ a.score }}</span><span><span style="padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{ a.bg }};color:{{ a.fg }}">{{ a.res }}</span></span><span style="color:var(--mu);font-variant-numeric:tabular-nums">{{ a.time }}</span></div></sc-for>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+<span style="font-weight:800;font-size:16px">Most missed</span>
+<sc-for list="{{ missed }}" as="m" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:700">{{ m.q }} <span style="font-weight:500;color:var(--mu)">{{ m.d }}</span></span><span style="font-weight:800;color:var(--bad)">{{ m.pct }}</span></div><div style="height:8px;border-radius:999px;background:var(--sf2);overflow:hidden"><div style="height:100%;border-radius:999px;background:var(--pr);width:{{ m.pct }}"></div></div></div></sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 10 ADMIN -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">10</span>Admin · tutors, invitations, audit log · AU-5, AU-7</div>
+<div data-screen-label="10 Admin" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex">
+<div style="width:248px;flex:none;background:var(--sf);display:flex;flex-direction:column;gap:6px;padding:24px 16px">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px 22px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#users"></use></svg>All classes</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--prs);color:var(--pri);font-weight:700;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#user-plus"></use></svg>Tutors</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#layers"></use></svg>Default exam</div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;color:var(--mu);font-weight:600;font-size:15px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#file-text"></use></svg>Audit log</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:var(--sf2)"><div style="width:36px;height:36px;border-radius:999px;background:var(--tx);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:14px">MN</div><div style="display:flex;flex-direction:column;flex:1;min-width:0"><span style="font-weight:700;font-size:14px">Miracle N.</span><span style="font-size:12px;color:var(--mu)">Admin</span></div><span style="color:var(--mu)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#log-out"></use></svg></span></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:18px;padding:28px 28px;min-width:0">
+<div style="display:flex;align-items:center;gap:16px"><h2 style="margin:0;font-size:32px;letter-spacing:-0.03em;font-weight:800;flex:1">Tutors</h2><div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div></div>
+<div style="border-radius:28px;background:var(--prs);padding:20px 22px;display:flex;align-items:center;gap:14px">
+<span style="width:44px;height:44px;border-radius:14px;background:var(--pr);color:#fff;display:grid;place-items:center;flex:none"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#user-plus"></use></svg></span>
+<div style="display:flex;flex-direction:column;gap:2px;width:220px"><span style="font-weight:800;font-size:16px;color:var(--pri)">Invite a tutor</span><span style="font-size:13px;color:var(--mu)">Link works once, expires in 7 days</span></div>
+<div style="flex:1;height:50px;border-radius:999px;background:var(--sf);display:flex;align-items:center;padding:0 20px;font-size:15px;color:var(--mu)">tutor@school.edu</div>
+<div style="height:50px;padding:0 22px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#send"></use></svg>Send invite</div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 340px;gap:16px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="border-radius:28px;background:var(--sf);padding:14px 16px;display:flex;flex-direction:column;gap:2px">
+<span style="font-weight:800;font-size:16px;padding:6px 8px 10px">Pending invitations <span style="color:var(--mu);font-weight:600">· 2</span></span>
+<sc-for list="{{ invites }}" as="i" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:14px"><span style="width:36px;height:36px;border-radius:12px;background:var(--sf2);color:var(--mu);display:grid;place-items:center"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#mail"></use></svg></span><span style="flex:1;font-weight:600;font-size:14px">{{ i.email }}</span><span style="font-size:13px;color:var(--mu)">{{ i.exp }}</span><span style="padding:7px 14px;border-radius:999px;background:var(--sf2);font-size:13px;font-weight:700">Resend</span><span style="padding:7px 14px;border-radius:999px;color:var(--bad);font-size:13px;font-weight:700">Cancel</span></div></sc-for>
+</div>
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:14px 16px;display:flex;flex-direction:column;gap:2px">
+<span style="font-weight:800;font-size:16px;padding:6px 8px 10px">Tutors <span style="color:var(--mu);font-weight:600">· 4</span></span>
+<sc-for list="{{ tutors }}" as="u" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:14px;opacity:{{ u.op }}"><span style="width:36px;height:36px;border-radius:999px;background:var(--prs);color:var(--pri);display:grid;place-items:center;font-weight:800;font-size:13px">{{ u.ini }}</span><div style="flex:1;display:flex;flex-direction:column"><span style="font-weight:700;font-size:14px">{{ u.name }}</span><span style="font-size:13px;color:var(--mu)">{{ u.email }}</span></div><span style="font-size:13px;color:var(--mu);width:80px">{{ u.classes }}</span><span style="padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:{{ u.bg }};color:{{ u.fg }}">{{ u.status }}</span><span style="padding:7px 14px;border-radius:999px;background:var(--sf2);font-size:13px;font-weight:700;width:62px;text-align:center">{{ u.action }}</span></div></sc-for>
+</div>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-weight:800;font-size:16px">Audit log</span><a style="font-size:13px;font-weight:700;color:var(--pri)">View all</a></div>
+<sc-for list="{{ audit }}" as="e" hint-placeholder-count="6"><div style="display:flex;gap:12px"><span style="width:32px;height:32px;border-radius:10px;background:{{ e.bg }};color:{{ e.fg }};display:grid;place-items:center;flex:none"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ e.icon }}"></use></svg></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13.5px;line-height:1.35">{{ e.text }}</span><span style="font-size:12px;color:var(--mu)">{{ e.when }}</span></div></div></sc-for>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 11 EDITOR -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">11</span>Tutor · question editor · ED-1 to ED-9</div>
+<div data-screen-label="11 Question editor" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:14px;padding:0 24px;background:var(--sf)">
+<span style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#arrow-left"></use></svg></span>
+<div style="display:flex;flex-direction:column"><span style="font-weight:800;font-size:17px">Evening cohort version</span><span style="font-size:13px;color:var(--mu)">v3 · draft · copied from default SY0-701</span></div>
+<span style="padding:5px 12px;border-radius:999px;background:var(--warns);color:var(--warn);font-size:12px;font-weight:800">Draft</span>
+<div style="flex:1"></div>
+<div style="display:flex;gap:6px;padding:5px;border-radius:999px;background:var(--sf2)"><span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu)">PBQs · 5</span><span style="padding:8px 16px;border-radius:999px;background:var(--pr);color:#fff;font-size:14px;font-weight:700">Multiple choice · 86</span></div>
+<div style="height:42px;padding:0 18px;border-radius:999px;border:1.5px solid var(--bd);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#eye"></use></svg>Preview as student</div>
+<div style="height:42px;padding:0 20px;border-radius:999px;background:var(--pr);color:#fff;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;opacity:0.5">Publish v3</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:300px 1fr 300px;gap:18px;padding:18px;min-height:0">
+<div style="border-radius:28px;background:var(--sf);padding:10px;display:flex;flex-direction:column;gap:2px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 10px 12px"><div style="flex:1;height:40px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;padding:0 14px;font-size:14px;color:var(--mu)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#search"></use></svg>Search</div><span style="width:40px;height:40px;border-radius:999px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#plus"></use></svg></span></div>
+<sc-for list="{{ edList }}" as="q" hint-placeholder-count="9"><div style="display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:16px;background:{{ q.bg }}"><span style="color:var(--mu);opacity:0.6"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#menu"></use></svg></span><span style="font-weight:800;font-size:13px;width:30px;color:{{ q.fg }}">{{ q.n }}</span><span style="flex:1;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:{{ q.fg }}">{{ q.stem }}</span><sc-if value="{{ q.issue }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:999px;background:var(--warn);flex:none"></span></sc-if></div></sc-for>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:28px 30px;display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-weight:800;font-size:18px;flex:1">Question 87 · new</span><span style="color:var(--bad);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#trash-2"></use></svg>Remove</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:700;color:var(--mu)">Question text</span><div style="min-height:74px;border-radius:18px;background:var(--sf2);padding:14px 16px;font-size:15px;line-height:1.5;box-sizing:border-box">Which TWO actions should be taken FIRST after confirming ransomware on a single file server?</div></div>
+<div style="display:flex;align-items:center;gap:20px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600"><span style="width:44px;height:26px;border-radius:999px;background:var(--pr);display:flex;align-items:center;justify-content:flex-end;padding:3px;box-sizing:border-box"><span style="width:20px;height:20px;border-radius:999px;background:#fff"></span></span>Choose TWO</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:14px"><span style="font-weight:600;color:var(--mu)">Domain</span><span style="height:38px;padding:0 14px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:700">4.0 Security Operations<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#chevron-down"></use></svg></span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--mu)">Options · tick the correct answers</span>
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--oks)"><span style="width:24px;height:24px;border-radius:8px;background:var(--ok);color:#fff;display:grid;place-items:center"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#check"></use></svg></span><span style="font-weight:700;width:16px">A</span><span style="font-size:14.5px;flex:1">Disconnect the server from the network</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--sf2)"><span style="width:24px;height:24px;border-radius:8px;border:2px solid var(--bd);box-sizing:border-box"></span><span style="font-weight:700;width:16px">B</span><span style="font-size:14.5px;flex:1">Pay the ransom to recover data quickly</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--sf2)"><span style="width:24px;height:24px;border-radius:8px;border:2px solid var(--bd);box-sizing:border-box"></span><span style="font-weight:700;width:16px">C</span><span style="font-size:14.5px;flex:1">Preserve volatile evidence before shutdown</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--sf2)"><span style="width:24px;height:24px;border-radius:8px;border:2px solid var(--bd);box-sizing:border-box"></span><span style="font-weight:700;width:16px">D</span><span style="font-size:14.5px;flex:1">Restore from last night's backup immediately</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:700;color:var(--mu)">Explanation (Why)</span><div style="height:60px;border-radius:18px;border:2px dashed var(--warn);padding:14px 16px;font-size:14px;color:var(--mu);box-sizing:border-box">Required before publishing</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="border-radius:28px;background:var(--warns);color:var(--warn);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+<span style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#alert-triangle"></use></svg>3 issues before publishing</span>
+<span style="font-size:13.5px;line-height:1.45;color:var(--tx)">Q87 · Choose TWO needs exactly two correct answers (1 ticked)</span>
+<span style="font-size:13.5px;line-height:1.45;color:var(--tx)">Q87 · Missing explanation</span>
+<span style="font-size:13.5px;line-height:1.45;color:var(--tx)">Q31 · Missing domain</span>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-weight:800;font-size:16px">Version totals</span>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--mu)">Points</span><span style="font-weight:800">103</span></div>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--mu)">Pass mark</span><span style="font-weight:800">750 scaled · 84 pts</span></div>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--mu)">Questions</span><span style="font-weight:800">5 PBQ · 86 MC</span></div>
+</div>
+<div style="border-radius:28px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+<span style="font-weight:800;font-size:16px">Published versions</span>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px"><span>v2 · 21 Oct</span><span style="padding:4px 10px;border-radius:999px;background:var(--oks);color:var(--ok);font-size:12px;font-weight:700">In use</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px"><span style="color:var(--mu)">v1 · 12 Oct</span><a style="font-size:13px;font-weight:700;color:var(--pri)">Restore</a></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 12 LAB -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B557A"><span style="font-weight:700;padding:4px 10px;border-radius:999px;background:#17122F;color:#fff;font-size:12px">12</span>Terminal lab · LB-1 to LB-9</div>
+<div data-screen-label="12 Terminal lab" style="width:1280px;height:800px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--tx);display:flex;flex-direction:column">
+<div style="height:76px;flex:none;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--sf)">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:12px;background:var(--pr);color:#fff;display:grid;place-items:center"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#shield"></use></svg></div><span style="font-weight:800;font-size:20px;letter-spacing:-0.02em">Salus</span></div>
+<div style="display:flex;gap:6px;padding:5px;border-radius:999px;background:var(--sf2);margin-left:12px">
+<span style="padding:8px 16px;border-radius:999px;background:var(--pr);color:#fff;font-size:14px;font-weight:700">Lab A · Logs</span>
+<span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu)">Lab B · Hashes</span>
+<span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu);display:flex;align-items:center;gap:6px">Lab C · Permissions<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ok)"><use href="#check-circle"></use></svg></span>
+<span style="padding:8px 16px;border-radius:999px;font-size:14px;font-weight:600;color:var(--mu)">Lab D · Download</span>
+</div>
+<div style="flex:1"></div>
+<div style="height:40px;padding:0 16px;border-radius:999px;background:var(--sf2);display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#refresh-cw"></use></svg>Reset lab</div>
+<div style="width:40px;height:40px;border-radius:999px;background:var(--sf2);display:grid;place-items:center;color:var(--mu)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#{{ t.themeIcon }}"></use></svg></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:1fr 360px;gap:20px;padding:20px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:20px;min-height:0">
+<div style="border-radius:28px;background:#6140FF;color:#fff;display:flex;align-items:center;height:150px;overflow:hidden;flex:none">
+<div style="flex:1;padding:0 32px;display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#DCD5FF">Practice · untimed</span><span style="font-size:26px;font-weight:800;letter-spacing:-0.02em">Find the attacker in auth.log</span><span style="font-size:15px;color:#E6E0FF">Identify the source IP, the account and the number of failures.</span></div>
+<svg viewBox="0 0 300 150" width="300" height="150" style="flex:none">
+<circle cx="230" cy="40" r="110" fill="#7457FF"></circle>
+<rect x="60" y="30" width="190" height="110" rx="22" fill="#3A1FC9"></rect>
+<circle cx="82" cy="50" r="5" fill="#C3B6FF"></circle><circle cx="98" cy="50" r="5" fill="#9C88FF"></circle><circle cx="114" cy="50" r="5" fill="#7457FF"></circle>
+<path d="M82 80 l12 10 l-12 10" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><rect x="104" y="84" width="80" height="11" rx="5.5" fill="#9C88FF"></rect>
+<rect x="82" y="110" width="120" height="11" rx="5.5" fill="#7457FF"></rect>
+<circle cx="250" cy="118" r="30" fill="#fff"></circle><circle cx="246" cy="114" r="11" fill="none" stroke="#6140FF" stroke-width="5"></circle><path d="M254 122 L264 132" stroke="#6140FF" stroke-width="5" stroke-linecap="round"></path>
+</svg>
+</div>
+<div style="flex:1;border-radius:28px;background:var(--code);color:var(--codetx);padding:22px 24px;font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.75;overflow:hidden;min-height:0">
+<sc-for list="{{ term }}" as="l" hint-placeholder-count="12"><div style="white-space:pre;color:{{ l.c }};font-weight:{{ l.w }}">{{ l.p }}<span style="color:var(--codetx)">{{ l.t }}</span></div></sc-for>
+<div style="display:flex;align-items:center"><span style="color:#9C88FF;font-weight:600">student@salus:~/secplus-lab$ </span><span style="width:9px;height:18px;background:var(--codetx);margin-left:4px"></span></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;min-height:0;max-height:644px">
+<div style="flex:1;border-radius:28px;background:var(--sf);padding:20px 22px;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden">
+<span style="font-weight:800;font-size:16px">Cheat sheet</span>
+<sc-for list="{{ cheat }}" as="c" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 12px;flex:none;border-radius:14px;background:var(--sf2)"><span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;color:var(--pri)">{{ c.cmd }}</span><span style="font-size:12.5px;color:var(--mu)">{{ c.d }}</span></div></sc-for>
+</div>
+<div style="border-radius:24px;background:var(--prs);padding:16px 18px;display:flex;align-items:center;gap:12px"><span style="color:var(--pri)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#download"></use></svg></span><div style="display:flex;flex-direction:column;flex:1"><span style="font-weight:800;font-size:14px;color:var(--pri)">build-lab.sh</span><span style="font-size:12px;color:var(--mu)">Run Lab D on machines you own only</span></div></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Both&quot;,&quot;Light&quot;,&quot;Dark&quot;],&quot;default&quot;:&quot;Both&quot;,&quot;tsType&quot;:&quot;'Both'|'Light'|'Dark'&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    if (document.getElementById('fx-sprite')) return;
+    fetch('https://unpkg.com/feather-icons@4.29.2/dist/feather-sprite.svg').then(r => r.text()).then(t => {
+      if (document.getElementById('fx-sprite')) return;
+      const d = document.createElement('div');
+      d.id = 'fx-sprite';
+      d.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+      d.innerHTML = t;
+      document.body.prepend(d);
+      this.forceUpdate();
+    });
+  }
+  renderVals() {
+    const mode = this.props.mode ?? 'Both';
+    const all = [
+      { cls: 'th-light', label: 'Light mode', themeIcon: 'moon' },
+      { cls: 'th-dark', label: 'Dark mode', themeIcon: 'sun' }
+    ];
+    const themes = mode === 'Light' ? [all[0]] : mode === 'Dark' ? [all[1]] : all;
+
+    const flagged = new Set([3, 17, 23, 38]), skipped = new Set([12, 29]);
+    const nav = Array.from({ length: 90 }, (_, i) => {
+      const l = i < 5 ? 'P' + (i + 1) : String(i + 1);
+      let bg = 'var(--sf2)', fg = 'var(--mu)', ring = 'none';
+      if (i === 41) { bg = 'var(--sf)'; fg = 'var(--tx)'; ring = 'inset 0 0 0 2px var(--tx)'; }
+      else if (flagged.has(i)) { bg = 'var(--warn)'; fg = 'var(--bg)'; }
+      else if (i < 41 && !skipped.has(i)) { bg = 'var(--pr)'; fg = '#fff'; }
+      return { l, bg, fg, ring };
+    });
+
+    const IP = '185.220.101.47';
+    const raw = [
+      ['211', 'Nov  3 02:13:58 bastion sshd[4102]: Accepted publickey for deploy from ', '10.0.4.12', ' port 51022 ssh2', 0],
+      ['212', 'Nov  3 02:14:01 bastion sshd[4118]: Failed password for invalid user admin from ', '198.51.100.23', ' port 40112 ssh2', 0],
+      ['213', 'Nov  3 02:14:05 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52144 ssh2', 1],
+      ['214', 'Nov  3 02:14:07 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52146 ssh2', 1],
+      ['215', 'Nov  3 02:14:09 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52151 ssh2', 1],
+      ['216', 'Nov  3 02:14:10 bastion CRON[4130]: pam_unix(cron:session): session opened for root', '', '', 0],
+      ['217', 'Nov  3 02:14:12 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52160 ssh2', 1],
+      ['218', 'Nov  3 02:14:14 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52163 ssh2', 1],
+      ['219', 'Nov  3 02:14:15 bastion sshd[4133]: Failed password for root from ', '10.0.4.12', ' port 51040 ssh2', 0],
+      ['220', 'Nov  3 02:14:17 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52171 ssh2', 1],
+      ['221', 'Nov  3 02:14:19 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52177 ssh2', 1],
+      ['222', 'Nov  3 02:14:21 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52180 ssh2', 1],
+      ['223', 'Nov  3 02:14:22 bastion sshd[4140]: Accepted publickey for ngozi from ', '10.0.9.31', ' port 50001 ssh2', 0],
+      ['224', 'Nov  3 02:14:24 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52188 ssh2', 1],
+      ['225', 'Nov  3 02:14:26 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52191 ssh2', 1],
+      ['226', 'Nov  3 02:14:28 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52199 ssh2', 1],
+      ['227', 'Nov  3 02:14:30 bastion sshd[4121]: Failed password for backup from ', IP, ' port 52204 ssh2', 1]
+    ];
+    const log = raw.map(([n, a, ip, b, hit]) => ({
+      n, a, ip, b,
+      rowBg: hit ? 'rgba(116,87,255,0.14)' : 'transparent',
+      ipBg: hit ? '#6140FF' : 'transparent',
+      ipFg: hit ? '#fff' : 'inherit'
+    }));
+
+    const fl = { bg: 'var(--warns)', fg: 'var(--warn)', state: 'Flagged' };
+    const un = { bg: 'var(--bads)', fg: 'var(--bad)', state: 'Unanswered' };
+    const pending = [
+      { q: 'P4', stem: 'Permissions and SSH — sshd_config directive', ...fl },
+      { q: '18', stem: 'Which framework is best suited to mapping adversary techniques…', ...fl },
+      { q: '24', stem: 'A company wants to reduce the blast radius of a compromised host…', ...fl },
+      { q: '39', stem: 'Which log source would BEST confirm lateral movement over SMB…', ...fl },
+      { q: '77', stem: 'An auditor asks for evidence that backups can be restored…', ...un },
+      { q: '88', stem: 'Which TWO metrics best express recovery objectives for…', ...un }
+    ];
+
+    const dm = [
+      ['1.0 General Security Concepts', 11, 12],
+      ['2.0 Threats, Vulnerabilities & Mitigations', 20, 22],
+      ['3.0 Security Architecture', 14, 18],
+      ['4.0 Security Operations', 27, 29],
+      ['5.0 Security Program Management & Oversight', 19, 21]
+    ];
+    const domains = dm.map(([name, p, t]) => {
+      const pct = Math.round(p / t * 100);
+      return { name, pts: p + '/' + t, pct: pct + '%', low: pct < 81, fill: pct < 81 ? 'var(--warn)' : 'var(--pr)' };
+    });
+    const classDomains = [['1.0', 84], ['2.0', 78], ['3.0', 71], ['4.0', 86], ['5.0', 80]].map(([k, v]) => ({ k, h: v + '%', fill: v < 81 ? 'var(--warn)' : 'var(--pr)' }));
+
+    const pass = { bg: 'var(--oks)', fg: 'var(--ok)', res: 'Pass' };
+    const fail = { bg: 'var(--bads)', fg: 'var(--bad)', res: 'Below 750' };
+    const history = [
+      { date: '7 Nov 2026 · Standard', score: 814, ...pass },
+      { date: '31 Oct 2026 · Retake', score: 743, ...fail },
+      { date: '24 Oct 2026 · Standard', score: 696, ...fail }
+    ];
+
+    const R = (q, stem, s, active) => {
+      const m = { ok: ['var(--oks)', 'var(--ok)', 'check'], bad: ['var(--bads)', 'var(--bad)', 'x'], flag: ['var(--warns)', 'var(--warn)', 'flag'] }[s];
+      return { q, stem, bg: m[0], fg: m[1], icon: m[2], rowBg: active ? 'var(--prs)' : 'transparent' };
+    };
+    const reviewList = [
+      R('P1', 'SSH brute-force alert', 'ok'), R('P3', 'Installer integrity', 'bad'), R('P4', 'Permissions and SSH', 'flag'),
+      R('Q9', 'Which control type is a security guard…', 'ok'), R('Q14', 'Salting a password hash primarily…', 'bad'),
+      R('Q18', 'Mapping adversary techniques…', 'flag'), R('Q26', 'Credential stuffing — choose TWO', 'bad', true),
+      R('Q31', 'Segmenting OT networks from…', 'bad'), R('Q39', 'Lateral movement over SMB…', 'ok'),
+      R('Q44', 'Tokenisation versus encryption…', 'bad'), R('Q50', 'Choose TWO — zero trust pillars', 'ok')
+    ];
+
+    const at = [
+      ['Amara Okafor', '7 Nov · 19:42', 814, 1, '1:21:40', 1],
+      ['Tunde Bello', '7 Nov · 19:38', 743, 0, '1:30:00', 1],
+      ['Chiamaka Eze', '7 Nov · 19:31', 767, 1, '1:26:12', 0],
+      ['Kwame Mensah', '6 Nov · 20:05', 696, 0, '1:29:55', 0],
+      ['Zainab Musa', '6 Nov · 19:50', 853, 1, '1:12:08', 0],
+      ['Ifeoma Nwosu', '6 Nov · 19:47', 751, 1, '1:28:31', 0],
+      ['Kofi Asante', '5 Nov · 18:20', 720, 0, '1:30:00', 0]
+    ];
+    const attempts = at.map(([name, date, score, ok, time, sel]) => ({
+      name, date, score, time, ...(ok ? pass : fail),
+      rowBg: sel ? 'var(--prs)' : 'transparent',
+      cbBg: sel ? 'var(--pr)' : 'transparent',
+      cbRing: sel ? 'none' : 'inset 0 0 0 2px var(--bd)',
+      cbIcon: sel ? 'check' : ''
+    }));
+    const missed = [
+      { q: 'Q26', d: '2.0', pct: '62%' }, { q: 'P3c', d: '1.0', pct: '58%' }, { q: 'Q31', d: '3.0', pct: '54%' },
+      { q: 'Q44', d: '3.0', pct: '50%' }, { q: 'Q78', d: '5.0', pct: '46%' }, { q: 'P5d', d: '3.0', pct: '42%' }
+    ];
+
+    const invites = [
+      { email: 'kemi.adeyemi@lagoscyber.ng', exp: 'Expires in 6 days' },
+      { email: 'j.otieno@nairobi-tech.ac.ke', exp: 'Expires in 2 days' }
+    ];
+    const act = { bg: 'var(--oks)', fg: 'var(--ok)', status: 'Active', action: 'Remove', op: 1 };
+    const tutors = [
+      { ini: 'NO', name: 'Ngozi Obi', email: 'ngozi@hizo.africa', classes: '3 classes', ...act },
+      { ini: 'DA', name: 'David Asare', email: 'd.asare@accra-it.edu.gh', classes: '2 classes', ...act },
+      { ini: 'FB', name: 'Fatima Bello', email: 'fatima@kano-sec.ng', classes: '1 class', ...act },
+      { ini: 'SM', name: 'Samuel Mwangi', email: 's.mwangi@cyberke.org', classes: '0 classes', bg: 'var(--sf2)', fg: 'var(--mu)', status: 'Removed', action: 'Restore', op: 0.6 }
+    ];
+    const A = (icon, text, when, tone) => {
+      const m = { p: ['var(--prs)', 'var(--pri)'], w: ['var(--warns)', 'var(--warn)'], b: ['var(--bads)', 'var(--bad)'] }[tone];
+      return { icon, text, when, bg: m[0], fg: m[1] };
+    };
+    const audit = [
+      A('log-in', 'Ngozi Obi signed in', 'Today · 09:14', 'p'),
+      A('alert-triangle', '3 wrong codes for f***@kano-sec.ng', 'Today · 08:52', 'w'),
+      A('send', 'Invitation sent to kemi.adeyemi@…', 'Yesterday · 17:30', 'p'),
+      A('trash-2', 'Ngozi Obi deleted 1 attempt in Evening cohort', 'Yesterday · 16:02', 'b'),
+      A('user-x', 'Samuel Mwangi removed · sessions ended', '4 Nov · 11:20', 'b'),
+      A('user-check', 'Fatima Bello accepted invitation', '2 Nov · 10:05', 'p')
+    ];
+
+    const E = (n, stem, active, issue) => ({ n, stem, issue: !!issue, bg: active ? 'var(--prs)' : 'transparent', fg: active ? 'var(--pri)' : 'var(--tx)' });
+    const edList = [
+      E('Q6', 'Which control type is a security guard…'), E('Q7', 'An organisation adopts least privilege…'),
+      E('Q8', 'Which algorithm is asymmetric?'), E('Q9', 'A badge reader at the server room…'),
+      E('Q31', 'Segmenting OT networks from corporate…', 0, 1), E('Q50', 'Choose TWO — zero trust pillars'),
+      E('Q78', 'Choose TWO — risk register fields'), E('Q86', 'Which document defines acceptable use…'),
+      E('Q87', 'Ransomware on a file server — choose TWO', 1, 1)
+    ];
+
+    const P = 'student@salus:~/secplus-lab$ ';
+    const cmd = t => ({ p: P, t, c: '#9C88FF', w: 600 });
+    const out = t => ({ p: '', t, c: 'var(--codetx)', w: 400 });
+    const term = [
+      cmd('ls -l logs'),
+      out('-rw-r----- 1 student student 98213 Nov  3 02:30 auth.log'),
+      cmd('grep "Failed password" logs/auth.log | awk \'{print $(NF-3)}\' | sort | uniq -c | sort -nr'),
+      out('     50 185.220.101.47'),
+      out('      4 198.51.100.23'),
+      out('      2 10.0.4.12'),
+      cmd('grep "185.220.101.47" logs/auth.log | grep -o "for [a-z]*" | sort | uniq -c'),
+      out('     50 for backup'),
+      cmd('nmap -sV 10.0.4.12'),
+      { p: 'nmap: not available in this lab. ', t: 'See the cheat sheet for supported commands.', c: '#FF7A84', w: 600 }
+    ];
+    const cheat = [
+      { cmd: 'grep -c "Failed" auth.log', d: 'Count matching lines' },
+      { cmd: "awk '{print $NF}'", d: 'Print the last field' },
+      { cmd: 'sort | uniq -c | sort -nr', d: 'Count and rank values' },
+      { cmd: 'sha256sum -c hashes.txt', d: 'Check files against hashes' },
+      { cmd: "stat -c '%a %n' file", d: 'Show octal permissions' },
+      { cmd: "sed -i 's/yes/no/' sshd_config", d: 'Edit a config in place' }
+    ];
+
+    return { themes, nav, log, pending, domains, classDomains, history, reviewList, attempts, missed, invites, tutors, audit, edList, term, cheat };
+  }
+}
+</script>
+</body>
+</html>
