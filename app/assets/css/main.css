@@ -75,7 +75,8 @@
   --salus-oks: #dcf5eb;
   --salus-bad: #d33a47;
   --salus-bads: #fde6e8;
-  --salus-warn: #9a6408;
+  /* Mockup #9A6408, darkened to 4.5:1 on --salus-warns (T-220 axe). */
+  --salus-warn: #8f5e07;
   --salus-warns: #fcefd6;
   --salus-code: #17122f;
   --salus-codetx: #dcd5ff;
@@ -131,6 +132,16 @@
   --ui-border-inverted: var(--salus-tx);
 
   --ui-radius: 1rem;
+}
+
+/*
+ * Dark mode: Nuxt UI's primary (solid buttons with dark text, soft and link
+ * buttons with primary text) uses the lighter violet, as Nuxt UI's own dark
+ * theme does; #7457FF fails 4.5:1 both ways (T-220 axe). App components that
+ * use bg-brand/text-white keep the mockup's #7457FF.
+ */
+.dark {
+  --ui-primary: var(--color-salus-400);
 }
 
 body {

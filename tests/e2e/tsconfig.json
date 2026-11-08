@@ -1,0 +1,16 @@
+{
+  /* Playwright specs and helpers: `npx tsc -p tests/e2e` (not yet part of `npm run typecheck`). */
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023", "dom"],
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["./**/*.ts"]
+}
