@@ -8,6 +8,11 @@
  * @module
  */
 
+import type * as email_console from "../email/console.js";
+import type * as email_provider from "../email/provider.js";
+import type * as email_resend from "../email/resend.js";
+import type * as email_send from "../email/send.js";
+import type * as email_templates from "../email/templates.js";
 import type * as lib_anon from "../lib/anon.js";
 import type * as lib_audit from "../lib/audit.js";
 import type * as lib_codes from "../lib/codes.js";
@@ -16,6 +21,7 @@ import type * as lib_guards from "../lib/guards.js";
 import type * as lib_rateLimits from "../lib/rateLimits.js";
 import type * as lib_rng from "../lib/rng.js";
 import type * as marking_normalise from "../marking/normalise.js";
+import type * as marking_score from "../marking/score.js";
 
 import type {
   ApiFromModules,
@@ -24,6 +30,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "email/console": typeof email_console;
+  "email/provider": typeof email_provider;
+  "email/resend": typeof email_resend;
+  "email/send": typeof email_send;
+  "email/templates": typeof email_templates;
   "lib/anon": typeof lib_anon;
   "lib/audit": typeof lib_audit;
   "lib/codes": typeof lib_codes;
@@ -32,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "lib/rateLimits": typeof lib_rateLimits;
   "lib/rng": typeof lib_rng;
   "marking/normalise": typeof marking_normalise;
+  "marking/score": typeof marking_score;
 }>;
 
 /**
