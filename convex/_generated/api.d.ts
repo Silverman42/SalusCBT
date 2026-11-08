@@ -34,6 +34,7 @@ import type * as lib_answers from "../lib/answers.js";
 import type * as lib_attemptDeletion from "../lib/attemptDeletion.js";
 import type * as lib_audit from "../lib/audit.js";
 import type * as lib_classCodes from "../lib/classCodes.js";
+import type * as lib_classStats from "../lib/classStats.js";
 import type * as lib_clientIp from "../lib/clientIp.js";
 import type * as lib_codes from "../lib/codes.js";
 import type * as lib_errors from "../lib/errors.js";
@@ -81,6 +82,7 @@ declare const fullApi: ApiFromModules<{
   "lib/attemptDeletion": typeof lib_attemptDeletion;
   "lib/audit": typeof lib_audit;
   "lib/classCodes": typeof lib_classCodes;
+  "lib/classStats": typeof lib_classStats;
   "lib/clientIp": typeof lib_clientIp;
   "lib/codes": typeof lib_codes;
   "lib/errors": typeof lib_errors;
