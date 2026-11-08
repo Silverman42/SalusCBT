@@ -17,47 +17,11 @@
  * address (`e2e-<timestamp>@example.com`); the code request limits (1 per
  * minute, 5 per hour per email) allow one run a minute.
  */
-import { spawn, type ChildProcess } from "node:child_process";
 import { expect, test, type Page } from "@playwright/test";
+import { codeFor, inviteFor, MailLog } from "./helpers/convex";
 
 const ENABLED = process.env.E2E_AUTH === "1";
 const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL ?? "";
-
-/** Tails `npx convex logs` and hands out the console-provider emails. */
-class MailLog {
-  private proc: ChildProcess | null = null;
-  private buffer = "";
-
-  start() {
-    this.proc = spawn("npx", ["convex", "logs"], { stdio: ["ignore", "pipe", "pipe"] });
-    this.proc.stdout?.on("data", (chunk: Buffer) => (this.buffer += chunk.toString()));
-  }
-
-  stop() {
-    this.proc?.kill();
-  }
-
-  /** Waits for the first match of `pattern` after `from` (a buffer offset). */
-  async waitFor(pattern: RegExp, from: number, timeoutMs = 30_000): Promise<string> {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline) {
-      const match = pattern.exec(this.buffer.slice(from));
-      if (match) return match[1]!;
-      await new Promise((r) => setTimeout(r, 250));
-    }
-    throw new Error(`No email matching ${pattern} in the Convex logs`);
-  }
-
-  get offset() {
-    return this.buffer.length;
-  }
-}
-
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const codeFor = (email: string) =>
-  new RegExp(`to=${escape(email)} tag=otp[\\s\\S]*?code is: (\\d{6})`);
-const inviteFor = (email: string) =>
-  new RegExp(`to=${escape(email)} tag=invite[\\s\\S]*?/invite/([A-Za-z0-9_-]{43})`);
 
 async function enterCode(page: Page, code: string) {
   await page.getByLabel("Sign-in code").fill(code);

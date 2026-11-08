@@ -24,61 +24,17 @@
  * Each run leaves one class ("E2E <timestamp>") with one blank submitted
  * attempt behind; delete or close it from the class page.
  */
-import { spawn, type ChildProcess } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import { codeFor, convexUrl, MailLog } from "./helpers/convex";
 
 const ENABLED = process.env.E2E_CLASSES === "1";
 const TUTOR_EMAIL = process.env.E2E_TUTOR_EMAIL ?? "";
 /** The gate: the dashboard shows the submission within this long. */
 const GATE_MS = 5_000;
-
-function convexUrl(): string {
-  const fromEnv = process.env.E2E_CONVEX_URL ?? process.env.CONVEX_URL;
-  if (fromEnv) return fromEnv;
-  if (!existsSync(".env.local")) return "";
-  const line = readFileSync(".env.local", "utf8")
-    .split("\n")
-    .find((l) => l.startsWith("CONVEX_URL="));
-  return line?.slice("CONVEX_URL=".length).trim().replace(/^"|"$/g, "") ?? "";
-}
-
-/** Tails `npx convex logs` for the console-provider sign-in code. */
-class MailLog {
-  private proc: ChildProcess | null = null;
-  private buffer = "";
-
-  start() {
-    this.proc = spawn("npx", ["convex", "logs"], { stdio: ["ignore", "pipe", "pipe"] });
-    this.proc.stdout?.on("data", (chunk: Buffer) => (this.buffer += chunk.toString()));
-  }
-
-  stop() {
-    this.proc?.kill();
-  }
-
-  async waitFor(pattern: RegExp, from: number, timeoutMs = 30_000): Promise<string> {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline) {
-      const match = pattern.exec(this.buffer.slice(from));
-      if (match) return match[1]!;
-      await new Promise((r) => setTimeout(r, 250));
-    }
-    throw new Error(`No email matching ${pattern} in the Convex logs`);
-  }
-
-  get offset() {
-    return this.buffer.length;
-  }
-}
-
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const codeFor = (email: string) =>
-  new RegExp(`to=${escape(email)} tag=otp[\\s\\S]*?code is: (\\d{6})`);
 
 test.describe("Stage 5 gate in the browser (T-510)", () => {
   test.skip(
