@@ -50,6 +50,24 @@ async function seedDefault(t: T): Promise<Id<"examVersions">> {
   return versionId;
 }
 
+/** `n` PBQ set B rows (PB-4); a retake needs all five. Only the count matters here. */
+async function seedRetakeSet(t: T, versionId: Id<"examVersions">, n = 5): Promise<void> {
+  await t.run(async (ctx) => {
+    for (let i = 1; i <= n; i++) {
+      await ctx.db.insert("questions", {
+        versionId,
+        order: i,
+        section: "pbqB",
+        displayNumber: `B${i}`,
+        kind: "pbq",
+        domain: "4.0",
+        points: 3,
+        stem: `Retake PBQ ${i}`,
+      });
+    }
+  });
+}
+
 async function seedClass(
   t: T,
   c: {
@@ -133,10 +151,25 @@ describe("attempts.start (T-204)", () => {
 
   it("stores the retake mode (PB-4)", async () => {
     const t = setup();
-    await seedDefault(t);
+    await seedRetakeSet(t, await seedDefault(t));
     const { attemptId } = await t.mutation(api.attempts.start, startArgs({ mode: "retake" }));
     const attempt = await t.run((ctx) => ctx.db.get("attempts", attemptId));
     expect(attempt!.mode).toBe("retake");
+  });
+
+  it("refuses a retake with NOT_FOUND while PBQ set B is incomplete (T-307, LLD §10.2)", async () => {
+    const t = setup();
+    const versionId = await seedDefault(t);
+    expect(await codeOf(t.mutation(api.attempts.start, startArgs({ mode: "retake" })))).toBe(
+      "NOT_FOUND",
+    );
+    await seedRetakeSet(t, versionId, 4);
+    expect(await codeOf(t.mutation(api.attempts.start, startArgs({ mode: "retake" })))).toBe(
+      "NOT_FOUND",
+    );
+    expect(await t.run((ctx) => ctx.db.query("attempts").take(1))).toEqual([]);
+    // The standard sitting is unaffected.
+    await t.mutation(api.attempts.start, startArgs());
   });
 
   describe("server secret (SE-5, LLD §15.2)", () => {
@@ -371,5 +404,53 @@ describe("attempts.start (T-204)", () => {
     for (const word of ["correct", "explanation", "parts", "answer", "key", "payload"]) {
       expect(json).not.toContain(word);
     }
+  });
+});
+
+describe("attempts.startInfo (T-307, T-509)", () => {
+  it("describes the default exam: 90 minutes, and whether the retake is offered", async () => {
+    const t = setup();
+    expect(await t.query(api.attempts.startInfo, {})).toBeNull();
+    const versionId = await seedDefault(t);
+    expect(await t.query(api.attempts.startInfo, {})).toEqual({
+      minutes: 90,
+      timeMultiplier: 1,
+      retake: false,
+    });
+    await seedRetakeSet(t, versionId, 4);
+    expect(await t.query(api.attempts.startInfo, {})).toMatchObject({ retake: false });
+    await seedRetakeSet(t, versionId, 1);
+    expect(await t.query(api.attempts.startInfo, { classCode: "  " })).toMatchObject({
+      retake: true,
+    });
+  });
+
+  it("gives a class's time limit with its multiplier, as start sets the deadline (EX-21)", async () => {
+    const t = setup();
+    const versionId = await seedDefault(t);
+    const cases: [string, number, number][] = [
+      ["SEC-AAAA", 1, 90],
+      ["SEC-BBBB", 1.25, 112.5],
+      ["SEC-CCCC", 1.5, 135],
+      ["SEC-DDDD", 2, 180],
+    ];
+    for (const [code, timeMultiplier] of cases)
+      await seedClass(t, { versionId, code, timeMultiplier });
+    for (const [code, timeMultiplier, minutes] of cases) {
+      expect(await t.query(api.attempts.startInfo, { classCode: code.toLowerCase() })).toEqual({
+        minutes,
+        timeMultiplier,
+        retake: false,
+      });
+    }
+  });
+
+  it("is null for an unknown, over-long or closed class code", async () => {
+    const t = setup();
+    const versionId = await seedDefault(t);
+    await seedClass(t, { versionId, code: "SEC-CCCC", status: "closed", timeMultiplier: 1.5 });
+    expect(await t.query(api.attempts.startInfo, { classCode: "SEC-ZZZZ" })).toBeNull();
+    expect(await t.query(api.attempts.startInfo, { classCode: "S".repeat(33) })).toBeNull();
+    expect(await t.query(api.attempts.startInfo, { classCode: "SEC-CCCC" })).toBeNull();
   });
 });

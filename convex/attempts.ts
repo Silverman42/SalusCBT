@@ -8,6 +8,9 @@
  * `NUXT_IP_PEPPER` so the raw IP never leaves Nuxt; PR-3). The start time and
  * deadline are set here, never by the client (EX-3).
  *
+ * `startInfo` feeds the start screen (time limit with the class multiplier,
+ * whether the retake can be started; EX-21, PB-4).
+ *
  * `getPaper` and `getState` are the student's reads (T-205). Both take the
  * anon token and give the same `NOT_FOUND` for a missing or foreign attempt.
  * `saveResponse` (T-206) is the student's only write while sitting the exam.
@@ -27,7 +30,13 @@ import { answerFitsQuestion, isBlankAnswer } from "./lib/answers";
 import { secretsMatch } from "./lib/clientIp";
 import { normaliseClassCode, randomUint32 } from "./lib/codes";
 import { fail } from "./lib/errors";
-import { loadPaperQuestions, paperValidator, sectionsFor, toPaperQuestion } from "./lib/paper";
+import {
+  hasFullRetakeSet,
+  loadPaperQuestions,
+  paperValidator,
+  sectionsFor,
+  toPaperQuestion,
+} from "./lib/paper";
 import { enforceRateLimit } from "./lib/rateLimits";
 import { scorePaper, type MarkKey } from "./marking/score";
 import { attemptResultValidator } from "./schema";
@@ -102,7 +111,8 @@ function multiplierOf(cls: Doc<"classes"> | null): number {
  * Start an attempt (LLD §7.1). Errors: `FORBIDDEN` (bad secret), `BAD_TOKEN`,
  * `RATE_LIMITED` (`{ code, retryAfter }`), `CLASS_UNKNOWN`, `CLASS_CLOSED`,
  * `VALIDATION_FAILED` (display name missing for a class, or over 40
- * characters), `NOT_FOUND` (no published version to sit).
+ * characters), `NOT_FOUND` (no published version to sit, or `mode: "retake"`
+ * when the version's PBQ set B is incomplete; PB-4, LLD §10.2).
  *
  * The result holds ids and times only: nothing is read from `answerKeys` (SE-1).
  */
@@ -152,6 +162,7 @@ export const start = mutation({
     if (!version || version.status !== "published") fail("NOT_FOUND");
     const exam = await ctx.db.get("exams", version.examId);
     if (!exam) fail("NOT_FOUND");
+    if (args.mode === "retake" && !(await hasFullRetakeSet(ctx, version._id))) fail("NOT_FOUND");
 
     // 5–6. The PBQ set (pbqA, or pbqB for a retake; PB-4) follows from `mode`
     // when the paper is built (T-205), so only the mode is stored.
@@ -180,6 +191,56 @@ export const start = mutation({
 
     // 8.
     return { attemptId, deadline, serverNow: now };
+  },
+});
+
+/**
+ * What the start screen tells the student before the timer starts (EX-2,
+ * EX-21, PB-4): the time limit in minutes (the exam's `timeLimitMin` times the
+ * class `timeMultiplier`, unrounded: 1.25 × 90 is 112.5, as the deadline is), the
+ * multiplier itself, and whether a retake (PBQ set B) can be started.
+ *
+ * Without `classCode` this describes the default exam. `null` when the code is
+ * unknown or there is nothing to sit (the class is closed, or its version is
+ * no longer published), i.e. when `start` would refuse anyway; the class-code
+ * field (`classes.lookupCode`) says why. Public and account-free: it reveals
+ * no more than the start screen shows (no ids, no content, no keys).
+ */
+export const startInfo = query({
+  args: { classCode: v.optional(v.string()) },
+  returns: v.union(
+    v.null(),
+    v.object({ minutes: v.number(), timeMultiplier: v.number(), retake: v.boolean() }),
+  ),
+  handler: async (ctx, args) => {
+    let cls: Doc<"classes"> | null = null;
+    let versionId: Id<"examVersions"> | undefined;
+    if (args.classCode?.trim()) {
+      if (args.classCode.length > CLASS_CODE_INPUT_MAX) return null;
+      const code = normaliseClassCode(args.classCode);
+      cls = await ctx.db
+        .query("classes")
+        .withIndex("by_code", (q) => q.eq("code", code))
+        .unique();
+      if (!cls || cls.status !== "open") return null;
+      versionId = cls.versionId;
+    } else {
+      const exam = await ctx.db
+        .query("exams")
+        .withIndex("by_slug", (q) => q.eq("slug", DEFAULT_EXAM_SLUG))
+        .unique();
+      versionId = exam?.defaultVersionId;
+    }
+    const version = versionId ? await ctx.db.get("examVersions", versionId) : null;
+    if (!version || version.status !== "published") return null;
+    const exam = await ctx.db.get("exams", version.examId);
+    if (!exam) return null;
+    const timeMultiplier = multiplierOf(cls);
+    return {
+      minutes: exam.timeLimitMin * timeMultiplier,
+      timeMultiplier,
+      retake: await hasFullRetakeSet(ctx, version._id),
+    };
   },
 });
 

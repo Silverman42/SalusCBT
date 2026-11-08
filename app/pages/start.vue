@@ -4,20 +4,31 @@
 // typed; `?class=SEC-XXXX` pre-fills it), then Start: POST
 // /api/attempts/start, record the server clock (LLD §14.2) and open the
 // runner. The identity lives in localStorage, so the form waits for it.
-import { ref, watch } from "vue";
+// `?mode=retake` is the PBQ retake (PB-4, T-307). The time limit and whether
+// the retake is available come from `attempts.startInfo` for the default exam
+// or the class the code names (EX-21: a class's extra time).
+import { computed, ref, watch } from "vue";
+import { api } from "~~/convex/_generated/api";
 import { recordAttemptStart } from "~/composables/useAttempt";
 import {
+  EXAM_FACTS,
+  RETAKE_UNAVAILABLE,
   buildStartBody,
   classCodeFromQuery,
+  formatMinutes,
   hasErrors,
   normaliseClassCodeInput,
   parseStartError,
   parseStartSuccess,
   retryAfterHeaderMs,
   startErrorMessage,
+  startInfoArgs,
+  startLocation,
+  startModeFromQuery,
   validateStartForm,
   type ClassCodeState,
   type StartFormErrors,
+  type StartInfo,
 } from "~/lib/start";
 
 useSeoMeta({
@@ -27,6 +38,8 @@ useSeoMeta({
 
 const route = useRoute();
 const identity = useAnonIdentity();
+const nuxtApp = useNuxtApp();
+const mode = computed(() => startModeFromQuery(route.query.mode));
 
 const displayName = ref("");
 const classCode = ref(classCodeFromQuery(route.query.class));
@@ -51,6 +64,47 @@ watch(
     if (code) classCode.value = code;
   },
 );
+// Time limit and retake availability (`attempts.startInfo`), per form state.
+// `undefined` while unknown (not asked yet, or the query failed): the page
+// then shows the standard 90 minutes and lets the server decide.
+const infoCache = new Map<string, StartInfo | null>();
+const info = ref<StartInfo | null | undefined>(undefined);
+let infoSeq = 0;
+watch(
+  () => startInfoArgs(normaliseClassCodeInput(classCode.value), classState.value),
+  async (args) => {
+    const mySeq = ++infoSeq;
+    if (!args || !import.meta.client) {
+      info.value = undefined;
+      return;
+    }
+    const key = args.classCode ?? "";
+    if (infoCache.has(key)) {
+      info.value = infoCache.get(key);
+      return;
+    }
+    info.value = undefined;
+    try {
+      const result = await nuxtApp.$convex.query(api.attempts.startInfo, args);
+      infoCache.set(key, result);
+      if (mySeq === infoSeq) info.value = result;
+    } catch {
+      // Offline: keep the defaults; the start route still answers.
+    }
+  },
+  { immediate: true, deep: true },
+);
+const minutes = computed(() => info.value?.minutes ?? EXAM_FACTS.minutes);
+const timeMultiplier = computed(() => info.value?.timeMultiplier ?? 1);
+/** Known not to be available (set B incomplete for this exam or class). */
+const retakeUnavailable = computed(() => mode.value === "retake" && info.value?.retake === false);
+const otherMode = computed(() =>
+  startLocation(
+    mode.value === "retake" ? "standard" : "retake",
+    normaliseClassCodeInput(classCode.value),
+  ),
+);
+
 watch(displayName, () => {
   if (errors.value.displayName) errors.value = { ...errors.value, displayName: undefined };
 });
@@ -71,7 +125,7 @@ function showError(field: "displayName" | "classCode" | null, message: string) {
 }
 
 async function start() {
-  if (starting.value) return;
+  if (starting.value || retakeUnavailable.value) return;
   formError.value = "";
   const token = identity.token.value;
   if (!token) return;
@@ -94,6 +148,7 @@ async function start() {
     anonToken: token,
     displayName: displayName.value,
     classCode: code,
+    mode: mode.value,
   });
   const sentAt = Date.now();
   let res;
@@ -122,6 +177,7 @@ async function start() {
 
   const { code: errCode, retryAfterMs } = parseStartError(res._data);
   const msg = startErrorMessage(errCode, {
+    mode: mode.value,
     retryAfterMs: retryAfterMs ?? retryAfterHeaderMs(res.headers.get("retry-after")),
   });
   showError(msg.field, msg.message);
@@ -140,11 +196,33 @@ async function start() {
         Back
       </NuxtLink>
       <h1 class="m-0 text-[32px] leading-[1.05] font-extrabold tracking-[-0.03em] sm:text-[44px]">
-        Before you start
+        {{ mode === "retake" ? "Before you start the PBQ retake" : "Before you start" }}
       </h1>
       <p class="m-0 max-w-[620px] text-[17px] leading-[1.55] text-pretty text-muted-fg">
-        A Security+ style practice exam: 90 questions in 90 minutes. Read the rules below, then
-        press Start when you're ready.
+        <template v-if="mode === 'retake'">
+          The same Security+ style practice exam with new performance-based questions (B1–B{{
+            EXAM_FACTS.pbqs
+          }}):
+        </template>
+        <template v-else>A Security+ style practice exam:</template>
+        {{ EXAM_FACTS.questions }} questions in {{ formatMinutes(minutes) }} minutes. Read the rules
+        below, then press Start when you're ready.
+      </p>
+      <p v-if="mode === 'retake' || info?.retake" class="m-0 text-sm">
+        <NuxtLink
+          v-if="mode === 'retake'"
+          :to="otherMode"
+          class="font-semibold text-brand-ink hover:underline"
+        >
+          Sit the standard exam instead
+        </NuxtLink>
+        <NuxtLink
+          v-else-if="info?.retake"
+          :to="otherMode"
+          class="font-semibold text-brand-ink hover:underline"
+        >
+          Retake PBQs (set B) instead
+        </NuxtLink>
       </p>
     </div>
 
@@ -155,7 +233,7 @@ async function start() {
     <div class="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
       <section aria-labelledby="instructions-heading" class="flex min-w-0 flex-col gap-3">
         <h2 id="instructions-heading" class="m-0 text-lg font-bold">Instructions</h2>
-        <StartInstructions />
+        <StartInstructions :minutes="minutes" :time-multiplier="timeMultiplier" :mode="mode" />
       </section>
 
       <form
@@ -194,6 +272,15 @@ async function start() {
           </p>
         </ClientOnly>
 
+        <p
+          v-if="retakeUnavailable"
+          class="m-0 flex gap-2 rounded-[16px] bg-warn-soft px-4 py-3 text-sm leading-snug text-warn"
+          role="status"
+        >
+          <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 flex-none" />
+          <span>{{ RETAKE_UNAVAILABLE }}</span>
+        </p>
+
         <div aria-live="assertive" aria-atomic="true">
           <p
             v-if="formError"
@@ -212,12 +299,14 @@ async function start() {
           class="h-[54px] text-base font-bold"
           trailing-icon="i-lucide-arrow-right"
           :loading="starting || !identity.ready.value"
-          :disabled="starting || !identity.ready.value"
+          :disabled="starting || !identity.ready.value || retakeUnavailable"
           :aria-describedby="formError ? formErrorId : undefined"
-          :label="starting ? 'Starting…' : 'Start the exam'"
+          :label="
+            starting ? 'Starting…' : mode === 'retake' ? 'Start the PBQ retake' : 'Start the exam'
+          "
         />
         <p class="m-0 text-center text-[13px] text-muted-fg">
-          The 90-minute timer starts when you press Start.
+          The {{ formatMinutes(minutes) }}-minute timer starts when you press Start.
         </p>
       </form>
     </div>

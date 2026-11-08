@@ -53,6 +53,7 @@ const mcq = {
 const FUNCTIONS: Record<string, Spec> = {
   // Anonymous by design.
   "attempts:start": { access: "public" },
+  "attempts:startInfo": { access: "public" },
   "attempts:getPaper": { access: "public" },
   "attempts:getState": { access: "public" },
   "attempts:saveResponse": { access: "public" },

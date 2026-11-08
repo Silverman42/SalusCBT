@@ -169,6 +169,39 @@ export function hasErrors(errors: StartFormErrors): boolean {
 
 export type StartMode = "standard" | "retake";
 
+/** `?mode=` from the route query: `"retake"` (PB-4) or the standard sitting. */
+export function startModeFromQuery(value: unknown): StartMode {
+  const v = Array.isArray(value) ? value[0] : value;
+  return v === "retake" ? "retake" : "standard";
+}
+
+/** `/start` with the mode and class code as query parameters (the shareable form). */
+export function startLocation(mode: StartMode, classCode: string) {
+  const query: Record<string, string> = {};
+  if (classCode) query.class = classCode;
+  if (mode === "retake") query.mode = "retake";
+  return { path: "/start", query };
+}
+
+/** `attempts.startInfo`: the time limit with the class multiplier, and whether a retake can start. */
+export type StartInfo = { minutes: number; timeMultiplier: number; retake: boolean };
+
+/**
+ * Which `attempts.startInfo` call describes the form, or `null` when none can
+ * (a code that is incomplete, unknown, closed or still being checked): no code
+ * means the default exam; a found class means that class.
+ */
+export function startInfoArgs(code: string, state: ClassCodeState): { classCode?: string } | null {
+  if (state.kind === "none" || !code) return {};
+  if (state.kind === "found") return { classCode: code };
+  return null;
+}
+
+/** "135" or "112.5" (a 1.25× class on a 90-minute exam). */
+export function formatMinutes(minutes: number): string {
+  return Number.isInteger(minutes) ? String(minutes) : String(Math.round(minutes * 10) / 10);
+}
+
 export interface StartBody {
   anonToken: string;
   displayName?: string;
@@ -237,6 +270,10 @@ export function retryAfterText(ms: number | null): string {
 
 export type StartErrorField = "displayName" | "classCode" | null;
 
+/** `attempts.start` refuses a retake while the version's PBQ set B is incomplete (PB-4). */
+export const RETAKE_UNAVAILABLE =
+  "The PBQ retake isn't available for this exam yet. You can sit the standard exam instead.";
+
 /**
  * Friendly message for a start-route error code. `field` says which input
  * the message belongs to (`null`: show it above the Start button). `code` is
@@ -244,7 +281,7 @@ export type StartErrorField = "displayName" | "classCode" | null;
  */
 export function startErrorMessage(
   code: string | null,
-  opts: { retryAfterMs?: number | null; network?: boolean } = {},
+  opts: { retryAfterMs?: number | null; network?: boolean; mode?: StartMode } = {},
 ): { field: StartErrorField; message: string } {
   if (opts.network) {
     return {
@@ -276,6 +313,7 @@ export function startErrorMessage(
         message: "This browser's anonymous ID isn't valid. Reload the page and try again.",
       };
     case "NOT_FOUND":
+      if (opts.mode === "retake") return { field: null, message: RETAKE_UNAVAILABLE };
       return {
         field: null,
         message: "There's no exam to sit yet. Try again later, or ask your tutor.",

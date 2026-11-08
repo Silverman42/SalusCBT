@@ -83,8 +83,8 @@ export function modeLabel(mode: "standard" | "retake"): string {
 }
 
 /**
- * Seam for "Retake PBQs (set B)" (PB-4). The start flow that takes a `mode`
- * arrives with T-307; until then the button stays hidden. Flip this (or
- * replace it with the real start route) when it lands.
+ * "Retake with PBQ set B" (PB-4, T-307): the start screen in retake mode. It
+ * checks that the retake is available (`attempts.startInfo`) before the
+ * student can start.
  */
-export const RETAKE_START_PATH: string | null = null;
+export const RETAKE_START_PATH = "/start?mode=retake";

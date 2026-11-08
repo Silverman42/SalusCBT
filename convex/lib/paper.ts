@@ -33,6 +33,26 @@ export function sectionsFor(mode: Mode): [PbqSection, "mcq"] {
   return [pbqSectionFor(mode), "mcq"];
 }
 
+/** PBQs in a full set; same as `PBQS_PER_SET` in `convex/editor.ts` (LLD §10.2). */
+export const RETAKE_PBQ_COUNT = 5;
+
+/**
+ * PB-4, LLD §10.2: the retake is offered only when the version's set B has all
+ * five PBQs (publishing only warns when it doesn't). Reads at most six rows.
+ */
+export async function hasFullRetakeSet(
+  ctx: Pick<QueryCtx, "db">,
+  versionId: Id<"examVersions">,
+): Promise<boolean> {
+  const rows = await ctx.db
+    .query("questions")
+    .withIndex("by_version_section_order", (q) =>
+      q.eq("versionId", versionId).eq("section", "pbqB"),
+    )
+    .take(RETAKE_PBQ_COUNT + 1);
+  return rows.length === RETAKE_PBQ_COUNT;
+}
+
 /**
  * The attempt's questions in paper order: the PBQ set for its mode, then the
  * MCQs, each section by `order` (the index order). Shared with save and submit

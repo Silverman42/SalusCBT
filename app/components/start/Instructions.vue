@@ -2,29 +2,53 @@
 // Instructions shown before the timer starts (EX-2). Rewritten from the
 // content file's "Instructions for the candidate" for the app: the timer is
 // built in and answers save automatically, so there is no proctor, phone or
-// answer sheet. `minutes` is a prop so a class time multiplier (EX-21) can
-// be shown once the class lookup returns it.
-import { EXAM_FACTS } from "~/lib/start";
+// answer sheet. `minutes` and `timeMultiplier` come from `attempts.startInfo`
+// (EX-21: a class's extra time, with the pacing alerts scaled to match);
+// `mode` says whether this is the PBQ retake (PB-4).
+import { checkpoints } from "~/lib/pacing";
+import { EXAM_FACTS, formatMinutes, type StartMode } from "~/lib/start";
 
-const props = withDefaults(defineProps<{ minutes?: number }>(), {
-  minutes: EXAM_FACTS.minutes,
+const props = withDefaults(
+  defineProps<{ minutes?: number; timeMultiplier?: number; mode?: StartMode }>(),
+  { minutes: EXAM_FACTS.minutes, timeMultiplier: 1, mode: "standard" },
+);
+
+/** Pacing alert times for this duration (25, 45, 65, 80 minutes for 90). */
+const pacingAt = computed(() =>
+  checkpoints(props.minutes * 60_000)
+    .filter((c) => c.group === "pacing")
+    .map((c) => formatMinutes(Math.round(c.atMs / 60_000))),
+);
+
+const timerBody = computed(() => {
+  const extra =
+    props.timeMultiplier > 1
+      ? `Your class has extra time: ${formatMinutes(props.minutes)} minutes instead of ${formatMinutes(props.minutes / props.timeMultiplier)}. `
+      : "";
+  return `${extra}The countdown is always on screen. Time calls appear at 45, 15 and 5 minutes left. At 0:00 the exam is submitted for you and unanswered questions score zero.`;
 });
 
 const items = computed(() => [
   {
     icon: "i-lucide-timer",
-    title: `${props.minutes} minutes, starting when you press Start`,
-    body: "The countdown is always on screen. Time calls appear at 45, 15 and 5 minutes left. At 0:00 the exam is submitted for you and unanswered questions score zero.",
+    title: `${formatMinutes(props.minutes)} minutes, starting when you press Start`,
+    body: timerBody.value,
   },
-  {
-    icon: "i-lucide-list-ordered",
-    title: `${EXAM_FACTS.pbqs} performance-based questions first, then ${EXAM_FACTS.mcqs} multiple-choice`,
-    body: "One question per screen. You can skip, come back, and flag any question for review. The navigator shows what's answered and flagged.",
-  },
+  props.mode === "retake"
+    ? {
+        icon: "i-lucide-list-ordered",
+        title: `Retake: PBQs B1–B${EXAM_FACTS.pbqs} first, then the same ${EXAM_FACTS.mcqs} multiple-choice`,
+        body: "The five performance-based questions are new versions with different values; the multiple-choice questions are the same set as the standard exam. One question per screen. You can skip, come back, and flag any question for review.",
+      }
+    : {
+        icon: "i-lucide-list-ordered",
+        title: `${EXAM_FACTS.pbqs} performance-based questions first, then ${EXAM_FACTS.mcqs} multiple-choice`,
+        body: "One question per screen. You can skip, come back, and flag any question for review. The navigator shows what's answered and flagged.",
+      },
   {
     icon: "i-lucide-gauge",
     title: "Pacing alerts",
-    body: "If you fall behind (PBQs untouched at 25 minutes, before Q35 at 45 minutes, before Q60 at 65 minutes), a banner tells you to move on. At 80 minutes you're told to use the rest on flagged questions.",
+    body: `If you fall behind (PBQs untouched at ${pacingAt.value[0]} minutes, before Q35 at ${pacingAt.value[1]} minutes, before Q60 at ${pacingAt.value[2]} minutes), a banner tells you to move on. At ${pacingAt.value[3]} minutes you're told to use the rest on flagged questions.`,
   },
   {
     icon: "i-lucide-target",

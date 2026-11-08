@@ -42,9 +42,8 @@ const { result, failure, loading, retry } = useStudentResult(attemptId);
             block
             class="h-14 text-base font-bold"
           />
-          <!-- PB-4 seam: shown once the start flow takes a mode (T-307). -->
+          <!-- PB-4 (T-307): /start in retake mode checks set B is available. -->
           <UButton
-            v-if="RETAKE_START_PATH"
             :to="RETAKE_START_PATH"
             icon="i-lucide-rotate-ccw"
             label="Retake with PBQ set B"

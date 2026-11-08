@@ -6,6 +6,7 @@ import {
   LOAD_FAILURES,
   loadErrorCode,
   modeLabel,
+  RETAKE_START_PATH,
   resultPath,
   reviewPath,
 } from "../../app/lib/attemptPages";
@@ -42,5 +43,6 @@ describe("attemptPages (T-215, T-216)", () => {
     expect(examPath("a/b")).toBe("/exam/a%2Fb");
     expect(modeLabel("standard")).toBe("Standard");
     expect(modeLabel("retake")).toBe("Retake (PBQ set B)");
+    expect(RETAKE_START_PATH).toBe("/start?mode=retake");
   });
 });

@@ -3,16 +3,19 @@
 // The form takes the optional display name and class code and goes on to
 // /start, which shows the instructions (EX-2) and starts the timer. The
 // display name is remembered in this browser; the class code travels as
-// `?class=` (the same link tutors share, T-505). "Retake (set B)" stays
-// hidden until T-307.
+// `?class=` (the same link tutors share, T-505). "Retake PBQs" (PB-4,
+// T-307) goes to the same screen with `?mode=retake`; /start checks that set
+// B is available for the exam or class.
 import { ref, watch } from "vue";
 import {
   EXAM_FACTS,
   hasErrors,
   normaliseClassCodeInput,
+  startLocation,
   validateStartForm,
   type ClassCodeState,
   type StartFormErrors,
+  type StartMode,
 } from "~/lib/start";
 
 useSeoMeta({
@@ -27,7 +30,7 @@ const classCode = ref("");
 const classState = ref<ClassCodeState>({ kind: "none" });
 const errors = ref<StartFormErrors>({});
 const fields = ref<{ focusName: () => void; focusCode: () => void } | null>(null);
-const going = ref(false);
+const going = ref<StartMode | null>(null);
 
 watch(
   identity.ready,
@@ -45,7 +48,7 @@ watch(classCode, () => {
   if (errors.value.classCode) errors.value = { ...errors.value, classCode: undefined };
 });
 
-async function goToStart() {
+async function goToStart(mode: StartMode = "standard") {
   if (going.value) return;
   const code = normaliseClassCodeInput(classCode.value);
   const found = validateStartForm({
@@ -59,10 +62,10 @@ async function goToStart() {
     else fields.value?.focusCode();
     return;
   }
-  going.value = true;
+  going.value = mode;
   identity.setDisplayName(displayName.value.trim() || null);
-  await navigateTo({ path: "/start", query: code ? { class: code } : {} });
-  going.value = false;
+  await navigateTo(startLocation(mode, code));
+  going.value = null;
 }
 
 const chips = [
@@ -106,7 +109,7 @@ const chips = [
           class="flex max-w-[560px] flex-col gap-4 rounded-[28px] bg-surface p-5 sm:p-6"
           aria-label="Start a mock exam"
           novalidate
-          @submit.prevent="goToStart"
+          @submit.prevent="goToStart()"
         >
           <StartDetailsFields
             ref="fields"
@@ -121,8 +124,22 @@ const chips = [
               size="xl"
               class="h-[54px] min-w-[220px] flex-1 justify-center text-base font-bold"
               trailing-icon="i-lucide-arrow-right"
-              :loading="going"
+              :loading="going === 'standard'"
+              :disabled="going !== null"
               label="Start mock exam"
+            />
+            <UButton
+              type="button"
+              size="xl"
+              color="primary"
+              variant="soft"
+              class="h-[54px] justify-center px-[22px] text-[15px]"
+              icon="i-lucide-rotate-ccw"
+              :loading="going === 'retake'"
+              :disabled="going !== null"
+              label="Retake PBQs"
+              aria-label="Retake PBQs (set B)"
+              @click="goToStart('retake')"
             />
             <UButton
               to="/lab"

@@ -5,6 +5,7 @@ import {
   classCodeFromQuery,
   classCodeMessage,
   classCodeState,
+  formatMinutes,
   hasErrors,
   isCompleteClassCode,
   lastMarkedAttempt,
@@ -15,7 +16,11 @@ import {
   retryAfterHeaderMs,
   retryAfterText,
   scoreBadgeText,
+  RETAKE_UNAVAILABLE,
   startErrorMessage,
+  startInfoArgs,
+  startLocation,
+  startModeFromQuery,
   validateStartForm,
   type AttemptSummaryLike,
 } from "../../app/lib/start";
@@ -227,5 +232,50 @@ describe("attempt summaries", () => {
     expect(last?.attemptId).toBe("c");
     expect(scoreBadgeText(last!)).toBe("814 · Pass");
     expect(scoreBadgeText({ ...last!, scaled: 702, passed: false })).toBe("702 · Below 750");
+  });
+});
+
+describe("retake mode and start info (T-307, T-509)", () => {
+  it("reads ?mode=retake; anything else is the standard sitting", () => {
+    expect(startModeFromQuery("retake")).toBe("retake");
+    expect(startModeFromQuery(["retake", "standard"])).toBe("retake");
+    expect(startModeFromQuery("RETAKE")).toBe("standard");
+    expect(startModeFromQuery(undefined)).toBe("standard");
+  });
+
+  it("builds the /start location with class and mode", () => {
+    expect(startLocation("standard", "")).toEqual({ path: "/start", query: {} });
+    expect(startLocation("retake", "SEC-4K7Q")).toEqual({
+      path: "/start",
+      query: { class: "SEC-4K7Q", mode: "retake" },
+    });
+  });
+
+  it("asks startInfo for the default exam or a found class only", () => {
+    expect(startInfoArgs("", { kind: "none" })).toEqual({});
+    expect(startInfoArgs("SEC-4K7Q", { kind: "found", name: "Evening" })).toEqual({
+      classCode: "SEC-4K7Q",
+    });
+    for (const state of [
+      { kind: "checking" },
+      { kind: "unknown" },
+      { kind: "incomplete" },
+      { kind: "closed", name: "Evening" },
+    ] as const) {
+      expect(startInfoArgs("SEC-4K7Q", state)).toBeNull();
+    }
+  });
+
+  it("formats class time limits", () => {
+    expect(formatMinutes(135)).toBe("135");
+    expect(formatMinutes(112.5)).toBe("112.5");
+  });
+
+  it("explains a refused retake", () => {
+    expect(startErrorMessage("NOT_FOUND", { mode: "retake" })).toEqual({
+      field: null,
+      message: RETAKE_UNAVAILABLE,
+    });
+    expect(startErrorMessage("NOT_FOUND").message).not.toBe(RETAKE_UNAVAILABLE);
   });
 });

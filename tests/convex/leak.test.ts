@@ -74,6 +74,7 @@ function discoverPublic(): Map<string, Kind> {
  */
 const STUDENT_FACING = [
   "attempts:start", // Nuxt route only (server secret), but on the student's behalf
+  "attempts:startInfo", // start screen: minutes, multiplier, retake flag
   "attempts:getPaper",
   "attempts:getState",
   "attempts:saveResponse",
@@ -519,6 +520,12 @@ describe("answer-key leak test (T-209, SE-1)", () => {
       expect(await value("classes:lookupCode", "start screen", { code })).toMatchObject({
         open: true,
       });
+      expect(await value("attempts:startInfo", "start screen", {})).toMatchObject({
+        retake: true,
+      });
+      expect(
+        await value("attempts:startInfo", "start screen (class)", { classCode: code }),
+      ).toMatchObject({ timeMultiplier: 1 });
       await value("invitations:peek", "invite page", { token: "x".repeat(43) });
       expect(await refused("invitations:accept", "invite page", { token: "x".repeat(43) })).toBe(
         "NOT_FOUND",
