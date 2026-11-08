@@ -28,7 +28,7 @@ Parse a command line and run pipes.
 ## Acceptance criteria
 
 - [x] Pipes of 3+ commands work.
-- [ ] Terminal is keyboard- and screen-reader-friendly.
+- [x] Terminal is keyboard- and screen-reader-friendly.
 
 ## Notes
 
@@ -39,3 +39,5 @@ Parse a command line and run pipes.
 - Pipeline stages run one after another, each getting the previous stage's whole output. stderr goes straight to the screen, so earlier stages' errors appear before the last stage's output. `RunResult.chunks` keeps stdout and stderr in write order, with a `{ type: "clear" }` chunk from `clear`.
 - Limits (`DEFAULT_LIMITS`): 4096 characters per line, 32 commands per line, 16 per pipeline, 1024 arguments, 1000 glob matches, 8 MiB per pipe or redirected file (a 2 MiB installer fits), 256 KiB on screen per line (then the output is cut with a notice and the line stops).
 - Builtins: `cd` (with `cd -` and `OLDPWD`; T-703 lists `cd`, but it is done here), `pwd`, `echo` (`-n`, `-e`), `clear`, `help`, `true`, `false`. `Shell.prompt()` gives `root@lab:~/secplus-lab# `. Call `Shell.run()` one line at a time (await each).
+- `Terminal.vue` is done (with T-706): `app/components/lab/Terminal.vue` on pure helpers `history.ts` (↑/↓ with the typed draft kept, 200 entries, blanks and repeats skipped), `complete.ts` (Tab: command names in command position, paths elsewhere; one match completes with `/` or a space, several complete their common prefix and are listed on the next Tab) and `screen.ts` (scrollback capped at 2000 lines / 512 K characters, control characters shown as U+FFFD, bounded screen-reader announcements). Tested in `tests/unit/terminal-ui.test.ts` and `tests/e2e/lab.spec.ts`.
+- Accessibility: the command line is a native `<input>` labelled by the visible prompt; the scrollback is a focusable `role="log"` with `aria-live="off"`, and a separate visually hidden `role="log" aria-live="polite"` announces each command's new output, cut to 12 lines / 1200 characters with "… N more lines". Tab completes only when there is a word to complete; an empty line, Shift+Tab, or Esc then Tab move focus as usual (no keyboard trap). Ctrl+L clears, Ctrl+C cancels the line (or copies when input text is selected), the Copy button copies the whole scrollback, clicking the terminal focuses the input unless text is being selected. Output is rendered with `v-text` only (never HTML). While a command runs (sha256sum on the 2 MiB installers) the input is read-only, the log is `aria-busy` and a "Running…" spinner shows (`motion-safe` only). The terminal stays dark in both themes; long lines scroll inside the terminal at 375 px.
