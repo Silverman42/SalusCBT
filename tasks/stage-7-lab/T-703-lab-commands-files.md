@@ -23,7 +23,7 @@ File navigation and viewing commands.
 
 ## Acceptance criteria
 
-- [ ] Output matches fixtures.
+- [x] Output matches fixtures.
 
 ## Notes
 
@@ -37,3 +37,5 @@ File navigation and viewing commands.
 - Tests: `tests/unit/terminal-files.test.ts` (the lab-step outputs on `seedLab()`, edge cases per command, and a comparison of ~70 command lines with GNU coreutils on a real `build-lab.sh` run with mtimes set to `LAB_MTIME`, `LC_ALL=C`, `TZ=UTC`). The comparison is skipped where `ls` is not GNU (macOS), so it has only run on CI. `ls -C` is not compared (GNU may pad columns with tabs).
 - Not done: `ls -R`, `-i`, `--color`, quoting of odd names in `ls` output; the lab files have none. The criterion stays open until the T-707 fixtures (or the CI comparison) confirm it.
 - `cat ~/secplus-lab/.answer-lab-b` (Lab B step) prints `No such file or directory` because `seedLab()` leaves that file out on purpose; T-706 should decide how that step behaves.
+
+- **2026-11-08:** CI run on cb974af passed: the GNU coreutils comparison (~70 command lines) matches real Ubuntu output.
