@@ -24,6 +24,9 @@ export default defineNuxtConfig({
     // Server-only. Shared with Convex as SERVER_SECRET (LLD §18.1 finding 4).
     // Nuxt also overrides it at runtime from NUXT_SERVER_SECRET.
     serverSecret: process.env.NUXT_SERVER_SECRET ?? "",
+    // Server-only. HMAC key for the ipHash sent to attempts.start (LLD §7.1,
+    // §15.2), so Convex never sees a raw IP. Overridden by NUXT_IP_PEPPER.
+    ipPepper: process.env.NUXT_IP_PEPPER ?? "",
     public: {
       // Set by `convex deploy --cmd-url-env-var-name NUXT_PUBLIC_CONVEX_URL` on Netlify (LLD §15.3),
       // or taken from CONVEX_URL in .env.local during local development.
