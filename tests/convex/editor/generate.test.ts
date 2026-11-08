@@ -276,6 +276,15 @@ describe("editor.generate and preview attempts (T-606)", () => {
       expect(item.earned).toBeLessThan(item.max);
     });
 
+    it("cannot be shared by link", async () => {
+      const { t, tutor, draft } = await setupAll();
+      const versionId = await draft(tutor);
+      const preview = await tutor.as.mutation(api.editor.previewAttempt, { versionId });
+      const own = { attemptId: preview.attemptId, anonToken: preview.anonToken };
+      await t.mutation(api.attempts.submit, own);
+      expect(await codeOf(t.mutation(api.shareLinks.create, own))).toBe("NOT_FOUND");
+    });
+
     it("can be started by the version's author only", async () => {
       const { seeded, tutor, other, admin, draft, t } = await setupAll();
       const versionId = await draft(tutor);

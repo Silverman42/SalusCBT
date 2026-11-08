@@ -68,6 +68,8 @@ export const create = mutation({
   returns: v.object({ publicId: v.string() }),
   handler: async (ctx, args) => {
     const attempt = requireSubmitted(await loadOwnAttempt(ctx, args.attemptId, args.anonToken));
+    // Editor previews mark against unpublished drafts; never share them.
+    if (attempt.preview) fail("NOT_FOUND");
     const existing = await activeLink(ctx, attempt);
     if (existing) return { publicId: existing.publicId };
 
@@ -140,7 +142,7 @@ export const view = query({
     if (!link || link.revokedAt !== undefined) return null;
     const attempt = await ctx.db.get("attempts", link.attemptId);
     if (!attempt || attempt.anonKey !== link.anonKey) return null;
-    if (attempt.status !== "submitted" || !attempt.result) return null;
+    if (attempt.status !== "submitted" || !attempt.result || attempt.preview) return null;
 
     const { attemptId: _omit, ...result } = await buildResult(ctx, attempt);
     return { result, review: await buildReview(ctx, attempt) };
