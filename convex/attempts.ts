@@ -11,10 +11,14 @@
  * `getPaper` and `getState` are the student's reads (T-205). Both take the
  * anon token and give the same `NOT_FOUND` for a missing or foreign attempt.
  * `saveResponse` (T-206) is the student's only write while sitting the exam.
+ *
+ * Marking happens once, in `finalise` (T-207, LLD §7.4), reached three ways:
+ * the student's `submit`, the timer's `autoSubmit` (scheduled by `start`) and
+ * the `sweepOpenAttempts` cron, a safety net for a lost timer job.
  */
-import { v } from "convex/values";
+import { v, type Infer } from "convex/values";
 import { internal } from "./_generated/api";
-import type { Doc } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import { env, internalMutation, mutation, query, type MutationCtx } from "./_generated/server";
 import type { AnswerValue } from "../shared/content";
 import { answerValueValidator } from "../shared/validate";
@@ -25,6 +29,8 @@ import { normaliseClassCode, randomUint32 } from "./lib/codes";
 import { fail } from "./lib/errors";
 import { loadPaperQuestions, paperValidator, sectionsFor, toPaperQuestion } from "./lib/paper";
 import { enforceRateLimit } from "./lib/rateLimits";
+import { scorePaper, type MarkKey } from "./marking/score";
+import { attemptResultValidator } from "./schema";
 
 /** The exam a start without a class code sits (its `defaultVersionId`). */
 export const DEFAULT_EXAM_SLUG = "sy0-701";
@@ -344,13 +350,180 @@ export const saveResponse = mutation({
   },
 });
 
+export type AttemptResult = Infer<typeof attemptResultValidator>;
+
+/** Who finalised an attempt (`attempts.submittedBy`). */
+type SubmittedBy = NonNullable<Doc<"attempts">["submittedBy"]>;
+
+/** More keys than a version has (95 in the seed: both PBQ sets and the MCQs). */
+const KEY_LIMIT = 1000;
+
+/** The cron finalises attempts left `in_progress` this long after their deadline (LLD §12.3). */
+export const SWEEP_GRACE_MS = 60_000;
+
 /**
- * Timer submit, scheduled by `start` at `deadline + 30 s` (LLD §7.4).
- * TODO(T-207): call `finalise(ctx, attempt, "timer")`. Until then this is a
- * no-op, so `start` has a real job id to store and cancel.
+ * Attempts finalised per sweep run. Each finalise reads about 280 documents
+ * (90 questions, 95 keys, ≤ 90 responses, attempt, version, exam; the seed is
+ * ~150 KB in all) and writes ≤ 91, so 10 stays far inside one transaction's
+ * limits. A full batch schedules the next run straight away.
+ */
+export const SWEEP_BATCH = 10;
+
+/**
+ * Mark an attempt and close it (LLD §7.4, EX-13, EX-16, SE-1, SE-4).
+ *
+ * Idempotent: an attempt that is no longer `in_progress` is returned as is
+ * (its stored `result`, or `null` if it never got one), so a student submit
+ * racing the timer marks once and both see the same result. Convex runs each
+ * mutation as a serialisable transaction, so two calls can't both pass the
+ * status check.
+ *
+ * Reads `answerKeys` here only, on the server; the keys are never returned.
+ * Questions are the attempt's paper (its PBQ set and the MCQs). A response row
+ * with no `value` (a cleared answer) and a question with no row both score 0.
+ * Each response row on the paper gets `earned` (capped at the question's
+ * points) and, for PBQs, `partResults`. `submittedAt = min(now, deadline)`.
+ * A student submit cancels the pending timer job.
+ */
+export async function finalise(
+  ctx: MutationCtx,
+  attempt: Doc<"attempts">,
+  by: SubmittedBy,
+): Promise<AttemptResult | null> {
+  if (attempt.status !== "in_progress") return attempt.result ?? null;
+
+  const version = await ctx.db.get("examVersions", attempt.versionId);
+  const exam = version ? await ctx.db.get("exams", version.examId) : null;
+  if (!exam) {
+    // Versions are never deleted while attempts point at them; this is a data bug.
+    throw new Error(`finalise: attempt ${attempt._id} has no exam (version ${attempt.versionId})`);
+  }
+
+  const questions = await loadPaperQuestions(ctx, attempt);
+  const onPaper = new Set<Id<"questions">>(questions.map((q) => q._id));
+
+  const keyRows = await ctx.db
+    .query("answerKeys")
+    .withIndex("by_version", (q) => q.eq("versionId", attempt.versionId))
+    .take(KEY_LIMIT);
+  const keys = new Map<Id<"questions">, MarkKey>();
+  for (const k of keyRows) {
+    if (onPaper.has(k.questionId)) keys.set(k.questionId, { correct: k.correct, parts: k.parts });
+  }
+  const missing = questions.filter((q) => !keys.has(q._id)).map((q) => q._id);
+  if (missing.length > 0) {
+    // Scores 0 rather than failing the submit; loud so a bad version is noticed.
+    // Ids only: no answer or key data in logs.
+    console.error(
+      `finalise: no answer key for ${missing.length} question(s) of version ${attempt.versionId}, scored 0: ${missing.join(", ")}`,
+    );
+  }
+
+  const responses = (
+    await ctx.db
+      .query("responses")
+      .withIndex("by_attempt_question", (q) => q.eq("attemptId", attempt._id))
+      .take(RESPONSE_LIMIT)
+  ).filter((r) => onPaper.has(r.questionId));
+  const values = new Map<Id<"questions">, AnswerValue | undefined>(
+    responses.map((r) => [r.questionId, (r.value ?? undefined) as AnswerValue | undefined]),
+  );
+
+  const { perQuestion, summary } = scorePaper(questions, keys, values, exam);
+
+  const pointsOf = new Map(questions.map((q) => [q._id, q.points]));
+  const scoreOf = new Map(perQuestion.map((s) => [s.questionId, s]));
+  for (const r of responses) {
+    const s = scoreOf.get(r.questionId);
+    if (!s) continue;
+    const earned = Math.max(0, Math.min(s.earned, pointsOf.get(r.questionId) ?? 0));
+    await ctx.db.patch("responses", r._id, {
+      earned,
+      ...(s.parts !== undefined ? { partResults: s.parts } : {}),
+    });
+  }
+
+  const submittedAt = Math.min(Date.now(), attempt.deadline);
+  const result: AttemptResult = {
+    ...summary,
+    flaggedCount: responses.filter((r) => r.flagged).length,
+    timeUsedSec: Math.max(0, Math.round((submittedAt - attempt.startedAt) / 1000)),
+  };
+  await ctx.db.patch("attempts", attempt._id, {
+    status: "submitted",
+    submittedAt,
+    submittedBy: by,
+    result,
+  });
+
+  if (by === "student" && attempt.autoSubmitJobId) {
+    const job = await ctx.db.system.get("_scheduled_functions", attempt.autoSubmitJobId);
+    if (job?.state.kind === "pending") await ctx.scheduler.cancel(attempt.autoSubmitJobId);
+  }
+  return result;
+}
+
+/**
+ * The student's submit (LLD §5.1, §7.4, EX-13, EX-16). Marks the attempt and
+ * returns its result summary: totals, scaled score, pass flags, per-domain
+ * points, flagged count and time used. No keys, explanations or per-question
+ * marks (SE-1); the review comes from `review.getReview` (T-208).
+ *
+ * Idempotent: submitting an attempt that is already submitted (by the student
+ * or the timer) returns the stored result instead of an error. Allowed after
+ * the deadline too (saves stop at `deadline + 30 s`, so the answers are fixed);
+ * `submittedAt` is still capped at the deadline.
+ *
+ * Errors: `BAD_TOKEN`; `NOT_FOUND` (missing or another token's attempt, SE-3);
+ * `ATTEMPT_CLOSED` (closed without a result, i.e. `expired`).
+ */
+export const submit = mutation({
+  args: { attemptId: v.id("attempts"), anonToken: v.string() },
+  returns: attemptResultValidator,
+  handler: async (ctx, args) => {
+    const attempt = await loadOwnAttempt(ctx, args.attemptId, args.anonToken);
+    const result = await finalise(ctx, attempt, "student");
+    if (!result) fail("ATTEMPT_CLOSED");
+    return result;
+  },
+});
+
+/**
+ * Timer submit, scheduled by `start` at `deadline + 30 s` (LLD §7.4, SE-4):
+ * finalises whatever was saved, with `submittedBy = "timer"`. A no-op when the
+ * attempt is gone or already finalised (the student submitted first, or the
+ * sweep got there).
  */
 export const autoSubmit = internalMutation({
   args: { attemptId: v.id("attempts") },
   returns: v.null(),
-  handler: async () => null,
+  handler: async (ctx, args) => {
+    const attempt = await ctx.db.get("attempts", args.attemptId);
+    if (attempt) await finalise(ctx, attempt, "timer");
+    return null;
+  },
+});
+
+/**
+ * Safety net, every 10 minutes from `crons.ts` (LLD §12.3): finalise
+ * `in_progress` attempts more than 60 s past their deadline, i.e. whose timer
+ * job failed or was lost. Oldest deadline first, `SWEEP_BATCH` per run; a full
+ * batch schedules another run at once until none are left. Returns the number
+ * finalised in this run.
+ */
+export const sweepOpenAttempts = internalMutation({
+  args: {},
+  returns: v.number(),
+  handler: async (ctx) => {
+    const cutoff = Date.now() - SWEEP_GRACE_MS;
+    const stale = await ctx.db
+      .query("attempts")
+      .withIndex("by_status_deadline", (q) => q.eq("status", "in_progress").lt("deadline", cutoff))
+      .take(SWEEP_BATCH);
+    for (const attempt of stale) await finalise(ctx, attempt, "timer");
+    if (stale.length === SWEEP_BATCH) {
+      await ctx.scheduler.runAfter(0, internal.attempts.sweepOpenAttempts, {});
+    }
+    return stale.length;
+  },
 });

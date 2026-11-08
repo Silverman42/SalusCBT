@@ -13,6 +13,21 @@ const domain = v.union(
   v.literal("5.0"),
 );
 
+/**
+ * `attempts.result`, written once at submit (LLD §7.4) and returned by
+ * `attempts.submit` and `review.getResult`. Totals only: no keys (SE-1).
+ */
+export const attemptResultValidator = v.object({
+  points: v.number(),
+  totalPoints: v.number(),
+  scaled: v.number(),
+  passed: v.boolean(),
+  comfortable: v.boolean(),
+  domains: v.array(v.object({ domain, points: v.number(), max: v.number() })),
+  flaggedCount: v.number(),
+  timeUsedSec: v.number(),
+});
+
 export default defineSchema({
   profiles: defineTable({
     authUserId: v.string(), // Better Auth user id (component table)
@@ -142,18 +157,7 @@ export default defineSchema({
     submittedBy: v.optional(v.union(v.literal("student"), v.literal("timer"))),
     shuffleSeed: v.number(), // uint32
     autoSubmitJobId: v.optional(v.id("_scheduled_functions")),
-    result: v.optional(
-      v.object({
-        points: v.number(),
-        totalPoints: v.number(),
-        scaled: v.number(),
-        passed: v.boolean(),
-        comfortable: v.boolean(),
-        domains: v.array(v.object({ domain, points: v.number(), max: v.number() })),
-        flaggedCount: v.number(),
-        timeUsedSec: v.number(),
-      }),
-    ),
+    result: v.optional(attemptResultValidator),
     ipHash: v.optional(v.string()), // cleared after 30 days (PR-3)
   })
     .index("by_anonKey", ["anonKey", "startedAt"])
