@@ -18,13 +18,13 @@ Single source of truth for task status. Task details live in the linked files; r
 | 0 · Decisions and inputs | 3 | 0 | 0 | 0 | 0 | 3 |
 | 1 · Setup | 9 | 1 | 0 | 0 | 1 | 7 |
 | 2 · Exam engine | 20 | 0 | 0 | 0 | 6 | 14 |
-| 3 · Interactive PBQs | 9 | 1 | 0 | 0 | 0 | 8 |
+| 3 · Interactive PBQs | 9 | 0 | 0 | 0 | 1 | 8 |
 | 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
 | 5 · Classes | 10 | 1 | 0 | 0 | 3 | 6 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 3 | 0 | 0 | 2 | 2 |
 | X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **11** | 0 | 0 | **14** | **56** |
+| **Total** | **81** | **10** | 0 | 0 | **15** | **56** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -101,7 +101,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-306 | [PbqFirewall component (perimeter firewall)](stage-3-pbqs/T-306-pbq-firewall.md) | T-213 | Done | | 2026-11-08 |  |
 | T-307 | [Retake mode (PBQ set B)](stage-3-pbqs/T-307-retake-mode.md) | T-204, T-302, T-303, T-304, T-305, T-306 | Done | | 2026-11-08 | Retake = set B + 85 MCQs; start refuses retake without full set B |
 | T-308 | [Lab download: build-lab.sh and Lab D instructions](stage-3-pbqs/T-308-lab-download.md) | T-001 | Done | | 2026-11-08 |  |
-| T-309 | [PBQ review rendering and E2E tests](stage-3-pbqs/T-309-pbq-review-and-e2e.md) | T-307, T-216 | Not started | | |  |
+| T-309 | [PBQ review rendering and E2E tests](stage-3-pbqs/T-309-pbq-review-and-e2e.md) | T-307, T-216 | In review | Claude (subagent) | 2026-11-08 | PBQ review renders real components with per-part marks; pbq.spec.ts gated by E2E_EXAM=1, needs SERVER_SECRET |
 
 ### Stage 4 · Admin and tutor sign-in
 
