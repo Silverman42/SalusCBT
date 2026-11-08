@@ -21,6 +21,8 @@ import type { Component } from "vue";
 import type { AttemptPaperPbq } from "~/composables/useAttempt";
 import type { AnswerValue, PbqTemplate } from "~~/shared/content";
 import PbqGeneric from "~/components/pbq/PbqGeneric.vue";
+import PbqSshLog from "~/components/pbq/PbqSshLog.vue";
+import PbqNmap from "~/components/pbq/PbqNmap.vue";
 
 defineProps<{
   question: AttemptPaperPbq;
@@ -32,8 +34,8 @@ const emit = defineEmits<{
 }>();
 
 const COMPONENTS: Record<PbqTemplate, Component> = {
-  sshLog: PbqGeneric, // T-302: PbqSshLog
-  nmap: PbqGeneric, // T-303: PbqNmap
+  sshLog: PbqSshLog, // T-302
+  nmap: PbqNmap, // T-303
   hashCheck: PbqGeneric, // T-304: PbqHashCheck
   permissions: PbqGeneric, // T-305: PbqPermissions
   firewall: PbqGeneric, // T-306: PbqFirewall
