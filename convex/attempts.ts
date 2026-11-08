@@ -10,6 +10,7 @@
  *
  * `getPaper` and `getState` are the student's reads (T-205). Both take the
  * anon token and give the same `NOT_FOUND` for a missing or foreign attempt.
+ * `saveResponse` (T-206) is the student's only write while sitting the exam.
  */
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
@@ -18,10 +19,11 @@ import { env, internalMutation, mutation, query, type MutationCtx } from "./_gen
 import type { AnswerValue } from "../shared/content";
 import { answerValueValidator } from "../shared/validate";
 import { anonKeyOf, loadOwnAttempt } from "./lib/anon";
+import { answerFitsQuestion, isBlankAnswer } from "./lib/answers";
 import { secretsMatch } from "./lib/clientIp";
 import { normaliseClassCode, randomUint32 } from "./lib/codes";
 import { fail } from "./lib/errors";
-import { loadPaperQuestions, paperValidator, toPaperQuestion } from "./lib/paper";
+import { loadPaperQuestions, paperValidator, sectionsFor, toPaperQuestion } from "./lib/paper";
 import { enforceRateLimit } from "./lib/rateLimits";
 
 /** The exam a start without a class code sits (its `defaultVersionId`). */
@@ -29,6 +31,9 @@ export const DEFAULT_EXAM_SLUG = "sy0-701";
 
 /** SE-4: the timer job runs this long after the deadline (same grace as saves). */
 export const AUTO_SUBMIT_GRACE_MS = 30_000;
+
+/** SE-4: saves are accepted until `deadline + 30 s`, when the timer submits. */
+export const SAVE_GRACE_MS = AUTO_SUBMIT_GRACE_MS;
 
 /** CL-4: display name length after trimming. */
 export const DISPLAY_NAME_MAX = 40;
@@ -243,6 +248,99 @@ export const getState = query({
         updatedAt: r.updatedAt,
       })),
     };
+  },
+});
+
+/**
+ * Save one question's answer and flag (LLD §7.2, EX-7, EX-11, SE-3, SE-4).
+ * Upserts the single `responses` row for `(attemptId, questionId)` (D9).
+ *
+ * Every call carries the question's whole state: `value` (omitted, or blank,
+ * clears the answer) and `flagged`. A flag toggle therefore resends the
+ * current value, and a retry is safe to repeat.
+ *
+ * Ordering (LLD is silent, so last-write-wins by the client's change time):
+ * `clientUpdatedAt` is when the student made the change, in server-clock
+ * milliseconds (`Date.now() + clockOffset`, T-212). It is clamped to
+ * `[startedAt, now]` and stored as `updatedAt`. A save whose time is older
+ * than the stored row's is not applied (`applied: false`), so a queued retry
+ * that arrives late can't overwrite a newer answer. Without it the server time
+ * is used, i.e. arrival order. A cleared row is kept (not deleted) so this
+ * check still holds after a clear; marking treats it as unanswered.
+ *
+ * Never reads `answerKeys` and never writes marks; marking is at submit.
+ *
+ * Errors: `BAD_TOKEN`; `NOT_FOUND` (attempt missing or another token's, or a
+ * question not on this attempt's paper: another version, or the other PBQ
+ * set); `ATTEMPT_CLOSED` (not `in_progress`, or past `deadline + 30 s`);
+ * `VALIDATION_FAILED` (value doesn't fit the question, or a bad
+ * `clientUpdatedAt`).
+ */
+export const saveResponse = mutation({
+  args: {
+    attemptId: v.id("attempts"),
+    anonToken: v.string(),
+    questionId: v.id("questions"),
+    value: v.optional(answerValueValidator),
+    flagged: v.boolean(),
+    clientUpdatedAt: v.optional(v.number()),
+  },
+  returns: v.object({ ok: v.literal(true), savedAt: v.number(), applied: v.boolean() }),
+  handler: async (ctx, args) => {
+    const attempt = await loadOwnAttempt(ctx, args.attemptId, args.anonToken);
+    const now = Date.now();
+    if (attempt.status !== "in_progress" || now > attempt.deadline + SAVE_GRACE_MS) {
+      fail("ATTEMPT_CLOSED");
+    }
+
+    const question = await ctx.db.get("questions", args.questionId);
+    const sections: readonly Doc<"questions">["section"][] = sectionsFor(attempt.mode);
+    if (
+      !question ||
+      question.versionId !== attempt.versionId ||
+      !sections.includes(question.section)
+    ) {
+      fail("NOT_FOUND");
+    }
+
+    if (args.value !== undefined && !answerFitsQuestion(question, args.value)) {
+      fail("VALIDATION_FAILED");
+    }
+    const value = args.value === undefined || isBlankAnswer(args.value) ? undefined : args.value;
+
+    if (args.clientUpdatedAt !== undefined && !Number.isFinite(args.clientUpdatedAt)) {
+      fail("VALIDATION_FAILED");
+    }
+    const updatedAt = Math.min(now, Math.max(attempt.startedAt, args.clientUpdatedAt ?? now));
+
+    const existing = await ctx.db
+      .query("responses")
+      .withIndex("by_attempt_question", (q) =>
+        q.eq("attemptId", attempt._id).eq("questionId", question._id),
+      )
+      .unique();
+
+    if (existing) {
+      if (updatedAt < existing.updatedAt)
+        return { ok: true as const, savedAt: now, applied: false };
+      await ctx.db.replace("responses", existing._id, {
+        attemptId: attempt._id,
+        questionId: question._id,
+        ...(value !== undefined ? { value } : {}),
+        flagged: args.flagged,
+        updatedAt,
+      });
+    } else if (value !== undefined || args.flagged) {
+      // D9: no row for a question that is neither answered nor flagged.
+      await ctx.db.insert("responses", {
+        attemptId: attempt._id,
+        questionId: question._id,
+        ...(value !== undefined ? { value } : {}),
+        flagged: args.flagged,
+        updatedAt,
+      });
+    }
+    return { ok: true as const, savedAt: now, applied: true };
   },
 });
 

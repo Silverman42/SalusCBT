@@ -25,6 +25,7 @@ import type * as generators_sha256 from "../generators/sha256.js";
 import type * as generators_sshLog from "../generators/sshLog.js";
 import type * as http from "../http.js";
 import type * as lib_anon from "../lib/anon.js";
+import type * as lib_answers from "../lib/answers.js";
 import type * as lib_audit from "../lib/audit.js";
 import type * as lib_clientIp from "../lib/clientIp.js";
 import type * as lib_codes from "../lib/codes.js";
@@ -62,6 +63,7 @@ declare const fullApi: ApiFromModules<{
   "generators/sshLog": typeof generators_sshLog;
   http: typeof http;
   "lib/anon": typeof lib_anon;
+  "lib/answers": typeof lib_answers;
   "lib/audit": typeof lib_audit;
   "lib/clientIp": typeof lib_clientIp;
   "lib/codes": typeof lib_codes;
