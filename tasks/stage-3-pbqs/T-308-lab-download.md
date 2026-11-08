@@ -25,8 +25,11 @@ Ship the lab script as a download for the MVP.
 
 ## Acceptance criteria
 
-- [ ] Download works; warning visible before the link.
+- [x] Download works; warning visible before the link.
 
 ## Notes
 
 - LB-9 moved to Stage 3 in the PRD release plan (2026-11-08), so it ships with the MVP.
+- `build-lab.sh` is bundled as a Nitro server asset (`nitro.serverAssets`, base `lab`, `pattern: "build-lab.sh"`), so it works on Netlify functions and the exam markdown with its answer key is never bundled (SE-1). The production bundle stores `.sh` as bytes, so the route reads it with `getItemRaw` and decodes it. Checked with `npm run build` + `node .output/server/index.mjs`: body matches the source byte for byte.
+- Lab instructions (Labs A–D, no answers, Lab C pass values left out) are hand-written in `shared/lab.ts` from Part 5. The page renders them, and `/downloads/lab-instructions.md` serves the same text as a Markdown download.
+- Extra file: `app/components/lab/InlineCode.vue` renders `backtick` code in instruction text.
