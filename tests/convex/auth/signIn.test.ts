@@ -21,6 +21,9 @@ let ipCounter = 0;
 /** A fresh documentation-range IP, so Better Auth's per-IP limits stay out of the way. */
 const freshIp = () => `198.51.100.${++ipCounter % 250}`;
 
+/** A test client, possibly with request metadata attached (which drops registerComponent). */
+type Caller = Pick<T, "fetch">;
+
 async function invite(t: T, email: string, status: "active" | "removed" = "active") {
   await t.run(async (ctx) => {
     const auth = await createAuth(ctx).$context;
@@ -38,7 +41,7 @@ async function invite(t: T, email: string, status: "active" | "removed" = "activ
   });
 }
 
-function post(t: T, path: string, body: unknown, headers: Record<string, string> = {}) {
+function post(t: Caller, path: string, body: unknown, headers: Record<string, string> = {}) {
   return t.fetch(`/api/auth${path}`, {
     method: "POST",
     headers: {
@@ -52,7 +55,7 @@ function post(t: T, path: string, body: unknown, headers: Record<string, string>
 }
 
 function requestCode(
-  t: T,
+  t: Caller,
   email: string,
   opts: { type?: string; headers?: Record<string, string> } = {},
 ) {
@@ -256,7 +259,7 @@ describe("Better Auth sign-in by code (T-402)", () => {
 
   describe("per-IP limit (otpRequestIp, 30/hour) and the proxy secret", () => {
     /** 30 requests for unknown emails, each with a different claimed client IP. */
-    async function spendIpAllowance(t: T, headers: () => Record<string, string>) {
+    async function spendIpAllowance(t: Caller, headers: () => Record<string, string>) {
       for (let i = 0; i < 30; i++) {
         await requestCode(t, `filler-${i}@example.com`, { headers: headers() });
       }

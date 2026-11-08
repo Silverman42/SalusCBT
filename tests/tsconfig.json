@@ -1,0 +1,17 @@
+{
+  /* Unit and convex-test suites, type-checked by `npm run typecheck`. */
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023", "dom"],
+    "types": ["node", "vite/client"],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["./unit/**/*", "./convex/**/*"]
+}

@@ -35,7 +35,10 @@ describe("error codes (LLD §16)", () => {
     try {
       rateLimited(1234.2);
     } catch (e) {
-      expect((e as ConvexError<object>).data).toEqual({ code: "RATE_LIMITED", retryAfter: 1235 });
+      expect((e as ConvexError<{ code: string; retryAfter: number }>).data).toEqual({
+        code: "RATE_LIMITED",
+        retryAfter: 1235,
+      });
       expect(errorCodeOf(e)).toBe("RATE_LIMITED");
       return;
     }
