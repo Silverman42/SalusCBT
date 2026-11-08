@@ -25,7 +25,7 @@ The parser, seed data, PBQ content and terminal lab all come from `secplus-701-m
 
 ## Acceptance criteria
 
-- [ ] Both files are committed under `content/source/`.
+- [x] Both files are committed under `content/source/`.
 - [x] A quick read confirms `# Part N` headings, `## PBQ n.` / `## PBQ Bn.` headings and the Part 6 key table exist.
 
 ## Notes
