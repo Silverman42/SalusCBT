@@ -15,12 +15,30 @@ import { columnLines } from "../../app/lib/terminal/commands/ls";
 import { compileMode } from "../../app/lib/terminal/commands/chmod";
 import { humanSize } from "../../app/lib/terminal/commands/fileUtil";
 import { Shell } from "../../app/lib/terminal/runner";
-import { LAB_MTIME, seedLab } from "../../app/lib/terminal/seedLab";
+import { LAB_MTIME, LAB_SEED, seedLab } from "../../app/lib/terminal/seedLab";
 import { Vfs } from "../../app/lib/terminal/vfs";
 
-async function labShell(victim = "vpn-client-3.1.msi"): Promise<Shell> {
-  const { vfs } = await seedLab({ pickVictim: () => victim });
+async function labShell(
+  victim = "vpn-client-3.1.msi",
+  randomBytes?: (buf: Uint8Array<ArrayBuffer>) => void,
+): Promise<Shell> {
+  const { vfs } = await seedLab({ pickVictim: () => victim, randomBytes });
   return new Shell({ vfs });
+}
+
+/**
+ * Replays a real build's installer bytes as seedLab's random source, so both
+ * sides hash identical files. seedLab fills installers in script order, and
+ * the script appends the payload after the random part, so the first
+ * `buf.length` bytes of each real file are exactly what /dev/urandom gave it.
+ */
+function realInstallerBytes(downloads: string): (buf: Uint8Array<ArrayBuffer>) => void {
+  const queue = [...LAB_SEED.installers.names];
+  return (buf) => {
+    const name = queue.shift();
+    if (!name) throw new Error("more installers than the seed lists");
+    buf.set(readFileSync(join(downloads, name)).subarray(0, buf.length));
+  };
 }
 
 let clock = LAB_MTIME;
@@ -643,7 +661,7 @@ describe.skipIf(!gnuCoreutils())("against GNU coreutils on a real build-lab.sh r
       const id = (flag: string) => spawnSync("id", [flag], { encoding: "utf8" }).stdout.trim();
       const owner = ` ${id("-un")} ${id("-gn")} `;
 
-      const sh = await labShell(answer);
+      const sh = await labShell(answer, realInstallerBytes(join(lab, LAB_SEED.installers.dir)));
       for (const line of COMPARE) {
         const real = spawnSync("bash", ["-c", `umask 022; cd ~/secplus-lab && ${line}`], {
           env,
