@@ -7,8 +7,12 @@ import {
   isPublicId,
   partAnswerText,
   partRows,
+  parseDomainFilter,
+  parseReviewFilter,
   passPoints,
+  queryReview,
   questionLabel,
+  reviewDomains,
   reviewStatus,
   shareUrl,
   type ResultSummaryData,
@@ -195,5 +199,43 @@ describe("resultView helpers (T-504)", () => {
     expect(partRows(fw)).toEqual([
       { id: "1", prompt: "Any → Web (TCP)", yours: "443 · —", correct: "443 · ALLOW", ok: false },
     ]);
+  });
+});
+
+describe("review filters (T-216, EX-18)", () => {
+  const items = [
+    { id: 1, earned: 1, max: 1, flagged: false, domain: "1.0" as const },
+    { id: 2, earned: 0, max: 1, flagged: true, domain: "2.0" as const },
+    { id: 3, earned: 1, max: 2, flagged: true, domain: "1.0" as const },
+    { id: 4, earned: 0, max: 1, flagged: false, domain: "1.0" as const },
+  ];
+  const ids = (xs: { id: number }[]) => xs.map((x) => x.id);
+
+  it("combines the status and domain filters", () => {
+    expect(ids(queryReview(items, "all", "all"))).toEqual([1, 2, 3, 4]);
+    expect(ids(queryReview(items, "wrong", "all"))).toEqual([2, 3, 4]);
+    expect(ids(queryReview(items, "all", "1.0"))).toEqual([1, 3, 4]);
+    expect(ids(queryReview(items, "wrong", "1.0"))).toEqual([3, 4]);
+    expect(ids(queryReview(items, "flagged", "1.0"))).toEqual([3]);
+    expect(ids(queryReview(items, "flagged", "2.0"))).toEqual([2]);
+    expect(queryReview(items, "wrong", "5.0")).toEqual([]);
+  });
+
+  it("lists the domains present, in order, with counts", () => {
+    expect(reviewDomains(items)).toEqual([
+      { domain: "1.0", label: "1.0 General Security Concepts", count: 3 },
+      { domain: "2.0", label: "2.0 Threats, Vulnerabilities and Mitigations", count: 1 },
+    ]);
+  });
+
+  it("parses filters from the URL", () => {
+    expect(parseReviewFilter("wrong")).toBe("wrong");
+    expect(parseReviewFilter("flagged")).toBe("flagged");
+    expect(parseReviewFilter("bogus")).toBe("all");
+    expect(parseReviewFilter(["wrong"])).toBe("all");
+    expect(parseDomainFilter("3.0")).toBe("3.0");
+    expect(parseDomainFilter("6.0")).toBe("all");
+    expect(parseDomainFilter("toString")).toBe("all");
+    expect(parseDomainFilter(undefined)).toBe("all");
   });
 });

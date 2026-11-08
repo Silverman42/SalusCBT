@@ -46,6 +46,8 @@ export default defineNuxtConfig({
     // The exam runner and its result/review pages read the anon token from
     // localStorage, so they render in the browser only (LLD §14.1).
     "/exam/**": { ssr: false },
+    // Same for the student history (T-217): it lists attempts by that token.
+    "/history": { ssr: false },
     // Share pages (CL-9, LLD §14.1): SSR, cached at the CDN for 60 s and never
     // in the browser, so a revoked link stops working within a minute. No
     // stale-while-revalidate: that would serve a revoked result past 60 s.
