@@ -15,7 +15,7 @@ Single source of truth for task status. Task details live in the linked files; r
 
 | Stage | Tasks | Not started | In progress | Blocked | In review | Done |
 | --- | --- | --- | --- | --- | --- | --- |
-| 0 · Decisions and inputs | 3 | 1 | 1 | 0 | 0 | 1 |
+| 0 · Decisions and inputs | 3 | 0 | 1 | 0 | 0 | 2 |
 | 1 · Setup | 9 | 8 | 0 | 0 | 0 | 1 |
 | 2 · Exam engine | 20 | 20 | 0 | 0 | 0 | 0 |
 | 3 · Interactive PBQs | 9 | 9 | 0 | 0 | 0 | 0 |
@@ -24,7 +24,7 @@ Single source of truth for task status. Task details live in the linked files; r
 | 6 · Question editor | 9 | 9 | 0 | 0 | 0 | 0 |
 | 7 · Terminal lab | 7 | 7 | 0 | 0 | 0 | 0 |
 | X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **78** | **1** | 0 | 0 | **2** |
+| **Total** | **81** | **77** | **1** | 0 | 0 | **3** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -48,7 +48,7 @@ From the PRD release plan. Tick when the gate task passes.
 | --- | --- | --- | --- | --- | --- | --- |
 | T-001 | [Add the source exam and lab files to the repo](stage-0-decisions/T-001-add-source-content.md) | — | In progress | | 2026-11-08 | Moved to `content/source/` on 2026-11-08; done once committed |
 | T-002 | [Accept or reject the 7 pending PRD review suggestions](stage-0-decisions/T-002-resolve-prd-suggestions.md) | — | Done | | 2026-11-08 | All 7 accepted in the shared doc; `docs/PRD.md` updated |
-| T-003 | [Auth spike: Better Auth email OTP on Convex through the Nuxt proxy](stage-0-decisions/T-003-auth-spike.md) | T-101 | Not started | | 2026-11-08 | Not started; needs T-101 scaffold first. 1-day timebox |
+| T-003 | [Auth spike: Better Auth email OTP on Convex through the Nuxt proxy](stage-0-decisions/T-003-auth-spike.md) | T-101 | Done | | 2026-11-08 | Primary path confirmed; results in LLD §18.1; code on branch `spike/t-003-auth` |
 
 ### Stage 1 · Setup
 
@@ -178,7 +178,9 @@ From the PRD release plan. Tick when the gate task passes.
 
 | Date | Decision | Affects | Source |
 | --- | --- | --- | --- |
-| | Auth path: Better Auth primary or §9.4 fallback | T-402, T-403, T-104 | T-003 |
+| 2026-11-08 | Auth path: **Better Auth primary** (§9.1). Pinned `better-auth@1.7.18` + `@convex-dev/better-auth@0.13.0` (component needs `better-auth >=1.7.16 <1.8.0`) | T-402, T-403, T-104 | T-003; LLD §18.1 |
+| 2026-11-08 | Convex in Vue: thin `ConvexClient` wrapper, not `convex-vue` (no release since July 2025) | T-212, T-403 | T-003; LLD §2 |
+| 2026-11-08 | CSP: `script-src 'self'` alone breaks Nuxt; use per-request nonces (`nuxt-security`) and keep `'unsafe-inline'` only for `style-src-attr` | T-218, T-504 | T-003; LLD §18.1 |
 | 2026-11-08 | Fact check: the source file has exactly 4 Choose TWO questions (Q20, Q26, Q50, Q78), so suggestion #1 is correct | T-107, T-202 | `secplus-701-mock-exam.md` lines 419, 462, 631, 828 |
 | 2026-11-08 | All 7 PRD suggestions accepted: EX-9 (4 Choose TWO), EX-20 (export warning), EX-21 (time multiplier), SE-3 (anon ID is a secret), SE-4 (30 s grace), SE-5 (200/hour per IP), LB-9 moves to Stage 3 | T-104, T-107, T-202, T-204, T-206, T-210, T-214, T-308, T-509 | Shared PRD doc rev 80; `docs/PRD.md` |
 | 2026-11-08 | Anonymous token is 256-bit (32 bytes), as in LLD §4; PRD SE-3 changed from 128-bit to match | T-106, T-210 | Shared PRD doc rev 81; `docs/PRD.md` |

@@ -73,8 +73,8 @@ Exact versions are pinned during the Stage 1 spike (HLD §10). These are the sta
 | Framework | `nuxt@4`, `vue@3.5`, TypeScript `strict` | Netlify preset is detected automatically |
 | UI | `@nuxt/ui` (Tailwind CSS v4) | Dark mode, accessible components |
 | Backend | `convex` | Queries, mutations, actions, scheduler, crons |
-| Convex in Vue | `convex/browser` (`ConvexClient`) wrapped in `useConvex*` composables, or `convex-vue` if it proves stable in the spike | Live query subscriptions |
-| Auth | `better-auth` + `@convex-dev/better-auth` + `emailOTP` plugin | Versions pinned to a pair confirmed to deploy (the nuxt-convex guide pins `@convex-dev/better-auth@0.11.3` with `better-auth@1.5.6`) |
+| Convex in Vue | `convex/browser` (`ConvexClient`) wrapped in our own `useConvex*` composables | Live query subscriptions. Spike (T-003): `convex-vue` not used, no release since July 2025 and still 0.x |
+| Auth | `better-auth@1.7.18` + `@convex-dev/better-auth@0.13.0` + `emailOTP` plugin | Pair confirmed to deploy in the T-003 spike (2026-11-08). The component requires `better-auth >=1.7.16 <1.8.0`; upgrade the two together |
 | Rate limits | `@convex-dev/rate-limiter` | Token-bucket and fixed-window limits |
 | Email | `resend` | Behind `EmailProvider` |
 | Validation | `convex/values` validators; `zod` in the parser | |
@@ -583,7 +583,7 @@ export function summarise(questions, perQuestion, exam) {
 ### 9.1 Better Auth configuration (primary path)
 
 ```ts
-// convex/auth.ts (sketch; exact API names confirmed in the Stage 1 spike)
+// convex/auth.ts (sketch; API names confirmed in the T-003 spike, see §18.1)
 export const createAuth = (ctx) => betterAuth({
   baseURL: process.env.SITE_URL,                    // https://<netlify domain>
   database: authComponent.adapter(ctx),
@@ -917,3 +917,26 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 5. Run `seed.importExam` and check the gate: 85 MCQs, 10 PBQs, all keys, 102 points.
 6. Set up the Netlify site, environment variables and `netlify.toml`; first deploy with the console email provider.
 7. CI: run lint, type-check, Vitest and `convex-test` on every pull request.
+
+### 18.1 Auth spike result (T-003, 2026-11-08)
+
+**Decision: Better Auth primary path (§9.1).** The §9.4 fallback is not needed.
+
+Tested on a Convex Cloud dev deployment through the Nuxt proxy on `localhost:3000` (branch `spike/t-003-auth`, not merged):
+
+| Check | Result |
+| --- | --- |
+| Deploy with `emailOTP` on Convex | Works with `better-auth@1.7.18` + `@convex-dev/better-auth@0.13.0`. The reported bundling bug did not occur |
+| Send code, unknown vs registered email | Both return `200 {"success":true}`; only the registered email gets a code (no enumeration) |
+| Create a user while `disableSignUp: true` | Works from a Convex mutation: `(await createAuth(ctx).$context).internalAdapter.createUser({ email, name, emailVerified: true }, { method: "invitation" })`. Better Auth 1.7 requires the second (source) argument |
+| Verify code through `/api/auth/*` | Session cookie set on the app's own origin, `HttpOnly` (not readable from page scripts) |
+| Guarded Convex query | `authComponent.safeGetAuthUser(ctx)` returns the user when signed in, `null` when signed out or after sign-out |
+| Option defaults | Plugin defaults are 5 minutes and 3 attempts, so `expiresIn: 600` and `allowedAttempts: 5` must be set explicitly. Use `storeOTP: "hashed"` |
+
+Findings to carry into T-402 and T-403:
+
+1. **Proxy:** mirror `@convex-dev/better-auth/nextjs`'s handler. Strip hop-by-hop headers, set `host` to the Convex site, and send the browser origin only in `x-better-auth-forwarded-host` and `-proto`. The component trusts that origin only if it is in `trustedOrigins`, so set `trustedOrigins: [SITE_URL]`. The proxy reads `CONVEX_SITE_URL` (runtime config `convexSiteUrl`, `NUXT_CONVEX_SITE_URL` on Netlify).
+2. **Convex client auth:** `ConvexClient.setAuth` asks for a token only when it is called. Call it again whenever the Better Auth session id changes, and call `clearAuth()` on sign-out. Otherwise queries stay unauthenticated after sign-in.
+3. **Errors:** a plain `throw new Error()` reaches the browser as "Server Error". Throw `ConvexError` with the §16 codes so the UI can tell them apart.
+4. **Client IP header (not yet tested):** `x-salus-client-ip` (§9.1) is passed through by the component. Anyone can call the `.convex.site` URL directly and set that header, so per-IP OTP limits are only as strong as that header. Have the proxy also send a shared secret and trust the IP header only when the secret matches, or rely on the per-email limits. Decide in T-402.
+5. **CSP (§15.1):** `script-src 'self'` breaks the app. A production build has three executable inline scripts: the import map, the colour-mode script and `window.__NUXT__` config. Plan for T-218: per-request nonces through `nuxt-security`, giving `script-src 'self' 'nonce-…' 'strict-dynamic'`. Nuxt UI also emits two inline `<style>` blocks (theme colours and `@font-face`), which nonces can cover through `style-src-elem`. Keep `style-src-attr 'unsafe-inline'` for component style attributes, so `'unsafe-inline'` stays only for attributes. Nonces don't work with CDN-cached HTML, so the 60-second cache on `/r/[publicId]` needs hashes or no HTML caching.

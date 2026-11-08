@@ -30,11 +30,11 @@ Prove the chosen auth stack works end to end before building on it. The Nuxt int
 
 ## Acceptance criteria
 
-- [ ] Decision recorded: Better Auth primary path, or §9.4 fallback.
-- [ ] Exact package versions pinned in the decision log.
-- [ ] CSP nonce and Convex-Vue client findings recorded.
+- [x] Decision recorded: Better Auth primary path, or §9.4 fallback.
+- [x] Exact package versions pinned in the decision log.
+- [x] CSP nonce and Convex-Vue client findings recorded.
 
 ## Notes
 
-- **2026-11-08 check:** not started. There is no code yet, and it needs the T-101 scaffold first.
+- **2026-11-08 result:** Better Auth primary path. `better-auth@1.7.18` + `@convex-dev/better-auth@0.13.0` deploy and pass the full OTP flow through the Nuxt proxy. Thin `ConvexClient` wrapper instead of `convex-vue`. CSP needs nonces. Details and follow-ups in LLD §18.1. Spike code on branch `spike/t-003-auth` (not merged).
 - Timebox: 1 day. T-402 and T-403 cannot start until this is decided.
