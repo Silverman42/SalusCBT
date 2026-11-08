@@ -25,9 +25,18 @@ Define `PbqPayload`, part types, `PbqKey` and `AnswerValue` in `shared/` so the 
 
 ## Acceptance criteria
 
-- [ ] Types compile in both `app/` and `convex/`.
-- [ ] Validators reject a payload with a missing part or wrong template.
+- [x] Types compile in both `app/` and `convex/`.
+- [x] Validators reject a payload with a missing part or wrong template.
 
 ## Tests
 
 - Unit tests: one valid and one invalid payload per template.
+
+## Notes
+
+- Types in `shared/content.ts` follow LLD §3.2 exactly; added helper aliases only (`PbqTemplate`, `PayloadOf<T>`, `PbqPart`, `PartKind`, `FirewallAction`, `FirewallRuleRow`).
+- Validators in `shared/validate.ts` are Convex `v` validators (`pbqPayloadValidator`, `payloadValidators[template]`, `pbqKeyValidator`, `answerValueValidator`, part validators), so the schema and function args can use them directly. A type-level assertion keeps them equal to the hand-written types.
+- `validatePayload(template, payload)` returns `{ ok: true, value } | { ok: false, errors: { path, message }[] }` and never throws. Besides shape it checks: payload template matches, non-empty parts, unique part ids, pick/mcq choices, at least one scored part (sshLog, permissions), and non-empty firewall lists.
+- Also added `validatePbqKey(payload, key)` (every scored part keyed, portPair = two ports, pick/mcq keys valid, firewall keys from the choice lists; LLD §6.2/§10.2) and `validateAnswerValue(value)`.
+- `convex/tsconfig.json` now also includes `../shared/**/*`; the app side imports via `#shared/content` / `#shared/validate`. Verified with temporary imports from both sides.
+- Tests: `tests/unit/shared/validate.test.ts` (22 tests, fixtures from set A of the source exam).

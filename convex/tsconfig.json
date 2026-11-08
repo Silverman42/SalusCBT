@@ -1,5 +1,5 @@
 {
-  /* Convex functions are type-checked separately from the Nuxt app. */
+  /* Convex functions are type-checked separately from the Nuxt app. shared/ is included because convex/ imports it. */
   "compilerOptions": {
     "allowJs": true,
     "strict": true,
@@ -13,6 +13,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "../shared/**/*"],
   "exclude": ["./_generated"]
 }
