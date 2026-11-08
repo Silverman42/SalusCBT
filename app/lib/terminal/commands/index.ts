@@ -10,6 +10,13 @@ import { head, tail } from "./headTail";
 import { ls } from "./ls";
 import { sha256sum } from "./sha256sum";
 import { stat } from "./stat";
+import { awkCommand } from "./awk";
+import { cutCommand } from "./cut";
+import { grepCommand } from "./grep";
+import { sedCommand } from "./sed";
+import { sortCommand } from "./sort";
+import { uniqCommand } from "./uniq";
+import { wcCommand } from "./wc";
 
 export const DEFAULT_COMMANDS: readonly CommandSpec[] = [
   ...BUILTINS,
@@ -22,4 +29,11 @@ export const DEFAULT_COMMANDS: readonly CommandSpec[] = [
   stat,
   chmod,
   // T-704: grep, awk, cut, sort, uniq, wc, sed
+  grepCommand,
+  awkCommand,
+  cutCommand,
+  sortCommand,
+  uniqCommand,
+  wcCommand,
+  sedCommand,
 ];
