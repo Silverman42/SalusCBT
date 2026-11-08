@@ -40,10 +40,12 @@ import type * as lib_errors from "../lib/errors.js";
 import type * as lib_guards from "../lib/guards.js";
 import type * as lib_paper from "../lib/paper.js";
 import type * as lib_rateLimits from "../lib/rateLimits.js";
+import type * as lib_review from "../lib/review.js";
 import type * as lib_rng from "../lib/rng.js";
 import type * as marking_normalise from "../marking/normalise.js";
 import type * as marking_score from "../marking/score.js";
 import type * as profiles from "../profiles.js";
+import type * as review from "../review.js";
 import type * as seed from "../seed.js";
 
 import type {
@@ -85,10 +87,12 @@ declare const fullApi: ApiFromModules<{
   "lib/guards": typeof lib_guards;
   "lib/paper": typeof lib_paper;
   "lib/rateLimits": typeof lib_rateLimits;
+  "lib/review": typeof lib_review;
   "lib/rng": typeof lib_rng;
   "marking/normalise": typeof marking_normalise;
   "marking/score": typeof marking_score;
   profiles: typeof profiles;
+  review: typeof review;
   seed: typeof seed;
 }>;
 
