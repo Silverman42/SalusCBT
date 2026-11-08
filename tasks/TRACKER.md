@@ -23,8 +23,8 @@ Single source of truth for task status. Task details live in the linked files; r
 | 5 · Classes | 10 | 0 | 0 | 0 | 3 | 7 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 2 | 0 | 0 | 3 | 2 |
-| X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **8** | 0 | 0 | **16** | **57** |
+| X · Cross-cutting | 4 | 3 | 0 | 0 | 1 | 0 |
+| **Total** | **81** | **7** | 0 | 0 | **17** | **57** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -163,7 +163,7 @@ From the PRD release plan. Tick when the gate task passes.
 
 | ID | Task | Depends on | Status | Owner | Updated | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| X-01 | [Cross-browser, phone-width and accessibility pass](cross-cutting/X-01-cross-browser-qa.md) | T-309 | Not started | | |  |
+| X-01 | [Cross-browser, phone-width and accessibility pass](cross-cutting/X-01-cross-browser-qa.md) | T-309 | In review | Claude (subagent) | 2026-11-08 | QA sweep 120/120 on Chromium, WebKit, Pixel 7, iPhone 14 (QA=1); fixed icon bundling, contrast, radii, keyboard-scroll code blocks; Firefox and live exam/staff screens still to run |
 | X-02 | [Performance check: load and save times](cross-cutting/X-02-performance-check.md) | T-220 | Not started | | |  |
 | X-03 | [Weekly backups and observability](cross-cutting/X-03-backups-observability.md) | T-110 | Not started | | |  |
 | X-04 | [MVP release (Stages 1–4)](cross-cutting/X-04-mvp-release.md) | T-220, T-309, T-410, T-409, X-01, X-02 | Not started | | |  |
