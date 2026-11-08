@@ -22,14 +22,24 @@ export interface GuardInput {
   /** A Better Auth session exists. */
   signedIn: boolean;
   /**
-   * The caller's active Salus role, `null` when they have no active profile
-   * (FORBIDDEN), or `undefined` when it isn't known yet. Until
-   * `profiles.me` exists (T-404) it is always `undefined`, and any
-   * signed-in user passes.
+   * The caller's active Salus role (`profiles.me`), `null` when they have no
+   * active profile (FORBIDDEN), or `undefined` when it isn't known, in which
+   * case any signed-in user passes (the Convex functions still check).
    */
   role: StaffRole | null | undefined;
   /** `route.fullPath`, so sign-in can return here. */
   path: string;
+}
+
+/** The shape of `api.profiles.me` that the guards need. */
+export interface ProfileSummary {
+  role: StaffRole;
+  status: "active" | "removed";
+}
+
+/** The role a `profiles.me` result grants: only an active profile has one. */
+export function roleFromProfile(profile: ProfileSummary | null): StaffRole | null {
+  return profile?.status === "active" ? profile.role : null;
 }
 
 /** `null` to allow the navigation, otherwise the path to redirect to. */

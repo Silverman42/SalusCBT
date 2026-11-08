@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { safeRedirectPath, staffGuardRedirect } from "../../app/lib/authGuard";
+import { roleFromProfile, safeRedirectPath, staffGuardRedirect } from "../../app/lib/authGuard";
 
 describe("staffGuardRedirect", () => {
   const path = "/tutor/classes/abc?tab=live";
@@ -40,6 +40,15 @@ describe("staffGuardRedirect", () => {
         path: "/admin/audit",
       }),
     ).toBe("/tutor");
+  });
+});
+
+describe("roleFromProfile", () => {
+  it("grants a role only to an active profile", () => {
+    expect(roleFromProfile({ role: "tutor", status: "active" })).toBe("tutor");
+    expect(roleFromProfile({ role: "admin", status: "active" })).toBe("admin");
+    expect(roleFromProfile({ role: "tutor", status: "removed" })).toBeNull();
+    expect(roleFromProfile(null)).toBeNull();
   });
 });
 

@@ -30,6 +30,7 @@ import type * as lib_clientIp from "../lib/clientIp.js";
 import type * as lib_codes from "../lib/codes.js";
 import type * as lib_errors from "../lib/errors.js";
 import type * as lib_guards from "../lib/guards.js";
+import type * as lib_paper from "../lib/paper.js";
 import type * as lib_rateLimits from "../lib/rateLimits.js";
 import type * as lib_rng from "../lib/rng.js";
 import type * as marking_normalise from "../marking/normalise.js";
@@ -66,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   "lib/codes": typeof lib_codes;
   "lib/errors": typeof lib_errors;
   "lib/guards": typeof lib_guards;
+  "lib/paper": typeof lib_paper;
   "lib/rateLimits": typeof lib_rateLimits;
   "lib/rng": typeof lib_rng;
   "marking/normalise": typeof marking_normalise;
