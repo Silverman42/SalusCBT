@@ -14,6 +14,14 @@ import type * as email_provider from "../email/provider.js";
 import type * as email_resend from "../email/resend.js";
 import type * as email_send from "../email/send.js";
 import type * as email_templates from "../email/templates.js";
+import type * as generators_common from "../generators/common.js";
+import type * as generators_firewall from "../generators/firewall.js";
+import type * as generators_hashCheck from "../generators/hashCheck.js";
+import type * as generators_index from "../generators/index.js";
+import type * as generators_nmap from "../generators/nmap.js";
+import type * as generators_permissions from "../generators/permissions.js";
+import type * as generators_sha256 from "../generators/sha256.js";
+import type * as generators_sshLog from "../generators/sshLog.js";
 import type * as http from "../http.js";
 import type * as lib_anon from "../lib/anon.js";
 import type * as lib_audit from "../lib/audit.js";
@@ -26,6 +34,7 @@ import type * as lib_rng from "../lib/rng.js";
 import type * as marking_normalise from "../marking/normalise.js";
 import type * as marking_score from "../marking/score.js";
 import type * as profiles from "../profiles.js";
+import type * as seed from "../seed.js";
 
 import type {
   ApiFromModules,
@@ -40,6 +49,14 @@ declare const fullApi: ApiFromModules<{
   "email/resend": typeof email_resend;
   "email/send": typeof email_send;
   "email/templates": typeof email_templates;
+  "generators/common": typeof generators_common;
+  "generators/firewall": typeof generators_firewall;
+  "generators/hashCheck": typeof generators_hashCheck;
+  "generators/index": typeof generators_index;
+  "generators/nmap": typeof generators_nmap;
+  "generators/permissions": typeof generators_permissions;
+  "generators/sha256": typeof generators_sha256;
+  "generators/sshLog": typeof generators_sshLog;
   http: typeof http;
   "lib/anon": typeof lib_anon;
   "lib/audit": typeof lib_audit;
@@ -52,6 +69,7 @@ declare const fullApi: ApiFromModules<{
   "marking/normalise": typeof marking_normalise;
   "marking/score": typeof marking_score;
   profiles: typeof profiles;
+  seed: typeof seed;
 }>;
 
 /**

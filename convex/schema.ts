@@ -3,6 +3,7 @@
 // lives inside the rateLimiter component (see convex.config.ts).
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { pbqKeyValidator, pbqPayloadValidator } from "../shared/validate";
 
 const domain = v.union(
   v.literal("1.0"),
@@ -89,8 +90,9 @@ export default defineSchema({
         v.literal("firewall"),
       ),
     ),
-    // TODO(T-105): typed by PbqPayload in shared/content.ts; validated on write.
-    payload: v.optional(v.any()),
+    // PbqPayload (shared/content.ts). Writers also run validatePayload for the
+    // rules a validator cannot express (seed.importExam, editor saves).
+    payload: v.optional(pbqPayloadValidator),
   }).index("by_version_section_order", ["versionId", "section", "order"]),
 
   // SERVER-ONLY (SE-1): the only place correct answers live. Read by internal
@@ -99,8 +101,8 @@ export default defineSchema({
     questionId: v.id("questions"),
     versionId: v.id("examVersions"),
     correct: v.optional(v.array(v.string())), // mcq option ids, e.g. ["A","B"]
-    // TODO(T-105): typed by PbqKey in shared/content.ts.
-    parts: v.optional(v.any()),
+    // PbqKey (shared/content.ts); writers also run validatePbqKey.
+    parts: v.optional(pbqKeyValidator),
     explanation: v.string(),
   })
     .index("by_question", ["questionId"])

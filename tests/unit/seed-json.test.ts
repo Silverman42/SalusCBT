@@ -62,6 +62,8 @@ describe("parser CLI on a broken fixture", () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.errors).toContainEqual({ line: 11, message: "Q6: has 2 options, expected 4–6" });
+    // Q6 is followed by Q8; reported although Part 6 is incomplete (T-109).
+    expect(result.errors).toContainEqual({ line: 16, message: "Q8: expected question 7 here" });
     expect(result.errors.every((e) => typeof e.line === "number" && e.line > 0)).toBe(true);
   });
 

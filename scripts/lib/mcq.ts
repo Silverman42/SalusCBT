@@ -89,6 +89,17 @@ export function parseMcqs(body: Line[], issues: Issues): RawMcq[] {
   return mcqs;
 }
 
+/** MCQs must be numbered `first`, `first + 1`, … with no gaps or repeats. */
+export function checkMcqNumbering(mcqs: RawMcq[], first: number, issues: Issues): void {
+  const seen = new Set<number>();
+  mcqs.forEach((q, i) => {
+    const where = `Q${q.number}`;
+    if (q.number !== first + i) issues.add(q.line, `${where}: expected question ${first + i} here`);
+    if (seen.has(q.number)) issues.add(q.line, `${where}: duplicate question number`);
+    seen.add(q.number);
+  });
+}
+
 /** Parse the `## Part 2 multiple-choice key` table. */
 export function parseMcqKey(body: Line[], issues: Issues, sectionLine: number): RawMcqKey[] {
   const table = readTable(body);

@@ -13,7 +13,7 @@ import {
   type Line,
   type Section,
 } from "./markdown";
-import { parseMcqKey, parseMcqs, type RawMcq, type RawMcqKey } from "./mcq";
+import { checkMcqNumbering, parseMcqKey, parseMcqs, type RawMcq, type RawMcqKey } from "./mcq";
 import {
   buildPbq,
   parsePbqPart,
@@ -67,6 +67,9 @@ export function parseExam(source: string): ParseResult {
   // --- Question parts. ------------------------------------------------------
   const pbqA = parsePbqPart(parts.get(1)!.body, "A", issues);
   const mcqs = parseMcqs(parts.get(2)!.body, issues);
+  // Checked here, not with the key, so a numbering gap is reported even when
+  // Part 6 or the header is broken and the parse stops early.
+  checkMcqNumbering(mcqs, head ? head.pbqCount + 1 : (mcqs[0]?.number ?? 1), issues);
   const pbqB = parsePbqPart(parts.get(4)!.body, "B", issues);
   const lab = parseLab(parts.get(5)!.body, issues, parts.get(5)!.heading.no);
 
@@ -164,8 +167,7 @@ export function parseExam(source: string): ParseResult {
     if (mcqs.length !== head.mcqCount)
       issues.add(head.line, `header says ${head.mcqCount} MCQs, Part 2 has ${mcqs.length}`);
   }
-  const firstMcq = (head?.pbqCount ?? 0) + 1;
-  assembleMcqs(mcqs, mcqKeys, firstMcq, domainTable.mcqDomain, questions, answerKeys, issues);
+  assembleMcqs(mcqs, mcqKeys, domainTable.mcqDomain, questions, answerKeys, issues);
   checkDomainTotals(questions, domainTable, head, issues);
 
   if (oralQuestions.length !== 10)
@@ -454,7 +456,6 @@ function indexSolutions(solutions: RawSolution[], issues: Issues): Map<string, R
 function assembleMcqs(
   mcqs: RawMcq[],
   keys: RawMcqKey[],
-  first: number,
   tableDomain: DomainTable["mcqDomain"],
   questions: (SeedPbq | SeedMcq)[],
   answerKeys: SeedAnswerKey[],
@@ -468,8 +469,6 @@ function assembleMcqs(
   const seen = new Set<number>();
   mcqs.forEach((q, i) => {
     const where = `Q${q.number}`;
-    if (q.number !== first + i) issues.add(q.line, `${where}: expected question ${first + i} here`);
-    if (seen.has(q.number)) issues.add(q.line, `${where}: duplicate question number`);
     seen.add(q.number);
     const key = keyByNumber.get(q.number);
     if (!key) {
