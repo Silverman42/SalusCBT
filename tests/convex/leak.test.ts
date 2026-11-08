@@ -157,6 +157,11 @@ const STAFF_ONLY: Record<
   },
   "editor:validate": { role: "tutor", args: (i) => ({ versionId: i.versionId }) }, // issue text may quote keys (author only)
   "editor:publish": { role: "tutor", args: (i) => ({ versionId: i.versionId }) },
+  "editor:generate": {
+    role: "tutor",
+    args: (i) => ({ versionId: i.versionId, questionId: i.questionId }),
+  }, // returns the new key (author, own draft)
+  "editor:previewAttempt": { role: "tutor", args: (i) => ({ versionId: i.versionId }) },
 };
 
 /** Better Auth's routes (`/api/auth/*`): no exam data; covered by the auth tests. */
@@ -676,6 +681,7 @@ describe("answer-key leak test (T-209, SE-1)", () => {
           "editor.ts#answerKeyDoc", // getDraft's return validator (author only)
           "editor.ts#createDraft", // copies keys into a new draft (tutor)
           "editor.ts#deleteQuestion", // tutor, own draft
+          "editor.ts#generate", // tutor, own draft; returns the new key to its author
           "editor.ts#keysOf", // saveQuestion / deleteQuestion helper
           "editor.ts#readContent", // createDraft / getDraft helper
           "editor.ts#saveQuestion", // tutor, own draft
@@ -711,10 +717,19 @@ describe("answer-key leak test (T-209, SE-1)", () => {
         ].sort(),
       );
       expect(sites(/\bkeysOf\(/g)).toEqual(
-        ["editor.ts#deleteQuestion", "editor.ts#keysOf", "editor.ts#saveQuestion"].sort(),
+        [
+          "editor.ts#deleteQuestion",
+          "editor.ts#generate",
+          "editor.ts#keysOf",
+          "editor.ts#saveQuestion",
+        ].sort(),
       );
       expect(sites(/\btallyVersion\(/g)).toEqual(["seed.ts#summary", "seed.ts#tallyVersion"]);
-      expect(sites(/\banswerKeyDoc\b/g)).toEqual(["editor.ts#answerKeyDoc", "editor.ts#getDraft"]);
+      expect(sites(/\banswerKeyDoc\b/g)).toEqual([
+        "editor.ts#answerKeyDoc",
+        "editor.ts#generate",
+        "editor.ts#getDraft",
+      ]);
     });
   });
 });

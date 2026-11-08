@@ -25,21 +25,31 @@
  * sets `totalPoints`, and for the admin moves the exam's default). Restore
  * (ED-3) is `createDraft` from an older version.
  *
- * SE-1: answer keys are returned by `getDraft` only, and only to the version's
- * author (a tutor's own version, or any version for the admin). No student
- * path reaches this module.
+ * T-606 adds `generate` (runs a PBQ template's generator and saves the new
+ * payload and key to the draft) and `previewAttempt` (the author sits a
+ * version as a student would, through the normal `attempts.*` / `review.*`
+ * functions and the real marking path, on an attempt that is in no class).
+ *
+ * SE-1: answer keys are returned by `getDraft` and `generate` only, and only
+ * to the version's author (a tutor's own version, or any version for the
+ * admin). No student path reaches this module.
  */
 import { ConvexError, v, type Infer } from "convex/values";
+import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import { mutation, query, type MutationCtx, type QueryCtx } from "./_generated/server";
+import { AUTO_SUBMIT_GRACE_MS } from "./attempts";
+import { generate as runGenerator } from "./generators";
 import { hashCheckTampered } from "./generators/hashCheck";
 import { sshLogAnswers } from "./generators/sshLog";
+import { deleteAttempts } from "./lib/attemptDeletion";
 import { writeAudit } from "./lib/audit";
+import { randomToken, randomUint32, sha256Hex } from "./lib/codes";
 import { fail } from "./lib/errors";
 import { requireProfile } from "./lib/guards";
 import { norm } from "./marking/normalise";
 import schema from "./schema";
-import type { PbqKey, PbqPayload, TextPart } from "../shared/content";
+import type { PbqKey, PbqPayload, PbqTemplate, TextPart } from "../shared/content";
 import {
   pbqTemplateValidator,
   validatePayload,
@@ -629,6 +639,16 @@ export const deleteQuestion = mutation({
     const question = await requireQuestionIn(ctx, version._id, args.questionId);
     for (const key of await keysOf(ctx, question._id)) await ctx.db.delete("answerKeys", key._id);
     await ctx.db.delete("questions", question._id);
+    // T-606: the caller's preview attempts on this draft drop their answer to it.
+    for (const attempt of await previewsOf(ctx, profile._id, version._id)) {
+      const response = await ctx.db
+        .query("responses")
+        .withIndex("by_attempt_question", (q) =>
+          q.eq("attemptId", attempt._id).eq("questionId", question._id),
+        )
+        .unique();
+      if (response) await ctx.db.delete("responses", response._id);
+    }
     await renumber(ctx, await readSections(ctx, version._id));
     await touch(ctx, version._id);
     return null;
@@ -1027,5 +1047,172 @@ export const publish = mutation({
       isDefault,
       warnings: issues.filter((i) => i.severity === "warning"),
     };
+  },
+});
+
+// ---------------------------------------------------------------------------
+// T-606: generate and preview attempts (LLD §5.2, §10.3; PRD ED-1, ED-2)
+// ---------------------------------------------------------------------------
+
+const UINT32_MAX = 0xffff_ffff;
+
+/**
+ * Run the question's template generator (LLD §10.3) and save the result to
+ * the draft: a new payload, answer key, explanation and points, all derived
+ * from `seed` (a uint32; a random one when omitted). The stem and domain are
+ * kept, as are the question's section, order and number. A set B question
+ * gets set B part ids (`B1a`, ...). The previous explanation is replaced,
+ * since it described the old values.
+ *
+ * Draft only (`requireEditableDraft`). Errors: `NOT_FOUND` (version or
+ * question not the caller's), `VALIDATION_FAILED` (not a draft, not a PBQ,
+ * or a bad seed). Returns the saved rows (author only, like `getDraft`) and
+ * the seed, so the same values can be produced again.
+ */
+export const generate = mutation({
+  args: {
+    versionId: v.id("examVersions"),
+    questionId: v.id("questions"),
+    seed: v.optional(v.number()),
+  },
+  returns: v.object({ seed: v.number(), question: questionDoc, key: answerKeyDoc }),
+  handler: async (ctx, args) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const version = await requireEditableDraft(ctx, profile, args.versionId);
+    const existing = await requireQuestionIn(ctx, version._id, args.questionId);
+    if (existing.kind !== "pbq" || existing.section === "mcq" || existing.template === undefined)
+      invalid("question: only a PBQ can be generated");
+    if (
+      args.seed !== undefined &&
+      !(Number.isInteger(args.seed) && args.seed >= 0 && args.seed <= UINT32_MAX)
+    )
+      invalid(`seed: must be an integer from 0 to ${UINT32_MAX}`);
+    const seed = args.seed ?? randomUint32();
+
+    const template: PbqTemplate = existing.template;
+    const generated = runGenerator(template, seed, {
+      set: existing.section === "pbqB" ? "B" : "A",
+    });
+    const checked = checkQuestion(
+      {
+        kind: "pbq",
+        section: existing.section,
+        domain: existing.domain,
+        stem: existing.stem,
+        template,
+        payload: generated.payload,
+      },
+      { parts: generated.key, explanation: generated.explanation },
+    );
+    // A generator whose output fails the save checks is a bug in the generator.
+    if (!checked.ok)
+      throw new Error(`editor.generate: ${template} seed ${seed}: ${checked.issues.join("; ")}`);
+
+    await ctx.db.replace("questions", existing._id, {
+      ...checked.value.question,
+      versionId: version._id,
+      order: existing.order,
+      displayNumber: existing.displayNumber,
+    });
+    const [current, ...strays] = await keysOf(ctx, existing._id);
+    for (const stray of strays) await ctx.db.delete("answerKeys", stray._id);
+    const keyRow = { ...checked.value.key, questionId: existing._id, versionId: version._id };
+    let keyId: Id<"answerKeys">;
+    if (current) {
+      keyId = current._id;
+      await ctx.db.replace("answerKeys", keyId, keyRow);
+    } else {
+      keyId = await ctx.db.insert("answerKeys", keyRow);
+    }
+    await touch(ctx, version._id);
+
+    const question = await ctx.db.get("questions", existing._id);
+    const key = await ctx.db.get("answerKeys", keyId);
+    if (!question || !key) throw new Error("editor.generate: saved rows not found");
+    return { seed, question, key };
+  },
+});
+
+/** More preview attempts than one author keeps on a version (one per mode). */
+const PREVIEW_LIMIT = 100;
+
+/** The preview attempts `profileId` started on a version. */
+async function previewsOf(
+  ctx: ReaderCtx,
+  profileId: Id<"profiles">,
+  versionId: Id<"examVersions">,
+): Promise<Doc<"attempts">[]> {
+  return await ctx.db
+    .query("attempts")
+    .withIndex("by_previewBy_version", (q) =>
+      q.eq("previewBy", profileId).eq("versionId", versionId),
+    )
+    .take(PREVIEW_LIMIT);
+}
+
+/**
+ * Sit a version as a student would (LLD §5.2): a new attempt flagged
+ * `preview`, in no class, owned by a fresh anon token that is returned here
+ * and never stored (only its hash, as for any attempt). The caller then uses
+ * the ordinary `attempts.getPaper`, `getState`, `saveResponse`, `submit` and
+ * `review.*` functions with that token, so the preview is marked by the real
+ * path (`finalise`) against the version's current questions and keys; a
+ * draft may be edited while it is previewed.
+ *
+ * Never on a dashboard or in stats: those read attempts by class
+ * (`classes.attempts`, `classes.stats`, the CSV export), and
+ * `review.myAttempts` reads by anon key, which no student's token matches.
+ * The timer and the sweep finalise it like any attempt.
+ *
+ * Author only (`requireAuthoredVersion`: a tutor's own version, any version
+ * for the admin), any status. One preview per author, version and mode: a new
+ * one deletes the caller's earlier preview of that version and mode, with its
+ * responses. Errors: `NOT_FOUND`.
+ */
+export const previewAttempt = mutation({
+  args: {
+    versionId: v.id("examVersions"),
+    mode: v.optional(v.union(v.literal("standard"), v.literal("retake"))),
+  },
+  returns: v.object({
+    attemptId: v.id("attempts"),
+    anonToken: v.string(),
+    deadline: v.number(),
+    serverNow: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const version = await requireAuthoredVersion(ctx, profile, args.versionId);
+    const exam = await ctx.db.get("exams", version.examId);
+    if (!exam) fail("NOT_FOUND");
+    const mode = args.mode ?? "standard";
+
+    const earlier = await previewsOf(ctx, profile._id, version._id);
+    await deleteAttempts(
+      ctx,
+      earlier.filter((a) => a.mode === mode).map((a) => a._id),
+    );
+
+    const anonToken = randomToken();
+    const now = Date.now();
+    const deadline = now + Math.round(exam.timeLimitMin * 60_000);
+    const attemptId = await ctx.db.insert("attempts", {
+      anonKey: await sha256Hex(anonToken),
+      versionId: version._id,
+      mode,
+      status: "in_progress",
+      startedAt: now,
+      deadline,
+      shuffleSeed: randomUint32(),
+      preview: true,
+      previewBy: profile._id,
+    });
+    const autoSubmitJobId = await ctx.scheduler.runAt(
+      deadline + AUTO_SUBMIT_GRACE_MS,
+      internal.attempts.autoSubmit,
+      { attemptId },
+    );
+    await ctx.db.patch("attempts", attemptId, { autoSubmitJobId });
+    return { attemptId, anonToken, deadline, serverNow: now };
   },
 });

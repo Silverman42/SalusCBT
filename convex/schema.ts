@@ -160,10 +160,15 @@ export default defineSchema({
     autoSubmitJobId: v.optional(v.id("_scheduled_functions")),
     result: v.optional(attemptResultValidator),
     ipHash: v.optional(v.string()), // cleared after 30 days (PR-3)
+    // T-606: `editor.previewAttempt` (author previewing a version). Never in a
+    // class, so never on dashboards or class stats; `previewBy` is the author.
+    preview: v.optional(v.boolean()),
+    previewBy: v.optional(v.id("profiles")),
   })
     .index("by_anonKey", ["anonKey", "startedAt"])
     .index("by_class", ["classId", "startedAt"])
     .index("by_status_deadline", ["status", "deadline"])
+    .index("by_previewBy_version", ["previewBy", "versionId", "startedAt"])
     // T-219: only rows still holding a hash, for the 30-day purge (PR-3).
     .index("by_ipHash", ["ipHash"]),
 
