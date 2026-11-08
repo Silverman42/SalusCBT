@@ -15,7 +15,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "nuxt typecheck && tsc -p convex --noEmit && tsc -p scripts --noEmit && tsc -p tests --noEmit",
+    "typecheck": "nuxt typecheck && tsc -p convex --noEmit && tsc -p scripts --noEmit && tsc -p tests --noEmit && tsc -p tests/e2e --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
