@@ -22,9 +22,9 @@ Single source of truth for task status. Task details live in the linked files; r
 | 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
 | 5 · Classes | 10 | 0 | 0 | 0 | 3 | 7 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
-| 7 · Terminal lab | 7 | 1 | 0 | 0 | 2 | 4 |
+| 7 · Terminal lab | 7 | 0 | 0 | 0 | 3 | 4 |
 | X · Cross-cutting | 4 | 3 | 0 | 0 | 1 | 0 |
-| **Total** | **81** | **6** | 0 | 0 | **16** | **59** |
+| **Total** | **81** | **5** | 0 | 0 | **17** | **59** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -157,7 +157,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-704 | [Lab commands: grep, awk, cut, sort, uniq, wc, sed](stage-7-lab/T-704-lab-commands-text.md) | T-702 | In review | Claude (subagent) | 2026-11-08 | grep, awk, cut, sort, uniq, wc, sed committed (NFA regex, bounded awk); Lab A answers verified; GNU comparison runs on CI |
 | T-705 | [Lab command: sha256sum and sha256sum -c](stage-7-lab/T-705-lab-sha256.md) | T-701 | Done | | 2026-11-08 |  |
 | T-706 | [Lab page: checks, reset and cheat sheet](stage-7-lab/T-706-lab-page-checks.md) | T-703, T-704, T-705, T-308 | Done | Claude (subagent) | 2026-11-08 | Lab page: Labs A–D tabs, hashed answer checks, reset, cheat sheet; lab.spec.ts passes on Chromium, WebKit and phones |
-| T-707 | [Lab fixture tests against a real build-lab.sh run](stage-7-lab/T-707-lab-fixture-tests.md) | T-706 | Not started | | |  |
+| T-707 | [Lab fixture tests against a real build-lab.sh run](stage-7-lab/T-707-lab-fixture-tests.md) | T-706 | In review | Claude (subagent) | 2026-11-08 | Fixtures + replay test committed; fixtures hand-made (no Linux here); CI job lab-fixtures re-captures on Ubuntu and must pass before the Stage 7 gate |
 
 ### Stage X · Cross-cutting
 
