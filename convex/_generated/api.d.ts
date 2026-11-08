@@ -8,13 +8,31 @@
  * @module
  */
 
+import type * as lib_anon from "../lib/anon.js";
+import type * as lib_audit from "../lib/audit.js";
+import type * as lib_codes from "../lib/codes.js";
+import type * as lib_errors from "../lib/errors.js";
+import type * as lib_guards from "../lib/guards.js";
+import type * as lib_rateLimits from "../lib/rateLimits.js";
+import type * as lib_rng from "../lib/rng.js";
+import type * as marking_normalise from "../marking/normalise.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
 
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "lib/anon": typeof lib_anon;
+  "lib/audit": typeof lib_audit;
+  "lib/codes": typeof lib_codes;
+  "lib/errors": typeof lib_errors;
+  "lib/guards": typeof lib_guards;
+  "lib/rateLimits": typeof lib_rateLimits;
+  "lib/rng": typeof lib_rng;
+  "marking/normalise": typeof marking_normalise;
+}>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
