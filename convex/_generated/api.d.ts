@@ -50,6 +50,7 @@ import type * as privacy from "../privacy.js";
 import type * as profiles from "../profiles.js";
 import type * as review from "../review.js";
 import type * as seed from "../seed.js";
+import type * as shareLinks from "../shareLinks.js";
 
 import type {
   ApiFromModules,
@@ -100,6 +101,7 @@ declare const fullApi: ApiFromModules<{
   profiles: typeof profiles;
   review: typeof review;
   seed: typeof seed;
+  shareLinks: typeof shareLinks;
 }>;
 
 /**

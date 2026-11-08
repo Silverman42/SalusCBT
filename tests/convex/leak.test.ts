@@ -68,7 +68,8 @@ function discoverPublic(): Map<string, Kind> {
 
 /**
  * Student-reachable (anonymous) functions. Each must return no key material,
- * except `review:getReview` for the owner of a submitted attempt (EX-17).
+ * except `review:getReview` for the owner of a submitted attempt (EX-17) and
+ * `shareLinks:view` for a live link the owner made (CL-9).
  * The scan below must call every one of them.
  */
 const STUDENT_FACING = [
@@ -84,6 +85,10 @@ const STUDENT_FACING = [
   "invitations:peek", // public invite page; no exam content
   "invitations:accept",
   "profiles:me", // null for an anonymous caller
+  "shareLinks:create", // owner token, submitted only
+  "shareLinks:revoke", // owner token
+  "shareLinks:forAttempt", // owner token; the link id only
+  "shareLinks:view", // public; keys only through a live link (CL-9)
 ] as const;
 
 type Ids = {
@@ -554,7 +559,9 @@ describe("answer-key leak test (T-209, SE-1)", () => {
         paginationOpts: { numItems: 10, cursor: null },
       });
 
-      // Results and review are refused until submission (SE-1).
+      // Results and review are refused until submission (SE-1); so is sharing.
+      expect(await refused("shareLinks:create", "in progress", own)).toBe("NOT_FOUND");
+      expect(await value("shareLinks:forAttempt", "in progress", own)).toBeNull();
       expect(await refused("review:getResult", "in progress", own)).toBe("NOT_FOUND");
       expect(await refused("review:getReview", "in progress", own)).toBe("NOT_FOUND");
       expect(await refused("review:getReview", "in progress (retake)", ownRetake)).toBe(
@@ -590,6 +597,30 @@ describe("answer-key leak test (T-209, SE-1)", () => {
       expect(await refused("review:getReview", "bad token", { ...own, anonToken: "short" })).toBe(
         "BAD_TOKEN",
       );
+
+      // Share links: only the owner shares; unknown and revoked links look the same.
+      expect(await refused("shareLinks:create", "non-owner", foreign)).toBe("NOT_FOUND");
+      const { publicId } = (await value("shareLinks:create", "submitted", own)) as {
+        publicId: string;
+      };
+      await value("shareLinks:forAttempt", "submitted", own);
+      expect(
+        await refused("shareLinks:revoke", "non-owner", { publicId, anonToken: token(1) }),
+      ).toBe("NOT_FOUND");
+      const unknownView = await value("shareLinks:view", "unknown link", {
+        publicId: "A".repeat(22),
+      });
+      expect(unknownView).toBeNull();
+
+      // The second exception: a live share link carries the review, keys included.
+      const live = await callByName(t, kinds, "shareLinks:view", { publicId });
+      expect(live.ok && live.value).not.toBeNull();
+      expect(findLeaks(asData(live))).toContain(
+        canary ? "canary key value" : "field $.review[0].explanation",
+      );
+      await value("shareLinks:revoke", "revoke", { publicId, anonToken: token(0) });
+      expect(await value("shareLinks:view", "revoked link", { publicId })).toEqual(unknownView);
+      expect(await value("shareLinks:forAttempt", "revoked", own)).toBeNull();
 
       // The one legitimate exception: the owner's review after submission. It
       // must carry the keys, which also proves the detector sees this run's keys.
@@ -660,6 +691,7 @@ describe("answer-key leak test (T-209, SE-1)", () => {
         "classes.ts#attemptReview", // tutor, own class only (CL-7)
         "lib/review.ts#buildReview",
         "review.ts#getReview",
+        "shareLinks.ts#view", // live link only (CL-9)
       ]);
       expect(sites(/\bfinalise\(/g)).toEqual(
         [
