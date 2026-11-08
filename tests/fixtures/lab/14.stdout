@@ -1,0 +1,6 @@
+total 16
+drwxr-xr-x 2 root root 4096 Nov  3 09:14 .
+drwxr-xr-x 3 root root 4096 Nov  3 09:14 ..
+-rw------- 1 root root    0 Nov  3 09:14 authorized_keys
+-rw-r--r-- 1 root root   95 Nov  3 09:14 id_rsa
+-rw-r--r-- 1 root root   38 Nov  3 09:14 id_rsa.pub

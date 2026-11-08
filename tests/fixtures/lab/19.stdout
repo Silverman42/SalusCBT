@@ -1,0 +1,2 @@
+640 etc/shadow
+600 home/deploy/.ssh/id_rsa

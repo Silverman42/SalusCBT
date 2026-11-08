@@ -1,0 +1,20 @@
+cd ~/secplus-lab/log
+head auth.log
+grep -c 'Failed password' auth.log
+grep 'Failed password' auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr
+grep 'Accepted' auth.log
+grep 'Invalid user' auth.log | awk '{print $8}' | sort | uniq -c | sort -nr
+cd ~/secplus-lab/downloads
+cat vendor_hashes.txt
+sha256sum *.exe *.msi *.deb
+sha256sum -c vendor_hashes.txt
+cat ~/secplus-lab/.answer-lab-b    # check your answer
+cd ~/secplus-lab
+ls -l etc
+ls -la home/deploy/.ssh
+grep -n 'PermitRootLogin\|PasswordAuthentication' etc/ssh/sshd_config
+chmod 640 etc/shadow
+chmod 600 home/deploy/.ssh/id_rsa
+sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' etc/ssh/sshd_config
+stat -c '%a %n' etc/shadow home/deploy/.ssh/id_rsa
+grep '^PermitRootLogin' etc/ssh/sshd_config

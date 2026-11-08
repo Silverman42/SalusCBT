@@ -27,11 +27,50 @@ jobs:
       # postinstall runs `nuxt prepare`; no Convex env vars are needed
       # (.env.local is optional and convex/_generated is committed).
       - run: npm ci
+      # The real-tool comparisons in tests/unit/terminal-{seed,files,text}
+      # need GNU tools; the lab's awk messages are gawk's (ubuntu's default
+      # awk is mawk), so install gawk (it becomes `awk`).
+      - name: Install gawk
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gawk
+          awk --version | head -n 1
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
       # Runs both Vitest projects: unit (node) and convex (convex-test).
       - run: npm test
+
+  # T-707: re-capture tests/fixtures/lab from a real build-lab.sh run on
+  # Ubuntu and fail if it differs from the committed fixtures (which the
+  # in-browser terminal is tested against). On failure, download the
+  # `lab-fixtures` artifact and commit its files to tests/fixtures/lab/.
+  lab-fixtures:
+    name: lab-fixtures
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install gawk
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gawk
+      - name: Tool versions
+        run: |
+          for t in ls grep sed awk; do $t --version | head -n 1; done
+          df -T "$RUNNER_TEMP" | tail -n 1
+      - name: Capture fixtures
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: bash scripts/capture-lab-fixtures.sh "$RUNNER_TEMP/lab-fixtures"
+      - name: Compare with the committed fixtures
+        run: diff -r -x .gitattributes tests/fixtures/lab "$RUNNER_TEMP/lab-fixtures"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lab-fixtures
+          path: ${{ runner.temp }}/lab-fixtures/
+          retention-days: 7
 
   # Present but disabled until Stage 2 adds Playwright specs under tests/e2e.
   # To enable: delete the `if: false` line below.
