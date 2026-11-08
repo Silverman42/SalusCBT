@@ -1,30 +1,13 @@
 <script setup lang="ts">
 // One reviewed question, after mockup screen 07 (EX-17, PB-2): your answer,
 // the correct answer, marks and the "Why". Read-only. All content is rendered
-// as text (SE-6); `backticks` become inline code.
-import {
-  domainLabel,
-  partRows,
-  pickedOptionIds,
-  questionLabel,
-  reviewStatus,
-  type ReviewEntry,
-} from "~/lib/resultView";
+// as text (SE-6); `backticks` become inline code. A PBQ is shown with its
+// own exam component (artefact panel, read-only answers, ✓ / ✗ per part with
+// the correct answer, T-309); stacked part cards are the fallback.
+import { hasArtefactReview } from "~/lib/pbq/review";
+import { partRows, pickedOptionIds, type ReviewEntry } from "~/lib/resultView";
 
 const props = defineProps<{ item: ReviewEntry }>();
-
-const status = computed(() => reviewStatus(props.item));
-const marksClass = computed(
-  () =>
-    ({
-      correct: "bg-ok-soft text-ok",
-      partial: "bg-warn-soft text-warn",
-      wrong: "bg-bad-soft text-bad",
-    })[status.value],
-);
-const marks = computed(
-  () => `${props.item.earned} / ${props.item.max} point${props.item.max === 1 ? "" : "s"}`,
-);
 
 type OptionRow = { id: string; text: string; mine: boolean; correct: boolean };
 const options = computed<OptionRow[]>(() => {
@@ -43,6 +26,9 @@ const unanswered = computed(
   () => props.item.kind === "mcq" && pickedOptionIds(props.item.yourAnswer).length === 0,
 );
 
+const artefactView = computed(
+  () => props.item.kind === "pbq" && hasArtefactReview(props.item.payload.template),
+);
 const parts = computed(() => (props.item.kind === "pbq" ? partRows(props.item) : []));
 const isFirewall = computed(
   () => props.item.kind === "pbq" && props.item.payload.template === "firewall",
@@ -77,31 +63,29 @@ function optionLabel(o: OptionRow): string | null {
 </script>
 
 <template>
+  <!-- PBQ: the exam's own component, read-only, with marks per part or rule (T-309) -->
   <article
+    v-if="artefactView"
+    class="flex min-w-0 flex-col gap-3 rounded-[34px] border-2 border-line p-2 sm:gap-4 sm:p-3"
+  >
+    <ResultReviewHeader :item="item" class="px-3 pt-2 sm:px-4" />
+    <ResultPbqReview v-if="item.kind === 'pbq'" :item="item">
+      <template #heading>
+        <p class="m-0 text-xl leading-snug font-extrabold tracking-[-0.01em] text-pretty">
+          <LabInlineCode :text="item.stem" />
+        </p>
+      </template>
+      <template #footer>
+        <ResultReviewWhy :text="item.explanation" />
+      </template>
+    </ResultPbqReview>
+  </article>
+
+  <article
+    v-else
     class="flex min-w-0 flex-col gap-5 rounded-[28px] bg-surface px-5 py-6 sm:px-10 sm:py-[34px]"
   >
-    <header class="flex flex-wrap items-center gap-2.5">
-      <h3 class="m-0 text-[15px] font-extrabold">{{ questionLabel(item) }}</h3>
-      <span
-        v-if="item.kind === 'mcq' && item.chooseCount === 2"
-        class="rounded-full bg-brand-soft px-3 py-[5px] text-[13px] font-bold text-brand-ink"
-      >
-        Choose TWO
-      </span>
-      <span class="rounded-full bg-surface-2 px-3 py-[5px] text-[13px] font-semibold text-muted-fg">
-        {{ domainLabel(item.domain) }}
-      </span>
-      <span
-        v-if="item.flagged"
-        class="flex items-center gap-1 rounded-full bg-warn-soft px-3 py-[5px] text-[13px] font-bold text-warn"
-      >
-        <UIcon name="i-lucide-flag" class="size-3.5" />Flagged
-      </span>
-      <div class="flex-1" />
-      <span class="rounded-full px-3 py-[5px] text-[13px] font-bold" :class="marksClass">
-        {{ marks }}
-      </span>
-    </header>
+    <ResultReviewHeader :item="item" />
 
     <p class="m-0 max-w-[760px] text-lg leading-[1.45] font-semibold text-pretty sm:text-[21px]">
       <LabInlineCode :text="item.stem" />
@@ -156,7 +140,7 @@ function optionLabel(o: OptionRow): string | null {
       <li v-if="unanswered" class="text-sm font-semibold text-muted-fg">Not answered</li>
     </ul>
 
-    <!-- PBQ: scenario, then one row per part or rule -->
+    <!-- PBQ fallback (a template without a component): scenario, then one row per part or rule -->
     <template v-else>
       <p class="m-0 max-w-[760px] text-[15px] leading-[1.6] text-muted-fg">
         <LabInlineCode :text="item.payload.intro" />
@@ -219,16 +203,6 @@ function optionLabel(o: OptionRow): string | null {
       </ul>
     </template>
 
-    <div
-      v-if="item.explanation"
-      class="flex max-w-[760px] flex-col gap-2 rounded-[22px] bg-brand-soft px-5 py-5 sm:px-[22px]"
-    >
-      <span class="flex items-center gap-2 font-extrabold text-brand-ink">
-        <UIcon name="i-lucide-circle-help" class="size-[18px]" />Why
-      </span>
-      <p class="m-0 text-[15px] leading-[1.6] text-pretty whitespace-pre-line">
-        <LabInlineCode :text="item.explanation" />
-      </p>
-    </div>
+    <ResultReviewWhy :text="item.explanation" />
   </article>
 </template>

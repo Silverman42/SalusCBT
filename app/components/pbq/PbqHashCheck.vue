@@ -75,13 +75,17 @@ const fieldClass =
         >
           <span class="font-mono text-[13px] font-semibold break-all">{{ row.file }}</span>
           <dl class="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1">
-            <dt class="pt-px text-[11px] font-bold tracking-[0.05em] text-code-muted uppercase">
+            <dt
+              class="pt-px text-[11px] font-bold tracking-[0.05em] text-code-fg uppercase opacity-90"
+            >
               Vendor
             </dt>
             <dd class="m-0 font-mono text-[12.5px] leading-relaxed break-all">
               {{ row.vendor ?? "(not listed)" }}
             </dd>
-            <dt class="pt-px text-[11px] font-bold tracking-[0.05em] text-code-muted uppercase">
+            <dt
+              class="pt-px text-[11px] font-bold tracking-[0.05em] text-code-fg uppercase opacity-90"
+            >
               Computed
             </dt>
             <dd class="m-0 font-mono text-[12.5px] leading-relaxed break-all">

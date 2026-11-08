@@ -10,6 +10,8 @@
 // Tab stop; ↑ ↓ Home End move between them. `portPair` parts have two inputs,
 // cleartext first and secure second. Ports can always be typed too (a secure
 // port the answer needs may not be open on the host).
+//
+// Slot `part-mark` ({ part }) after each part is for review marks (T-309).
 import type { AttemptPaperPbq } from "~/composables/useAttempt";
 import type { AnswerValue, PortPart } from "~~/shared/content";
 import {
@@ -280,6 +282,7 @@ const slotClass = (s: PortSlot) =>
             @input="onType(part, 0, $event)"
           />
         </template>
+        <slot name="part-mark" :part="part" />
       </div>
 
       <slot name="footer" />
