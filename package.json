@@ -21,7 +21,8 @@
     "test:e2e": "playwright test",
     "seed:json": "tsx scripts/parse-exam.ts content/source/secplus-701-mock-exam.md > content/seed/sy0-701.json && prettier --write content/seed/sy0-701.json",
     "seed:import": "tsx scripts/seed-import.ts",
-    "seed": "npm run seed:json && npm run seed:import --"
+    "seed": "npm run seed:json && npm run seed:import --",
+    "lab:seed": "tsx scripts/lab-seed.ts content/source/build-lab.sh > app/lib/terminal/labSeed.json && prettier --write app/lib/terminal/labSeed.json"
   },
   "dependencies": {
     "@convex-dev/better-auth": "0.13.0",
