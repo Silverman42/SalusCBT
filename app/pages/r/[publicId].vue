@@ -81,7 +81,7 @@ useSeoMeta({
       v-else
       class="mx-auto flex w-full max-w-[560px] flex-col items-center gap-4 rounded-[32px] bg-surface px-6 py-12 text-center sm:px-10"
     >
-      <span class="grid size-14 place-items-center rounded-2xl bg-brand-soft text-brand-ink">
+      <span class="grid size-14 place-items-center rounded-[18px] bg-brand-soft text-brand-ink">
         <UIcon :name="error ? 'i-lucide-cloud-off' : 'i-lucide-link-2-off'" class="size-6" />
       </span>
       <h1 class="m-0 text-2xl font-extrabold tracking-[-0.02em]">

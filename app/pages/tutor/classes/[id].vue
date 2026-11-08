@@ -36,7 +36,7 @@ useHead({
     <p v-if="loading" class="m-0 text-sm text-muted-fg">Loading class…</p>
     <p
       v-else-if="error"
-      class="m-0 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+      class="m-0 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
       role="alert"
     >
       {{ tutorErrorMessage(error, "load") }}

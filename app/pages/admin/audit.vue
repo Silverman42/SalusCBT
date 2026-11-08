@@ -162,7 +162,7 @@ watch(
     <div aria-live="polite">
       <p
         v-if="error"
-        class="m-0 mt-2 flex gap-2 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+        class="m-0 mt-2 flex gap-2 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
       >
         <UIcon name="i-lucide-circle-alert" class="mt-0.5 size-4 flex-none" />
         <span>{{ error }}</span>

@@ -158,7 +158,9 @@ function optionLabel(o: OptionRow): string | null {
         <pre
           v-for="(block, i) in scenario"
           :key="i"
-          class="mt-3 mb-0 max-h-80 overflow-auto rounded-xl bg-code px-5 py-4 font-mono text-[13px] leading-[1.7] text-code-fg"
+          tabindex="0"
+          aria-label="Scenario"
+          class="mt-3 mb-0 max-h-80 overflow-auto rounded-[18px] bg-code focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand px-5 py-4 font-mono text-[13px] leading-[1.7] text-code-fg"
         ><code>{{ block }}</code></pre>
       </details>
 

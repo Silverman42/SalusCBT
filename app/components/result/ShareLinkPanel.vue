@@ -114,7 +114,7 @@ async function copy() {
         id="share-url"
         readonly
         :value="url"
-        class="w-full rounded-2xl bg-surface-2 px-4 py-3 font-mono text-[13px] text-fg"
+        class="w-full rounded-[16px] bg-surface-2 px-4 py-3 font-mono text-[13px] text-fg"
         @focus="($event.target as HTMLInputElement).select()"
       />
       <div class="flex flex-wrap gap-2">

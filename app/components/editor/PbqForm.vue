@@ -526,7 +526,10 @@ defineExpose({ focusHeading: () => document.getElementById(headingId)?.focus() }
             </h3>
           </template>
         </ExamQuestionPbq>
-        <p v-else class="m-0 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-muted-fg">
+        <p
+          v-else
+          class="m-0 rounded-[16px] bg-surface px-4 py-3 text-sm font-semibold text-muted-fg"
+        >
           Fix the problems above to see the student view.
         </p>
       </div>
@@ -560,7 +563,7 @@ defineExpose({ focusHeading: () => document.getElementById(headingId)?.focus() }
     >
       <template #body>
         <div class="flex flex-col gap-3 text-sm">
-          <p v-if="dirty" class="m-0 rounded-2xl bg-warn-soft px-4 py-3 font-semibold">
+          <p v-if="dirty" class="m-0 rounded-[16px] bg-warn-soft px-4 py-3 font-semibold">
             Your unsaved changes to this question will be lost.
           </p>
           <div class="flex flex-col gap-1.5">

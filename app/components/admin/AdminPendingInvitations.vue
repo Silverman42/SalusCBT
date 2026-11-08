@@ -44,7 +44,7 @@ const pending = computed(() => (data.value ?? []).filter(isOpenInvitation));
         class="flex items-start gap-3 rounded-[14px] px-2 py-2.5 sm:items-center"
       >
         <span
-          class="grid size-9 flex-none place-items-center rounded-xl bg-surface-2 text-muted-fg"
+          class="grid size-9 flex-none place-items-center rounded-[12px] bg-surface-2 text-muted-fg"
           aria-hidden="true"
         >
           <UIcon name="i-lucide-mail" class="size-4" />

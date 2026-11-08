@@ -127,7 +127,7 @@ onMounted(load);
           {{ DEAD_INVITE_TEXT }}
         </p>
       </div>
-      <div class="rounded-3xl bg-surface px-5 py-4 text-[15px] leading-normal">
+      <div class="rounded-[24px] bg-surface px-5 py-4 text-[15px] leading-normal">
         Already accepted your invitation? Sign in with your email instead.
       </div>
       <div class="flex flex-wrap gap-2">
@@ -183,7 +183,7 @@ onMounted(load);
         <div aria-live="assertive" aria-atomic="true" class="-mb-6 has-[p]:mb-0">
           <p
             v-if="error"
-            class="m-0 flex gap-2 rounded-2xl bg-bad-soft px-4 py-3 text-[15px] font-semibold text-bad"
+            class="m-0 flex gap-2 rounded-[16px] bg-bad-soft px-4 py-3 text-[15px] font-semibold text-bad"
           >
             <UIcon name="i-lucide-circle-alert" class="mt-0.5 size-[18px] flex-none" />
             <span>{{ error }}</span>

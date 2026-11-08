@@ -184,7 +184,7 @@ async function save() {
           <p
             v-if="error"
             :id="errorId"
-            class="m-0 flex gap-2 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+            class="m-0 flex gap-2 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
           >
             <UIcon name="i-lucide-circle-alert" class="mt-0.5 size-[18px] flex-none" />
             <span>{{ error }}</span>

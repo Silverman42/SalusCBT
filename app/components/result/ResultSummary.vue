@@ -122,14 +122,14 @@ const targetPct = computed(() => Math.round(props.view.domainTarget * 100));
 
     <div class="flex min-w-0 flex-col gap-4 lg:gap-5">
       <div class="grid grid-cols-2 gap-3">
-        <div class="flex flex-col gap-1.5 rounded-3xl bg-surface p-5">
+        <div class="flex flex-col gap-1.5 rounded-[24px] bg-surface p-5">
           <UIcon name="i-lucide-clock" class="size-5 text-brand-ink" />
           <span class="text-[26px] font-extrabold tracking-[-0.02em] tabular-nums">
             {{ formatDuration(r.timeUsedSec) }}
           </span>
           <span class="text-[13px] text-muted-fg">Time used</span>
         </div>
-        <div class="flex flex-col gap-1.5 rounded-3xl bg-surface p-5">
+        <div class="flex flex-col gap-1.5 rounded-[24px] bg-surface p-5">
           <UIcon name="i-lucide-flag" class="size-5 text-brand-ink" />
           <span class="text-[26px] font-extrabold tracking-[-0.02em] tabular-nums">
             {{ r.flaggedCount }}

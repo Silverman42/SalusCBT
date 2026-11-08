@@ -10,7 +10,7 @@ const parts = computed(() =>
   <template v-for="(part, i) in parts" :key="i">
     <code
       v-if="part.code"
-      class="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.87em] whitespace-nowrap text-fg"
+      class="rounded-[6px] bg-surface-2 px-1.5 py-0.5 font-mono text-[0.87em] whitespace-nowrap text-fg"
       >{{ part.value }}</code
     >
     <template v-else>{{ part.value }}</template>

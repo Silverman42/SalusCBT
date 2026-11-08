@@ -177,9 +177,12 @@ export default defineNuxtConfig({
   // API before its config loads); any other icon comes from the app's own
   // /api/_nuxt_icon endpoint. Inline SVG mode: the default CSS mode adds a
   // <style> per icon in the browser, which the hash-only CSP on /r/** blocks.
+  // The scan includes .ts files: icon names in app/lib and app/composables
+  // (e.g. the result pages' not-found icon) were otherwise fetched from the
+  // Iconify API, which the CSP blocks (X-01).
   icon: {
     mode: "svg",
-    clientBundle: { scan: true },
+    clientBundle: { scan: { globInclude: ["app/**/*.{vue,ts}"] } },
     fallbackToApi: false,
   },
 

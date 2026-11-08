@@ -27,7 +27,7 @@ const role = computed(() => me.value?.role ?? area.value);
       class="flex items-center gap-2.5 px-2 pb-[22px] text-fg"
       @click="$emit('navigate')"
     >
-      <span class="grid size-9 place-items-center rounded-xl bg-brand text-white">
+      <span class="grid size-9 place-items-center rounded-[12px] bg-brand text-white">
         <UIcon name="i-lucide-shield" class="size-[18px]" />
       </span>
       <span class="text-xl font-extrabold tracking-[-0.02em]">Salus</span>
@@ -40,7 +40,7 @@ const role = computed(() => me.value?.role ?? area.value);
           <NuxtLink
             :to="item.to"
             :aria-current="active?.to === item.to ? 'page' : undefined"
-            class="flex items-center gap-3 rounded-2xl px-3.5 py-3 text-[15px] transition-colors"
+            class="flex items-center gap-3 rounded-[16px] px-3.5 py-3 text-[15px] transition-colors"
             :class="
               active?.to === item.to
                 ? 'bg-brand-soft font-bold text-brand-ink'

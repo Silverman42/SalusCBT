@@ -303,7 +303,7 @@ const subtitle = computed(() =>
     <p v-if="draft.loading.value" class="m-0 text-sm text-muted-fg">Loading version…</p>
     <p
       v-else-if="draft.error.value"
-      class="m-0 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+      class="m-0 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
       role="alert"
     >
       {{ editorErrorMessage(draft.error.value, "load") }}
@@ -542,7 +542,7 @@ const subtitle = computed(() =>
             <div
               v-if="publishIssues.length > 0"
               role="alert"
-              class="flex flex-col gap-1 rounded-2xl bg-bad-soft px-4 py-3 font-semibold text-bad"
+              class="flex flex-col gap-1 rounded-[16px] bg-bad-soft px-4 py-3 font-semibold text-bad"
             >
               <span>Publishing was blocked:</span>
               <ul class="m-0 list-disc pl-5">

@@ -17,7 +17,7 @@ const attempts = useStaffQuery(api.classes.attempts, { classId: props.classId })
 <template>
   <p
     v-if="stats.error.value || attempts.error.value"
-    class="m-0 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+    class="m-0 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
     role="alert"
   >
     {{ tutorErrorMessage(stats.error.value ?? attempts.error.value, "load") }}

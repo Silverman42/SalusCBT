@@ -58,7 +58,7 @@ useSeoMeta({
     </div>
 
     <!-- LB-9: the warning comes before the download link. -->
-    <div role="note" class="flex gap-3 rounded-3xl bg-warn-soft px-5 py-4 text-warn">
+    <div role="note" class="flex gap-3 rounded-[24px] bg-warn-soft px-5 py-4 text-warn">
       <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-5 flex-none" />
       <p class="m-0 text-[15px] leading-normal font-semibold">{{ LAB_SCAN_WARNING }}</p>
     </div>
@@ -68,7 +68,7 @@ useSeoMeta({
     >
       <div class="flex min-w-0 flex-1 items-center gap-3">
         <span
-          class="grid size-11 flex-none place-items-center rounded-2xl bg-brand-soft text-brand-ink"
+          class="grid size-11 flex-none place-items-center rounded-[14px] bg-brand-soft text-brand-ink"
         >
           <UIcon name="i-lucide-terminal" class="size-5" />
         </span>
@@ -124,9 +124,12 @@ useSeoMeta({
           </li>
         </ol>
 
+        <!-- Focusable so keyboard users can scroll long lines at phone width (axe). -->
         <pre
           v-if="step.commands"
-          class="m-0 overflow-x-auto rounded-xl bg-code px-5 py-4 font-mono text-[13px] leading-[1.75] text-code-fg"
+          tabindex="0"
+          :aria-label="`${step.title}: commands`"
+          class="m-0 overflow-x-auto rounded-[18px] bg-code focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand px-5 py-4 font-mono text-[13px] leading-[1.75] text-code-fg"
         ><code>{{ step.commands }}</code></pre>
 
         <p
@@ -140,7 +143,7 @@ useSeoMeta({
     </ol>
 
     <p
-      class="m-0 flex items-center gap-2 rounded-3xl bg-brand-soft px-5 py-4 text-sm font-semibold text-brand-ink"
+      class="m-0 flex items-center gap-2 rounded-[24px] bg-brand-soft px-5 py-4 text-sm font-semibold text-brand-ink"
     >
       <UIcon name="i-lucide-sparkles" class="size-4 flex-none" />
       An in-browser terminal for Labs A–C is on the way. Lab D stays a download because it scans

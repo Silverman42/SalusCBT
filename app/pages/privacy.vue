@@ -159,7 +159,7 @@ const notCollected = [
         <strong>Import progress</strong> on the other device. Export before clearing your browser
         data, or your past results can't be found again.
       </p>
-      <div role="note" class="flex gap-3 rounded-3xl bg-warn-soft px-5 py-4 text-warn">
+      <div role="note" class="flex gap-3 rounded-[24px] bg-warn-soft px-5 py-4 text-warn">
         <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-5 flex-none" aria-hidden="true" />
         <p class="m-0 text-[15px] leading-normal font-semibold">
           The file contains your anonymous ID. Anyone who has it can see and continue your attempts,

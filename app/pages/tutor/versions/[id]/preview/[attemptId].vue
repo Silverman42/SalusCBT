@@ -402,7 +402,7 @@ async function submit() {
         <p
           v-if="submitError"
           role="alert"
-          class="m-0 rounded-2xl bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
+          class="m-0 rounded-[16px] bg-bad-soft px-4 py-3 text-sm font-semibold text-bad"
         >
           {{ submitError }}
         </p>

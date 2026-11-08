@@ -196,7 +196,7 @@ watch(confirmOpen, (open) => {
         v-else-if="pager.isDone && rows.length === 0"
         class="flex flex-col items-center gap-3 rounded-[28px] bg-surface px-6 py-10 text-center"
       >
-        <span class="grid size-14 place-items-center rounded-2xl bg-brand-soft text-brand-ink">
+        <span class="grid size-14 place-items-center rounded-[18px] bg-brand-soft text-brand-ink">
           <UIcon name="i-lucide-history" class="size-6" />
         </span>
         <p class="m-0 text-lg font-extrabold">No attempts yet</p>
