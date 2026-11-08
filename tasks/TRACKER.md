@@ -20,11 +20,11 @@ Single source of truth for task status. Task details live in the linked files; r
 | 2 · Exam engine | 20 | 0 | 0 | 0 | 6 | 14 |
 | 3 · Interactive PBQs | 9 | 0 | 0 | 0 | 1 | 8 |
 | 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
-| 5 · Classes | 10 | 1 | 0 | 0 | 3 | 6 |
+| 5 · Classes | 10 | 0 | 0 | 0 | 3 | 7 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 3 | 0 | 0 | 2 | 2 |
 | X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **10** | 0 | 0 | **15** | **56** |
+| **Total** | **81** | **9** | 0 | 0 | **15** | **57** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -127,7 +127,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-503 | [CSV export and deleting attempts](stage-5-classes/T-503-csv-delete.md) | T-502 | In review | | 2026-11-08 | Committed; CSV still needs a manual open in Excel and Sheets once T-505 downloads it |
 | T-504 | [Share links and the /r/[publicId] page](stage-5-classes/T-504-share-links.md) | T-208 | Done | | 2026-11-08 |  |
 | T-505 | [Tutor UI: classes list and live class page](stage-5-classes/T-505-tutor-ui-classes.md) | T-502, T-503, T-403 | Done | | 2026-11-08 |  |
-| T-506 | [Tutor attempt review page](stage-5-classes/T-506-tutor-attempt-review.md) | T-502, T-309 | Not started | | |  |
+| T-506 | [Tutor attempt review page](stage-5-classes/T-506-tutor-attempt-review.md) | T-502, T-309 | Done | Claude (subagent) | 2026-11-08 | /tutor/attempts/[id] reuses ResultSummary + review list; delete with confirm |
 | T-507 | [Oral questions screen](stage-5-classes/T-507-oral-questions.md) | T-109 | Done | | 2026-11-08 |  |
 | T-508 | [Class code and display name on the start screen](stage-5-classes/T-508-class-code-start.md) | T-501, T-211 | Done | | 2026-11-08 |  |
 | T-509 | [Extra-time multiplier per class (EX-21)](stage-5-classes/T-509-time-multiplier.md) | T-002, T-501, T-214 | Done | | 2026-11-08 | attempts.startInfo returns minutes; start screen shows class extra time |
