@@ -8,9 +8,9 @@
 // navigator grid is one tab stop with arrow keys inside. Focus moves to the
 // question heading on every question change.
 import { SavesPendingError, useAttempt } from "~/composables/useAttempt";
+import { useExamTimer } from "~/composables/useExamTimer";
 import { errorCodeOf } from "~/lib/attemptSync";
 import {
-  formatClock,
   mcqValue,
   navCellState,
   navLabel,
@@ -36,7 +36,7 @@ const {
   paper,
   loadError,
   status,
-  readOnly,
+  readOnly: attemptReadOnly,
   remainingMs,
   currentIndex,
   responses,
@@ -104,10 +104,31 @@ const chip = computed(() => {
   return modeLabel.value;
 });
 
-const clock = computed(() =>
-  remainingMs.value === null ? "--:--" : formatClock(remainingMs.value),
-);
-const lowTime = computed(() => remainingMs.value !== null && remainingMs.value < 10 * 60_000);
+// --- timer, time calls, pacing (T-214) -------------------------------------------
+
+const currentLabel = computed(() => {
+  const q = current.value;
+  if (!q) return undefined;
+  return q.kind === "mcq" ? `Q${q.displayNumber}` : `PBQ ${pbqNumber.value}`;
+});
+const timer = useExamTimer(attempt, {
+  currentLabel,
+  // Submitted or expired (0:00 submit, server autoSubmit, another tab): show the result.
+  onClosed: () => void navigateTo(resultPath, { replace: true }),
+});
+const { alerts, announcement, timeUp, phase: timeUpPhase } = timer;
+const readOnly = computed(() => attemptReadOnly.value || timeUp.value);
+const timeUpMessage = computed(() => {
+  if (timeUpPhase.value === "submitting") return "Time is up. Submitting your exam…";
+  if (timeUpPhase.value === "waiting") {
+    return "Time is up. We couldn't reach the server, so it will submit your exam automatically within a minute or two. Answers already saved count. Keep this page open: your result opens when it's ready.";
+  }
+  return null;
+});
+function dismissAlert(id: Parameters<typeof timer.dismiss>[0]) {
+  timer.dismiss(id);
+  focusHeading();
+}
 
 const closedMessage = computed(() => {
   if (status.value === "expired") return "Time is up. Your exam was submitted automatically.";
@@ -291,20 +312,28 @@ function reload() {
         />
       </template>
       <template v-if="paper" #timer>
-        <!-- T-214 replaces this with <ExamTimer> (pacing, auto-submit at 0:00). -->
-        <div
-          role="timer"
-          aria-label="Time remaining"
-          class="flex items-center gap-2 rounded-full px-3 py-2 text-base font-extrabold tabular-nums sm:px-[18px] sm:py-[9px] sm:text-lg"
-          :class="lowTime ? 'bg-warn-soft text-warn' : 'bg-brand-soft text-brand-ink'"
-        >
-          <UIcon name="i-lucide-clock" class="size-[18px]" aria-hidden="true" />
-          {{ clock }}
-        </div>
+        <ExamTimer :remaining-ms="remainingMs" :announcement="announcement" />
       </template>
     </ExamRunnerHeader>
 
-    <main class="flex min-w-0 flex-1 flex-col p-3 sm:p-5">
+    <main class="flex min-w-0 flex-1 flex-col gap-4 p-3 sm:gap-5 sm:p-5">
+      <!-- 0:00 (T-214): submitting, or waiting for the server's auto-submit -->
+      <div
+        v-if="timeUpMessage"
+        role="status"
+        class="flex items-center gap-3 rounded-[20px] bg-warn-soft px-[18px] py-3.5"
+      >
+        <UIcon
+          :name="
+            timeUpPhase === 'submitting' ? 'i-lucide-loader-circle' : 'i-lucide-alarm-clock-off'
+          "
+          class="size-[18px] flex-none text-warn"
+          :class="timeUpPhase === 'submitting' ? 'motion-safe:animate-spin' : ''"
+          aria-hidden="true"
+        />
+        <span class="flex-1 text-[15px] font-semibold text-fg">{{ timeUpMessage }}</span>
+      </div>
+
       <!-- Load error -->
       <div v-if="loadErrorText && !paper" class="flex flex-1 items-center justify-center">
         <div
@@ -359,7 +388,7 @@ function reload() {
       <!-- Question (screens 02–04) -->
       <div v-else-if="current" class="flex min-w-0 flex-col gap-4 sm:gap-5">
         <div
-          v-if="closedMessage"
+          v-if="closedMessage && !timeUpMessage"
           role="status"
           class="flex flex-col gap-3 rounded-[20px] bg-brand-soft px-[18px] py-3.5 sm:flex-row sm:items-center"
         >
@@ -373,7 +402,7 @@ function reload() {
             @click="goToResult"
           />
         </div>
-        <!-- T-214: <ExamPacingBanner> goes here, above the question (screen 02). -->
+        <ExamPacingBanner v-if="!readOnly" :alerts="alerts" @dismiss="dismissAlert" />
 
         <div
           class="grid min-w-0 gap-4 sm:gap-5"
