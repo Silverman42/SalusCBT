@@ -12,6 +12,11 @@ export interface LabStep {
   /** Shell commands, shown in a mono block. */
   commands?: string;
   outro?: string[];
+  /**
+   * What the in-browser lab (/lab terminal) shows instead, where it differs
+   * from the downloaded script. Fields left out are the same.
+   */
+  browser?: Pick<Partial<LabStep>, "intro" | "commands" | "outro">;
 }
 
 export const LAB_SCRIPT_URL = "/downloads/build-lab.sh";
@@ -72,6 +77,20 @@ export const LAB_STEPS: LabStep[] = [
     outro: [
       "Then answer: what would you do with the failed file, and what would prove who created the file, not just that it is unchanged?",
     ],
+    // The browser lab has no answer file (it would show up in `ls -la`): the
+    // page's Check compares the name with the file this session tampered with.
+    browser: {
+      commands: [
+        "cd ~/secplus-lab/downloads",
+        "cat vendor_hashes.txt",
+        "sha256sum *.exe *.msi *.deb",
+        "sha256sum -c vendor_hashes.txt",
+      ].join("\n"),
+      outro: [
+        "Type the name of the file that failed below and select Check. Reset the lab to get a new tampered file.",
+        "Then answer: what would you do with the failed file, and what would prove who created the file, not just that it is unchanged?",
+      ],
+    },
   },
   {
     id: "lab-c",
@@ -109,6 +128,12 @@ export const LAB_STEPS: LabStep[] = [
     ],
   },
 ];
+
+/** A step as the in-browser lab shows it (its `browser` overrides applied). */
+export function browserLabStep(step: LabStep): LabStep {
+  const { browser, ...rest } = step;
+  return { ...rest, ...browser };
+}
 
 /** The same instructions as a Markdown file for the download route. */
 export function labInstructionsMarkdown(): string {
