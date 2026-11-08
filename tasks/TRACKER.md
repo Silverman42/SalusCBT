@@ -22,9 +22,9 @@ Single source of truth for task status. Task details live in the linked files; r
 | 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
 | 5 · Classes | 10 | 1 | 0 | 0 | 3 | 6 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
-| 7 · Terminal lab | 7 | 4 | 0 | 0 | 1 | 2 |
+| 7 · Terminal lab | 7 | 3 | 0 | 0 | 2 | 2 |
 | X · Cross-cutting | 4 | 4 | 0 | 0 | 0 | 0 |
-| **Total** | **81** | **12** | 0 | 0 | **13** | **56** |
+| **Total** | **81** | **11** | 0 | 0 | **14** | **56** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -153,7 +153,7 @@ From the PRD release plan. Tick when the gate task passes.
 | --- | --- | --- | --- | --- | --- | --- |
 | T-701 | [Terminal lab: virtual file system and seedLab](stage-7-lab/T-701-lab-vfs-seed.md) | T-001 | Done | | 2026-11-08 |  |
 | T-702 | [Terminal lab: lexer, pipeline runner and terminal UI](stage-7-lab/T-702-lab-lexer-runner.md) | T-701 | In review | | 2026-11-08 | Lexer, globbing, runner committed; Terminal.vue (a11y criterion) left for T-706 |
-| T-703 | [Lab commands: cd, ls, cat, head, tail, stat, chmod](stage-7-lab/T-703-lab-commands-files.md) | T-702 | Not started | | |  |
+| T-703 | [Lab commands: cd, ls, cat, head, tail, stat, chmod](stage-7-lab/T-703-lab-commands-files.md) | T-702 | In review | Claude (subagent) | 2026-11-08 | ls, cat, head, tail, stat, chmod committed; GNU byte-for-byte comparison runs on CI (needs GNU ls), confirm via T-707 |
 | T-704 | [Lab commands: grep, awk, cut, sort, uniq, wc, sed](stage-7-lab/T-704-lab-commands-text.md) | T-702 | Not started | | |  |
 | T-705 | [Lab command: sha256sum and sha256sum -c](stage-7-lab/T-705-lab-sha256.md) | T-701 | Done | | 2026-11-08 |  |
 | T-706 | [Lab page: checks, reset and cheat sheet](stage-7-lab/T-706-lab-page-checks.md) | T-703, T-704, T-705, T-308 | Not started | | |  |
