@@ -27,6 +27,7 @@ import type * as generators_permissions from "../generators/permissions.js";
 import type * as generators_sha256 from "../generators/sha256.js";
 import type * as generators_sshLog from "../generators/sshLog.js";
 import type * as http from "../http.js";
+import type * as invitations from "../invitations.js";
 import type * as lib_anon from "../lib/anon.js";
 import type * as lib_answers from "../lib/answers.js";
 import type * as lib_attemptDeletion from "../lib/attemptDeletion.js";
@@ -70,6 +71,7 @@ declare const fullApi: ApiFromModules<{
   "generators/sha256": typeof generators_sha256;
   "generators/sshLog": typeof generators_sshLog;
   http: typeof http;
+  invitations: typeof invitations;
   "lib/anon": typeof lib_anon;
   "lib/answers": typeof lib_answers;
   "lib/attemptDeletion": typeof lib_attemptDeletion;
