@@ -37,6 +37,7 @@ export default defineNuxtConfig({
     "/tutor": { ssr: false },
     "/tutor/**": { ssr: false },
     "/admin/**": { ssr: false },
+    "/oral": { ssr: false }, // tutor area (T-507)
     "/sign-in": { ssr: false },
     "/invite/**": { ssr: false },
     // The exam runner and its result/review pages read the anon token from

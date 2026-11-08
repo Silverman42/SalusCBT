@@ -114,6 +114,7 @@ const FUNCTIONS: Record<string, Spec> = {
     args: ({ versionId, questionId }) => ({ versionId, questionId, seed: 1 }),
   },
   "editor:previewAttempt": { access: "tutor", args: ({ versionId }) => ({ versionId }) },
+  "content:oralQuestions": { access: "tutor", args: ({ versionId }) => ({ versionId }) },
 
   // Admin only.
   "admin:tutors": { access: "admin" },

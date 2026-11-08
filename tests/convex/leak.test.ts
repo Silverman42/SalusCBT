@@ -162,6 +162,7 @@ const STAFF_ONLY: Record<
     args: (i) => ({ versionId: i.versionId, questionId: i.questionId }),
   }, // returns the new key (author, own draft)
   "editor:previewAttempt": { role: "tutor", args: (i) => ({ versionId: i.versionId }) },
+  "content:oralQuestions": { role: "tutor", args: (i) => ({ versionId: i.versionId }) }, // model answers (CL-10)
 };
 
 /** Better Auth's routes (`/api/auth/*`): no exam data; covered by the auth tests. */

@@ -12,6 +12,7 @@ import type * as admin from "../admin.js";
 import type * as attempts from "../attempts.js";
 import type * as auth from "../auth.js";
 import type * as classes from "../classes.js";
+import type * as content from "../content.js";
 import type * as crons from "../crons.js";
 import type * as editor from "../editor.js";
 import type * as email_console from "../email/console.js";
@@ -63,6 +64,7 @@ declare const fullApi: ApiFromModules<{
   attempts: typeof attempts;
   auth: typeof auth;
   classes: typeof classes;
+  content: typeof content;
   crons: typeof crons;
   editor: typeof editor;
   "email/console": typeof email_console;
