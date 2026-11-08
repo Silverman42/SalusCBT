@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as attempts from "../attempts.js";
 import type * as auth from "../auth.js";
 import type * as email_console from "../email/console.js";
 import type * as email_provider from "../email/provider.js";
@@ -43,6 +44,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  attempts: typeof attempts;
   auth: typeof auth;
   "email/console": typeof email_console;
   "email/provider": typeof email_provider;
