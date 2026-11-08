@@ -18,7 +18,8 @@
     "typecheck": "nuxt typecheck && tsc -p convex --noEmit && tsc -p scripts --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "seed:json": "tsx scripts/parse-exam.ts content/source/secplus-701-mock-exam.md > content/seed/sy0-701.json && prettier --write content/seed/sy0-701.json"
   },
   "dependencies": {
     "@convex-dev/better-auth": "0.13.0",
@@ -41,6 +42,7 @@
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.10",
+    "tsx": "4.23.15",
     "typescript": "~6.0.3",
     "vitest": "^5.1.0",
     "vue-tsc": "^3.3.14"

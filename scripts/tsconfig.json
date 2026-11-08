@@ -12,5 +12,10 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["./**/*", "../shared/**/*", "../tests/unit/parser.test.ts"]
+  "include": [
+    "./**/*",
+    "../shared/**/*",
+    "../tests/unit/parser.test.ts",
+    "../tests/unit/seed-json.test.ts"
+  ]
 }

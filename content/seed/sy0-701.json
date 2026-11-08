@@ -1,0 +1,3663 @@
+{
+  "exam": {
+    "slug": "sy0-701",
+    "title": "CompTIA Security+ (SY0-701) Mock Exam",
+    "timeLimitMin": 90,
+    "passScaled": 750,
+    "comfortScaled": 800,
+    "domainTarget": 0.81
+  },
+  "scoring": {
+    "scaleMin": 100,
+    "scaleMax": 900,
+    "totalPoints": 102,
+    "passPoints": 83,
+    "conversion": [
+      {
+        "points": 102,
+        "scaled": 900,
+        "passed": true
+      },
+      {
+        "points": 95,
+        "scaled": 845,
+        "passed": true
+      },
+      {
+        "points": 90,
+        "scaled": 806,
+        "passed": true
+      },
+      {
+        "points": 87,
+        "scaled": 782,
+        "passed": true
+      },
+      {
+        "points": 83,
+        "scaled": 751,
+        "passed": true
+      },
+      {
+        "points": 82,
+        "scaled": 743,
+        "passed": false
+      },
+      {
+        "points": 78,
+        "scaled": 712,
+        "passed": false
+      },
+      {
+        "points": 70,
+        "scaled": 649,
+        "passed": false
+      },
+      {
+        "points": 60,
+        "scaled": 571,
+        "passed": false
+      }
+    ]
+  },
+  "domains": [
+    {
+      "domain": "1.0",
+      "name": "General Security Concepts",
+      "weight": 0.12,
+      "points": 13
+    },
+    {
+      "domain": "2.0",
+      "name": "Threats, Vulnerabilities and Mitigations",
+      "weight": 0.22,
+      "points": 22
+    },
+    {
+      "domain": "3.0",
+      "name": "Security Architecture",
+      "weight": 0.18,
+      "points": 19
+    },
+    {
+      "domain": "4.0",
+      "name": "Security Operations",
+      "weight": 0.28,
+      "points": 31
+    },
+    {
+      "domain": "5.0",
+      "name": "Security Program Management and Oversight",
+      "weight": 0.2,
+      "points": 17
+    }
+  ],
+  "questions": [
+    {
+      "order": 1,
+      "section": "pbqA",
+      "displayNumber": "1",
+      "kind": "pbq",
+      "domain": "4.0",
+      "points": 3,
+      "stem": "Investigate an SSH brute-force alert",
+      "template": "sshLog",
+      "payload": {
+        "template": "sshLog",
+        "intro": "A SIEM alert for repeated SSH login failures fired on `web01`. Below is `/var/log/auth.log`.",
+        "log": "analyst@web01:~$ cat /var/log/auth.log\nNov  3 01:48:37 web01 CRON[1834]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:54:17 web01 sshd[1843]: Accepted publickey for adaeze from 10.0.2.15 port 34007 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 01:54:18 web01 sshd[1844]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 01:55:09 web01 CRON[1835]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:58:00 web01 sshd[1851]: Invalid user test from 45.155.205.233 port 39663\nNov  3 01:58:01 web01 sshd[1852]: Failed password for invalid user test from 45.155.205.233 port 39663 ssh2\nNov  3 01:58:07 web01 sshd[1853]: Invalid user ftpuser from 45.155.205.233 port 62977\nNov  3 01:58:08 web01 sshd[1854]: Failed password for invalid user ftpuser from 45.155.205.233 port 62977 ssh2\nNov  3 01:58:14 web01 sshd[1855]: Invalid user test from 45.155.205.233 port 39593\nNov  3 01:58:15 web01 sshd[1856]: Failed password for invalid user test from 45.155.205.233 port 39593 ssh2\nNov  3 01:58:19 web01 sshd[1857]: Invalid user test from 45.155.205.233 port 53232\nNov  3 01:58:20 web01 sshd[1858]: Failed password for invalid user test from 45.155.205.233 port 53232 ssh2\nNov  3 01:58:27 web01 sshd[1859]: Invalid user test from 45.155.205.233 port 62152\nNov  3 01:58:28 web01 sshd[1860]: Failed password for invalid user test from 45.155.205.233 port 62152 ssh2\nNov  3 01:58:30 web01 sshd[1861]: Invalid user admin from 45.155.205.233 port 41738\nNov  3 01:58:31 web01 sshd[1862]: Failed password for invalid user admin from 45.155.205.233 port 41738 ssh2\nNov  3 01:58:37 web01 sshd[1863]: Invalid user pi from 45.155.205.233 port 43821\nNov  3 01:58:38 web01 sshd[1864]: Failed password for invalid user pi from 45.155.205.233 port 43821 ssh2\nNov  3 01:58:45 web01 sshd[1865]: Invalid user pi from 45.155.205.233 port 52021\nNov  3 01:58:46 web01 sshd[1866]: Failed password for invalid user pi from 45.155.205.233 port 52021 ssh2\nNov  3 01:58:50 web01 sshd[1867]: Invalid user admin from 45.155.205.233 port 64753\nNov  3 01:58:51 web01 sshd[1868]: Failed password for invalid user admin from 45.155.205.233 port 64753 ssh2\nNov  3 01:58:54 web01 sshd[1869]: Invalid user ftpuser from 45.155.205.233 port 59084\nNov  3 01:58:55 web01 sshd[1870]: Failed password for invalid user ftpuser from 45.155.205.233 port 59084 ssh2\nNov  3 01:58:58 web01 sshd[1871]: Invalid user guest from 45.155.205.233 port 36209\nNov  3 01:58:59 web01 sshd[1872]: Failed password for invalid user guest from 45.155.205.233 port 36209 ssh2\nNov  3 01:59:06 web01 sshd[1873]: Invalid user user from 45.155.205.233 port 60439\nNov  3 01:59:07 web01 sshd[1874]: Failed password for invalid user user from 45.155.205.233 port 60439 ssh2\nNov  3 02:02:13 web01 CRON[1836]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:03:35 web01 sshd[1875]: Failed password for chidi from 102.89.34.12 port 46161 ssh2\nNov  3 02:03:48 web01 sshd[1876]: Failed password for chidi from 102.89.34.12 port 57625 ssh2\nNov  3 02:04:03 web01 sshd[1877]: Accepted password for chidi from 102.89.34.12 port 50167 ssh2\nNov  3 02:09:40 web01 CRON[1837]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:11:55 web01 sshd[1845]: Accepted publickey for adaeze from 10.0.2.15 port 41587 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:11:56 web01 sshd[1846]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:13:00 web01 sshd[1878]: Failed password for backup from 193.32.162.71 port 43069 ssh2\nNov  3 02:13:02 web01 sshd[1879]: Invalid user admin from 193.32.162.71 port 32797\nNov  3 02:13:03 web01 sshd[1880]: Failed password for invalid user admin from 193.32.162.71 port 32797 ssh2\nNov  3 02:13:08 web01 sshd[1881]: Failed password for backup from 193.32.162.71 port 36077 ssh2\nNov  3 02:13:10 web01 sshd[1882]: Invalid user oracle from 193.32.162.71 port 50606\nNov  3 02:13:11 web01 sshd[1883]: Failed password for invalid user oracle from 193.32.162.71 port 50606 ssh2\nNov  3 02:13:13 web01 sshd[1884]: Failed password for backup from 193.32.162.71 port 61467 ssh2\nNov  3 02:13:15 web01 sshd[1885]: Failed password for backup from 193.32.162.71 port 51675 ssh2\nNov  3 02:13:21 web01 sshd[1886]: Invalid user admin from 193.32.162.71 port 50936\nNov  3 02:13:22 web01 sshd[1887]: Failed password for invalid user admin from 193.32.162.71 port 50936 ssh2\nNov  3 02:13:25 web01 sshd[1888]: Failed password for root from 193.32.162.71 port 61886 ssh2\nNov  3 02:13:31 web01 sshd[1889]: Failed password for backup from 193.32.162.71 port 57718 ssh2\nNov  3 02:13:33 web01 sshd[1890]: Failed password for backup from 193.32.162.71 port 62756 ssh2\nNov  3 02:13:37 web01 sshd[1891]: Invalid user oracle from 193.32.162.71 port 30033\nNov  3 02:13:38 web01 sshd[1892]: Failed password for invalid user oracle from 193.32.162.71 port 30033 ssh2\nNov  3 02:13:40 web01 sshd[1893]: Invalid user postgres from 193.32.162.71 port 62039\nNov  3 02:13:41 web01 sshd[1894]: Failed password for invalid user postgres from 193.32.162.71 port 62039 ssh2\nNov  3 02:13:44 web01 sshd[1895]: Invalid user admin from 193.32.162.71 port 33408\nNov  3 02:13:45 web01 sshd[1896]: Failed password for invalid user admin from 193.32.162.71 port 33408 ssh2\nNov  3 02:13:48 web01 sshd[1897]: Failed password for backup from 193.32.162.71 port 59475 ssh2\nNov  3 02:13:51 web01 sshd[1898]: Invalid user ubuntu from 193.32.162.71 port 54887\nNov  3 02:13:52 web01 sshd[1899]: Failed password for invalid user ubuntu from 193.32.162.71 port 54887 ssh2\nNov  3 02:13:57 web01 sshd[1900]: Invalid user admin from 193.32.162.71 port 51076\nNov  3 02:13:58 web01 sshd[1901]: Failed password for invalid user admin from 193.32.162.71 port 51076 ssh2\nNov  3 02:14:03 web01 sshd[1902]: Failed password for root from 193.32.162.71 port 49314 ssh2\nNov  3 02:14:05 web01 sshd[1903]: Invalid user test from 193.32.162.71 port 51177\nNov  3 02:14:06 web01 sshd[1904]: Failed password for invalid user test from 193.32.162.71 port 51177 ssh2\nNov  3 02:14:08 web01 sshd[1905]: Invalid user admin from 193.32.162.71 port 41217\nNov  3 02:14:09 web01 sshd[1906]: Failed password for invalid user admin from 193.32.162.71 port 41217 ssh2\nNov  3 02:14:10 web01 sshd[1907]: Failed password for backup from 193.32.162.71 port 42797 ssh2\nNov  3 02:14:12 web01 sshd[1908]: Invalid user ubuntu from 193.32.162.71 port 42751\nNov  3 02:14:13 web01 sshd[1909]: Failed password for invalid user ubuntu from 193.32.162.71 port 42751 ssh2\nNov  3 02:14:18 web01 sshd[1910]: Invalid user postgres from 193.32.162.71 port 52396\nNov  3 02:14:19 web01 sshd[1911]: Failed password for invalid user postgres from 193.32.162.71 port 52396 ssh2\nNov  3 02:14:23 web01 sshd[1912]: Invalid user ubuntu from 193.32.162.71 port 38717\nNov  3 02:14:24 web01 sshd[1913]: Failed password for invalid user ubuntu from 193.32.162.71 port 38717 ssh2\nNov  3 02:14:27 web01 sshd[1914]: Invalid user admin from 193.32.162.71 port 31929\nNov  3 02:14:28 web01 sshd[1915]: Failed password for invalid user admin from 193.32.162.71 port 31929 ssh2\nNov  3 02:14:29 web01 sshd[1916]: Failed password for backup from 193.32.162.71 port 34844 ssh2\nNov  3 02:14:35 web01 sshd[1917]: Failed password for backup from 193.32.162.71 port 33811 ssh2\nNov  3 02:14:37 web01 sshd[1918]: Invalid user admin from 193.32.162.71 port 41027\nNov  3 02:14:38 web01 sshd[1919]: Failed password for invalid user admin from 193.32.162.71 port 41027 ssh2\nNov  3 02:14:43 web01 sshd[1920]: Failed password for root from 193.32.162.71 port 39812 ssh2\nNov  3 02:14:45 web01 sshd[1921]: Invalid user test from 193.32.162.71 port 50239\nNov  3 02:14:46 web01 sshd[1922]: Failed password for invalid user test from 193.32.162.71 port 50239 ssh2\nNov  3 02:14:51 web01 sshd[1923]: Invalid user ubuntu from 193.32.162.71 port 47984\nNov  3 02:14:52 web01 sshd[1924]: Failed password for invalid user ubuntu from 193.32.162.71 port 47984 ssh2\nNov  3 02:14:55 web01 sshd[1925]: Invalid user test from 193.32.162.71 port 60638\nNov  3 02:14:56 web01 sshd[1926]: Failed password for invalid user test from 193.32.162.71 port 60638 ssh2\nNov  3 02:14:59 web01 sshd[1927]: Invalid user ubuntu from 193.32.162.71 port 52936\nNov  3 02:15:00 web01 sshd[1928]: Failed password for invalid user ubuntu from 193.32.162.71 port 52936 ssh2\nNov  3 02:15:04 web01 sshd[1929]: Failed password for root from 193.32.162.71 port 41771 ssh2\nNov  3 02:15:08 web01 sshd[1930]: Invalid user ubuntu from 193.32.162.71 port 34329\nNov  3 02:15:09 web01 sshd[1931]: Failed password for invalid user ubuntu from 193.32.162.71 port 34329 ssh2\nNov  3 02:15:10 web01 sshd[1932]: Invalid user ubuntu from 193.32.162.71 port 32466\nNov  3 02:15:11 web01 sshd[1933]: Failed password for invalid user ubuntu from 193.32.162.71 port 32466 ssh2\nNov  3 02:15:14 web01 sshd[1934]: Invalid user oracle from 193.32.162.71 port 35984\nNov  3 02:15:15 web01 sshd[1935]: Failed password for invalid user oracle from 193.32.162.71 port 35984 ssh2\nNov  3 02:15:17 web01 sshd[1936]: Invalid user admin from 193.32.162.71 port 53757\nNov  3 02:15:18 web01 sshd[1937]: Failed password for invalid user admin from 193.32.162.71 port 53757 ssh2\nNov  3 02:15:22 web01 sshd[1938]: Invalid user ubuntu from 193.32.162.71 port 33772\nNov  3 02:15:23 web01 sshd[1939]: Failed password for invalid user ubuntu from 193.32.162.71 port 33772 ssh2\nNov  3 02:15:25 web01 sshd[1940]: Failed password for backup from 193.32.162.71 port 62749 ssh2\nNov  3 02:15:31 web01 sshd[1941]: Invalid user test from 193.32.162.71 port 35934\nNov  3 02:15:32 web01 sshd[1942]: Failed password for invalid user test from 193.32.162.71 port 35934 ssh2\nNov  3 02:15:34 web01 sshd[1943]: Invalid user ubuntu from 193.32.162.71 port 64685\nNov  3 02:15:35 web01 sshd[1944]: Failed password for invalid user ubuntu from 193.32.162.71 port 64685 ssh2\nNov  3 02:15:38 web01 sshd[1945]: Invalid user ubuntu from 193.32.162.71 port 63670\nNov  3 02:15:39 web01 sshd[1946]: Failed password for invalid user ubuntu from 193.32.162.71 port 63670 ssh2\nNov  3 02:15:42 web01 sshd[1947]: Invalid user oracle from 193.32.162.71 port 48207\nNov  3 02:15:43 web01 sshd[1948]: Failed password for invalid user oracle from 193.32.162.71 port 48207 ssh2\nNov  3 02:15:47 web01 sshd[1949]: Invalid user postgres from 193.32.162.71 port 36778\nNov  3 02:15:48 web01 sshd[1950]: Failed password for invalid user postgres from 193.32.162.71 port 36778 ssh2\nNov  3 02:15:53 web01 sshd[1951]: Invalid user admin from 193.32.162.71 port 33453\nNov  3 02:15:54 web01 sshd[1952]: Failed password for invalid user admin from 193.32.162.71 port 33453 ssh2\nNov  3 02:15:56 web01 sshd[1953]: Failed password for root from 193.32.162.71 port 34552 ssh2\nNov  3 02:15:58 web01 sshd[1954]: Invalid user ubuntu from 193.32.162.71 port 30428\nNov  3 02:15:59 web01 sshd[1955]: Failed password for invalid user ubuntu from 193.32.162.71 port 30428 ssh2\nNov  3 02:16:03 web01 sshd[1956]: Invalid user ubuntu from 193.32.162.71 port 32063\nNov  3 02:16:04 web01 sshd[1957]: Failed password for invalid user ubuntu from 193.32.162.71 port 32063 ssh2\nNov  3 02:16:07 web01 sshd[1958]: Failed password for root from 193.32.162.71 port 43274 ssh2\nNov  3 02:16:09 web01 sshd[1959]: Invalid user ubuntu from 193.32.162.71 port 41797\nNov  3 02:16:10 web01 sshd[1960]: Failed password for invalid user ubuntu from 193.32.162.71 port 41797 ssh2\nNov  3 02:16:13 web01 sshd[1961]: Failed password for backup from 193.32.162.71 port 49147 ssh2\nNov  3 02:16:17 web01 sshd[1962]: Failed password for backup from 193.32.162.71 port 59892 ssh2\nNov  3 02:16:20 web01 sshd[1963]: Failed password for backup from 193.32.162.71 port 45443 ssh2\nNov  3 02:16:22 web01 sshd[1964]: Failed password for backup from 193.32.162.71 port 56150 ssh2\nNov  3 02:16:27 web01 sshd[1965]: Accepted password for backup from 193.32.162.71 port 58328 ssh2\nNov  3 02:16:28 web01 sshd[1966]: pam_unix(sshd:session): session opened for user backup(uid=1001) by (uid=0)\nNov  3 02:16:48 web01 CRON[1838]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:23:17 web01 CRON[1839]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:30:02 web01 CRON[1840]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:31:01 web01 sshd[1847]: Accepted publickey for adaeze from 10.0.2.15 port 62230 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:31:02 web01 sshd[1848]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:37:03 web01 CRON[1841]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:44:37 web01 CRON[1842]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:49:53 web01 sshd[1849]: Accepted publickey for adaeze from 10.0.2.15 port 30060 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:49:54 web01 sshd[1850]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)",
+        "parts": [
+          {
+            "id": "1a",
+            "prompt": "Source IP address of the brute-force attack?",
+            "kind": "ip",
+            "scored": true
+          },
+          {
+            "id": "1b",
+            "prompt": "Account the attacker successfully logged in to?",
+            "kind": "text",
+            "scored": true
+          },
+          {
+            "id": "1c",
+            "prompt": "Number of `Failed password` entries from that IP?",
+            "kind": "integer",
+            "scored": true
+          },
+          {
+            "id": "1d",
+            "prompt": "Write a one-line command that counts failed logins per source IP.",
+            "kind": "text",
+            "scored": false
+          }
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "section": "pbqA",
+      "displayNumber": "2",
+      "kind": "pbq",
+      "domain": "2.0",
+      "points": 3,
+      "stem": "Find insecure services with nmap",
+      "template": "nmap",
+      "payload": {
+        "template": "nmap",
+        "intro": "You scan the in-scope file server to find services that expose credentials or data in cleartext.",
+        "scan": "analyst@kali:~$ nmap -sV 10.0.5.20\nStarting Nmap 7.94 ( https://nmap.org ) at 2026-11-03 09:12 WAT\nNmap scan report for fileserver01 (10.0.5.20)\nHost is up (0.0011s latency).\nNot shown: 993 closed tcp ports (reset)\nPORT     STATE SERVICE      VERSION\n21/tcp   open  ftp          vsftpd 3.0.5\n22/tcp   open  ssh          OpenSSH 9.6p1 Ubuntu 3ubuntu13.5 (Ubuntu Linux; protocol 2.0)\n23/tcp   open  telnet       Linux telnetd\n80/tcp   open  http         nginx 1.24.0 (Ubuntu)\n139/tcp  open  netbios-ssn  Samba smbd 4.6.2\n445/tcp  open  netbios-ssn  Samba smbd 4.6.2\n3306/tcp open  mysql        MySQL 8.0.39-0ubuntu0.24.04.2\nService Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel\n\nService detection performed. Please report any incorrect results at https://nmap.org/submit/ .\nNmap done: 1 IP address (1 host up) scanned in 11.62 seconds",
+        "parts": [
+          {
+            "id": "2a",
+            "prompt": "Port offering a cleartext remote shell that should be disabled?",
+            "kind": "port"
+          },
+          {
+            "id": "2b",
+            "prompt": "Open port administrators should use for remote shell access instead?",
+            "kind": "port"
+          },
+          {
+            "id": "2c",
+            "prompt": "Port transferring files in cleartext that should be replaced with SFTP or FTPS?",
+            "kind": "port"
+          }
+        ]
+      }
+    },
+    {
+      "order": 3,
+      "section": "pbqA",
+      "displayNumber": "3",
+      "kind": "pbq",
+      "domain": "1.0",
+      "points": 3,
+      "stem": "Verify installer integrity",
+      "template": "hashCheck",
+      "payload": {
+        "template": "hashCheck",
+        "intro": "Installers are staged for rollout. The vendors' published SHA-256 values are in `vendor_hashes.txt`.",
+        "vendorHashes": "analyst@ws-it-07:~/downloads$ cat vendor_hashes.txt\n5bb2bb81f8889bf66be0f825e9defe45b25a6d52adc38082c8a8f56fee8dff02  agent-installer-v4.2.exe\n8316181d9692298ed66e45673a5118844fac09a217eb71cbebdb2332ae49860e  vpn-client-3.1.msi\n6666386a26df62fe5a706bcb5f555297dcb406658c174d450131bd1ff1602bbb  backup-tool-1.8.deb\n1f407cf97d6c6e961ae68e61d62060b3edeb46b9c5ff364ef441ed442775663d  pdf-reader-2026.2.exe",
+        "computed": "analyst@ws-it-07:~/downloads$ sha256sum agent-installer-v4.2.exe vpn-client-3.1.msi backup-tool-1.8.deb pdf-reader-2026.2.exe\n5bb2bb81f8889bf66be0f825e9defe45b25a6d52adc38082c8a8f56fee8dff02  agent-installer-v4.2.exe\n8316181d9692298ed66e45673a5118844fac09a217eb71cbebdb2332ae49860e  vpn-client-3.1.msi\n6666388652ab9ee82931f163e11eb66ca7cb7a8b7a6bfc6bbb093ae6a1602bbb  backup-tool-1.8.deb\n1f407cf97d6c6e961ae68e61d62060b3edeb46b9c5ff364ef441ed442775663d  pdf-reader-2026.2.exe",
+        "parts": [
+          {
+            "id": "3a",
+            "prompt": "Which file failed the integrity check?",
+            "kind": "pick",
+            "choices": [
+              "agent-installer-v4.2.exe",
+              "vpn-client-3.1.msi",
+              "backup-tool-1.8.deb",
+              "pdf-reader-2026.2.exe"
+            ]
+          },
+          {
+            "id": "3b",
+            "prompt": "What should you do with that file?",
+            "kind": "mcq",
+            "options": [
+              {
+                "id": "A",
+                "text": "Deploy it, because the other three files passed"
+              },
+              {
+                "id": "B",
+                "text": "Quarantine it, report it, and obtain a fresh copy from the vendor's official source, then verify again"
+              },
+              {
+                "id": "C",
+                "text": "Rename the file and run sha256sum again"
+              },
+              {
+                "id": "D",
+                "text": "Recalculate the vendor's hash and update vendor_hashes.txt to match"
+              }
+            ]
+          },
+          {
+            "id": "3c",
+            "prompt": "Which security goal does comparing hashes confirm?",
+            "kind": "mcq",
+            "options": [
+              {
+                "id": "A",
+                "text": "Confidentiality"
+              },
+              {
+                "id": "B",
+                "text": "Integrity"
+              },
+              {
+                "id": "C",
+                "text": "Availability"
+              },
+              {
+                "id": "D",
+                "text": "Non-repudiation"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "section": "pbqA",
+      "displayNumber": "4",
+      "kind": "pbq",
+      "domain": "4.0",
+      "points": 4,
+      "stem": "Harden file permissions and SSH",
+      "template": "permissions",
+      "payload": {
+        "template": "permissions",
+        "intro": "Hardening review of `web01`. Record the fixes you would make.",
+        "listings": "analyst@web01:~$ ls -l /etc\ntotal 24\n-rw-r--r-- 1 root     root            93 Nov  3 09:14 group\n-rw-r--r-- 1 root     root             6 Nov  3 09:14 hostname\n-rw-r--r-- 1 root     root           342 Nov  3 09:14 passwd\n-rw-r--rw- 1 root     shadow         455 Nov  3 09:14 shadow\ndrwxr-xr-x 2 root     root          4096 Nov  3 09:14 ssh\n-r--r----- 1 root     root            66 Nov  3 09:14 sudoers\n\nanalyst@web01:~$ ls -la /home/deploy/.ssh\ntotal 20\ndrwxr-xr-x 2 deploy   deploy        4096 Nov  3 09:14 .\ndrwxr-xr-x 2 deploy   deploy        4096 Nov  3 09:14 ..\n-rw------- 1 deploy   deploy         566 Nov  3 09:14 authorized_keys\n-rw-r--r-- 1 deploy   deploy        2602 Nov  3 09:14 id_rsa\n-rw-r--r-- 1 deploy   deploy         566 Nov  3 09:14 id_rsa.pub",
+        "sshdConfig": "analyst@web01:~$ cat /etc/ssh/sshd_config\n# This is the sshd server system-wide configuration file.\n# See sshd_config(5) for more information.\nInclude /etc/ssh/sshd_config.d/*.conf\n\nPort 22\n#AddressFamily any\n#ListenAddress 0.0.0.0\n\nPermitRootLogin yes\nMaxAuthTries 6\nPubkeyAuthentication yes\nPasswordAuthentication yes\nPermitEmptyPasswords no\nKbdInteractiveAuthentication no\nUsePAM yes\nX11Forwarding yes\nPrintMotd no\nAcceptEnv LANG LC_*\nSubsystem sftp /usr/lib/openssh/sftp-server",
+        "parts": [
+          {
+            "id": "4a",
+            "prompt": "Which file in `/etc` has dangerously permissive permissions?",
+            "kind": "path",
+            "scored": true
+          },
+          {
+            "id": "4b",
+            "prompt": "Octal mode for that file (owner read/write, group read, others nothing)?",
+            "kind": "octal",
+            "scored": true
+          },
+          {
+            "id": "4c",
+            "prompt": "Octal mode for the private key `id_rsa`?",
+            "kind": "octal",
+            "scored": true
+          },
+          {
+            "id": "4d",
+            "prompt": "Which `sshd_config` directive should be set to `no` to block direct root logins?",
+            "kind": "directive",
+            "scored": true
+          }
+        ]
+      }
+    },
+    {
+      "order": 5,
+      "section": "pbqA",
+      "displayNumber": "5",
+      "kind": "pbq",
+      "domain": "3.0",
+      "points": 4,
+      "stem": "Configure the perimeter firewall",
+      "template": "firewall",
+      "payload": {
+        "template": "firewall",
+        "intro": "Rules are processed top to bottom; first match wins. Fill in **Port** and **Action** for each rule.",
+        "requirements": [
+          "Anyone on the internet can reach the website on web01 over HTTPS only.",
+          "The admin LAN can manage web01 over SSH.",
+          "Only web01 can reach the database on db01.",
+          "Everything else is blocked."
+        ],
+        "diagram": "  Internet ──┐\n             ▼\n        [ Firewall ]──► DMZ        web01  10.1.1.10  (HTTPS website)\n             │\n             ├────────► DB zone    db01   10.1.2.20  (MySQL)\n             │\n  Admin LAN 192.168.10.0/24",
+        "rules": [
+          {
+            "source": "Any",
+            "destination": "10.1.1.10",
+            "protocol": "TCP"
+          },
+          {
+            "source": "192.168.10.0/24",
+            "destination": "10.1.1.10",
+            "protocol": "TCP"
+          },
+          {
+            "source": "10.1.1.10",
+            "destination": "10.1.2.20",
+            "protocol": "TCP"
+          },
+          {
+            "source": "Any",
+            "destination": "Any",
+            "protocol": "TCP"
+          }
+        ],
+        "portChoices": ["Any", "22", "23", "80", "443", "3306", "3389"],
+        "actionChoices": ["ALLOW", "DENY"]
+      }
+    },
+    {
+      "order": 1,
+      "section": "pbqB",
+      "displayNumber": "B1",
+      "kind": "pbq",
+      "domain": "4.0",
+      "points": 3,
+      "stem": "Investigate an SSH brute-force alert",
+      "template": "sshLog",
+      "payload": {
+        "template": "sshLog",
+        "intro": "A SIEM alert for repeated SSH login failures fired on `web01`. Below is `/var/log/auth.log`.",
+        "log": "analyst@web01:~$ cat /var/log/auth.log\nNov  3 01:48:30 web01 CRON[1834]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:53:57 web01 sshd[1843]: Accepted publickey for adaeze from 10.0.2.15 port 37554 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 01:53:58 web01 sshd[1844]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 01:55:54 web01 CRON[1835]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:58:00 web01 sshd[1851]: Invalid user pi from 45.155.205.233 port 51964\nNov  3 01:58:01 web01 sshd[1852]: Failed password for invalid user pi from 45.155.205.233 port 51964 ssh2\nNov  3 01:58:03 web01 sshd[1853]: Invalid user test from 45.155.205.233 port 54989\nNov  3 01:58:04 web01 sshd[1854]: Failed password for invalid user test from 45.155.205.233 port 54989 ssh2\nNov  3 01:58:10 web01 sshd[1855]: Invalid user admin from 45.155.205.233 port 44037\nNov  3 01:58:11 web01 sshd[1856]: Failed password for invalid user admin from 45.155.205.233 port 44037 ssh2\nNov  3 01:58:15 web01 sshd[1857]: Invalid user ftpuser from 45.155.205.233 port 54941\nNov  3 01:58:16 web01 sshd[1858]: Failed password for invalid user ftpuser from 45.155.205.233 port 54941 ssh2\nNov  3 01:58:20 web01 sshd[1859]: Invalid user user from 45.155.205.233 port 35704\nNov  3 01:58:21 web01 sshd[1860]: Failed password for invalid user user from 45.155.205.233 port 35704 ssh2\nNov  3 01:58:27 web01 sshd[1861]: Invalid user pi from 45.155.205.233 port 54619\nNov  3 01:58:28 web01 sshd[1862]: Failed password for invalid user pi from 45.155.205.233 port 54619 ssh2\nNov  3 01:58:34 web01 sshd[1863]: Invalid user ftpuser from 45.155.205.233 port 31948\nNov  3 01:58:35 web01 sshd[1864]: Failed password for invalid user ftpuser from 45.155.205.233 port 31948 ssh2\nNov  3 01:58:38 web01 sshd[1865]: Invalid user guest from 45.155.205.233 port 43815\nNov  3 01:58:39 web01 sshd[1866]: Failed password for invalid user guest from 45.155.205.233 port 43815 ssh2\nNov  3 01:58:46 web01 sshd[1867]: Invalid user ftpuser from 45.155.205.233 port 32277\nNov  3 01:58:47 web01 sshd[1868]: Failed password for invalid user ftpuser from 45.155.205.233 port 32277 ssh2\nNov  3 01:58:49 web01 sshd[1869]: Invalid user admin from 45.155.205.233 port 50114\nNov  3 01:58:50 web01 sshd[1870]: Failed password for invalid user admin from 45.155.205.233 port 50114 ssh2\nNov  3 01:58:55 web01 sshd[1871]: Invalid user test from 45.155.205.233 port 41579\nNov  3 01:58:56 web01 sshd[1872]: Failed password for invalid user test from 45.155.205.233 port 41579 ssh2\nNov  3 01:59:00 web01 sshd[1873]: Invalid user test from 45.155.205.233 port 46227\nNov  3 01:59:01 web01 sshd[1874]: Failed password for invalid user test from 45.155.205.233 port 46227 ssh2\nNov  3 02:02:33 web01 CRON[1836]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:03:51 web01 sshd[1875]: Failed password for chidi from 102.89.34.12 port 60764 ssh2\nNov  3 02:04:03 web01 sshd[1876]: Failed password for chidi from 102.89.34.12 port 61284 ssh2\nNov  3 02:04:16 web01 sshd[1877]: Accepted password for chidi from 102.89.34.12 port 36035 ssh2\nNov  3 02:09:39 web01 CRON[1837]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:13:00 web01 sshd[1878]: Invalid user ubuntu from 91.240.118.29 port 63447\nNov  3 02:13:01 web01 sshd[1879]: Failed password for invalid user ubuntu from 91.240.118.29 port 63447 ssh2\nNov  3 02:13:06 web01 sshd[1880]: Failed password for svc_web from 91.240.118.29 port 45362 ssh2\nNov  3 02:13:11 web01 sshd[1881]: Invalid user ubuntu from 91.240.118.29 port 64108\nNov  3 02:13:12 web01 sshd[1882]: Failed password for invalid user ubuntu from 91.240.118.29 port 64108 ssh2\nNov  3 02:13:13 web01 sshd[1883]: Invalid user ubuntu from 91.240.118.29 port 60064\nNov  3 02:13:14 web01 sshd[1884]: Failed password for invalid user ubuntu from 91.240.118.29 port 60064 ssh2\nNov  3 02:13:16 web01 sshd[1885]: Invalid user oracle from 91.240.118.29 port 32279\nNov  3 02:13:17 web01 sshd[1886]: Failed password for invalid user oracle from 91.240.118.29 port 32279 ssh2\nNov  3 02:13:19 web01 sshd[1887]: Failed password for root from 91.240.118.29 port 45789 ssh2\nNov  3 02:13:25 web01 sshd[1888]: Invalid user admin from 91.240.118.29 port 37815\nNov  3 02:13:26 web01 sshd[1889]: Failed password for invalid user admin from 91.240.118.29 port 37815 ssh2\nNov  3 02:13:29 web01 sshd[1890]: Invalid user ubuntu from 91.240.118.29 port 30670\nNov  3 02:13:30 web01 sshd[1891]: Failed password for invalid user ubuntu from 91.240.118.29 port 30670 ssh2\nNov  3 02:13:34 web01 sshd[1892]: Invalid user oracle from 91.240.118.29 port 48358\nNov  3 02:13:35 web01 sshd[1893]: Failed password for invalid user oracle from 91.240.118.29 port 48358 ssh2\nNov  3 02:13:36 web01 sshd[1894]: Invalid user test from 91.240.118.29 port 48473\nNov  3 02:13:37 web01 sshd[1895]: Failed password for invalid user test from 91.240.118.29 port 48473 ssh2\nNov  3 02:13:38 web01 sshd[1896]: Failed password for svc_web from 91.240.118.29 port 50887 ssh2\nNov  3 02:13:42 web01 sshd[1897]: Invalid user admin from 91.240.118.29 port 48556\nNov  3 02:13:43 web01 sshd[1898]: Failed password for invalid user admin from 91.240.118.29 port 48556 ssh2\nNov  3 02:13:44 web01 sshd[1899]: Invalid user test from 91.240.118.29 port 47119\nNov  3 02:13:45 web01 sshd[1900]: Failed password for invalid user test from 91.240.118.29 port 47119 ssh2\nNov  3 02:13:50 web01 sshd[1901]: Invalid user test from 91.240.118.29 port 47555\nNov  3 02:13:51 web01 sshd[1902]: Failed password for invalid user test from 91.240.118.29 port 47555 ssh2\nNov  3 02:13:56 web01 sshd[1903]: Invalid user test from 91.240.118.29 port 35980\nNov  3 02:13:57 web01 sshd[1904]: Failed password for invalid user test from 91.240.118.29 port 35980 ssh2\nNov  3 02:14:01 web01 sshd[1905]: Invalid user test from 91.240.118.29 port 63149\nNov  3 02:14:02 web01 sshd[1845]: Accepted publickey for adaeze from 10.0.2.15 port 59802 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:14:02 web01 sshd[1906]: Failed password for invalid user test from 91.240.118.29 port 63149 ssh2\nNov  3 02:14:03 web01 sshd[1846]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:14:03 web01 sshd[1907]: Invalid user test from 91.240.118.29 port 45579\nNov  3 02:14:04 web01 sshd[1908]: Failed password for invalid user test from 91.240.118.29 port 45579 ssh2\nNov  3 02:14:08 web01 sshd[1909]: Invalid user ubuntu from 91.240.118.29 port 36173\nNov  3 02:14:09 web01 sshd[1910]: Failed password for invalid user ubuntu from 91.240.118.29 port 36173 ssh2\nNov  3 02:14:12 web01 sshd[1911]: Invalid user oracle from 91.240.118.29 port 47972\nNov  3 02:14:13 web01 sshd[1912]: Failed password for invalid user oracle from 91.240.118.29 port 47972 ssh2\nNov  3 02:14:16 web01 sshd[1913]: Invalid user test from 91.240.118.29 port 55403\nNov  3 02:14:17 web01 sshd[1914]: Failed password for invalid user test from 91.240.118.29 port 55403 ssh2\nNov  3 02:14:22 web01 sshd[1915]: Invalid user test from 91.240.118.29 port 63693\nNov  3 02:14:23 web01 sshd[1916]: Failed password for invalid user test from 91.240.118.29 port 63693 ssh2\nNov  3 02:14:26 web01 sshd[1917]: Invalid user ubuntu from 91.240.118.29 port 37399\nNov  3 02:14:27 web01 sshd[1918]: Failed password for invalid user ubuntu from 91.240.118.29 port 37399 ssh2\nNov  3 02:14:31 web01 sshd[1919]: Failed password for root from 91.240.118.29 port 60143 ssh2\nNov  3 02:14:34 web01 sshd[1920]: Failed password for svc_web from 91.240.118.29 port 56198 ssh2\nNov  3 02:14:39 web01 sshd[1921]: Failed password for svc_web from 91.240.118.29 port 38206 ssh2\nNov  3 02:14:42 web01 sshd[1922]: Invalid user postgres from 91.240.118.29 port 52038\nNov  3 02:14:43 web01 sshd[1923]: Failed password for invalid user postgres from 91.240.118.29 port 52038 ssh2\nNov  3 02:14:44 web01 sshd[1924]: Invalid user ubuntu from 91.240.118.29 port 62167\nNov  3 02:14:45 web01 sshd[1925]: Failed password for invalid user ubuntu from 91.240.118.29 port 62167 ssh2\nNov  3 02:14:50 web01 sshd[1926]: Invalid user postgres from 91.240.118.29 port 33705\nNov  3 02:14:51 web01 sshd[1927]: Failed password for invalid user postgres from 91.240.118.29 port 33705 ssh2\nNov  3 02:14:55 web01 sshd[1928]: Invalid user ubuntu from 91.240.118.29 port 37603\nNov  3 02:14:56 web01 sshd[1929]: Failed password for invalid user ubuntu from 91.240.118.29 port 37603 ssh2\nNov  3 02:14:57 web01 sshd[1930]: Failed password for svc_web from 91.240.118.29 port 34310 ssh2\nNov  3 02:15:01 web01 sshd[1931]: Invalid user ubuntu from 91.240.118.29 port 53889\nNov  3 02:15:02 web01 sshd[1932]: Failed password for invalid user ubuntu from 91.240.118.29 port 53889 ssh2\nNov  3 02:15:07 web01 sshd[1933]: Failed password for root from 91.240.118.29 port 64993 ssh2\nNov  3 02:15:11 web01 sshd[1934]: Invalid user admin from 91.240.118.29 port 33144\nNov  3 02:15:12 web01 sshd[1935]: Failed password for invalid user admin from 91.240.118.29 port 33144 ssh2\nNov  3 02:15:13 web01 sshd[1936]: Failed password for root from 91.240.118.29 port 60087 ssh2\nNov  3 02:15:15 web01 sshd[1937]: Invalid user test from 91.240.118.29 port 62010\nNov  3 02:15:16 web01 sshd[1938]: Failed password for invalid user test from 91.240.118.29 port 62010 ssh2\nNov  3 02:15:18 web01 sshd[1939]: Failed password for root from 91.240.118.29 port 32735 ssh2\nNov  3 02:15:21 web01 sshd[1940]: Failed password for svc_web from 91.240.118.29 port 58188 ssh2\nNov  3 02:15:26 web01 sshd[1941]: Invalid user test from 91.240.118.29 port 55820\nNov  3 02:15:27 web01 sshd[1942]: Failed password for invalid user test from 91.240.118.29 port 55820 ssh2\nNov  3 02:15:31 web01 sshd[1943]: Failed password for root from 91.240.118.29 port 39173 ssh2\nNov  3 02:15:36 web01 sshd[1944]: Invalid user admin from 91.240.118.29 port 52245\nNov  3 02:15:37 web01 sshd[1945]: Failed password for invalid user admin from 91.240.118.29 port 52245 ssh2\nNov  3 02:15:42 web01 sshd[1946]: Invalid user postgres from 91.240.118.29 port 44145\nNov  3 02:15:43 web01 sshd[1947]: Failed password for invalid user postgres from 91.240.118.29 port 44145 ssh2\nNov  3 02:15:48 web01 sshd[1948]: Failed password for svc_web from 91.240.118.29 port 59867 ssh2\nNov  3 02:15:50 web01 sshd[1949]: Invalid user test from 91.240.118.29 port 30478\nNov  3 02:15:51 web01 sshd[1950]: Failed password for invalid user test from 91.240.118.29 port 30478 ssh2\nNov  3 02:15:52 web01 sshd[1951]: Invalid user postgres from 91.240.118.29 port 47798\nNov  3 02:15:53 web01 sshd[1952]: Failed password for invalid user postgres from 91.240.118.29 port 47798 ssh2\nNov  3 02:15:56 web01 sshd[1953]: Invalid user test from 91.240.118.29 port 63831\nNov  3 02:15:57 web01 sshd[1954]: Failed password for invalid user test from 91.240.118.29 port 63831 ssh2\nNov  3 02:16:00 web01 sshd[1955]: Failed password for svc_web from 91.240.118.29 port 56944 ssh2\nNov  3 02:16:03 web01 sshd[1956]: Failed password for svc_web from 91.240.118.29 port 47701 ssh2\nNov  3 02:16:05 web01 CRON[1838]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:16:08 web01 sshd[1957]: Invalid user ubuntu from 91.240.118.29 port 30281\nNov  3 02:16:09 web01 sshd[1958]: Failed password for invalid user ubuntu from 91.240.118.29 port 30281 ssh2\nNov  3 02:16:14 web01 sshd[1959]: Failed password for svc_web from 91.240.118.29 port 63609 ssh2\nNov  3 02:16:18 web01 sshd[1960]: Invalid user admin from 91.240.118.29 port 53981\nNov  3 02:16:19 web01 sshd[1961]: Failed password for invalid user admin from 91.240.118.29 port 53981 ssh2\nNov  3 02:16:24 web01 sshd[1962]: Invalid user ubuntu from 91.240.118.29 port 37830\nNov  3 02:16:25 web01 sshd[1963]: Failed password for invalid user ubuntu from 91.240.118.29 port 37830 ssh2\nNov  3 02:16:28 web01 sshd[1964]: Failed password for root from 91.240.118.29 port 37037 ssh2\nNov  3 02:16:33 web01 sshd[1965]: Failed password for svc_web from 91.240.118.29 port 60262 ssh2\nNov  3 02:16:39 web01 sshd[1966]: Failed password for svc_web from 91.240.118.29 port 60815 ssh2\nNov  3 02:16:42 web01 sshd[1967]: Failed password for svc_web from 91.240.118.29 port 47844 ssh2\nNov  3 02:16:45 web01 sshd[1968]: Failed password for svc_web from 91.240.118.29 port 47166 ssh2\nNov  3 02:16:48 web01 sshd[1969]: Accepted password for svc_web from 91.240.118.29 port 33474 ssh2\nNov  3 02:16:49 web01 sshd[1970]: pam_unix(sshd:session): session opened for user svc_web(uid=1001) by (uid=0)\nNov  3 02:23:28 web01 CRON[1839]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:30:44 web01 CRON[1840]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:32:20 web01 sshd[1847]: Accepted publickey for adaeze from 10.0.2.15 port 39253 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:32:21 web01 sshd[1848]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:37:31 web01 CRON[1841]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:44:00 web01 CRON[1842]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:48:35 web01 sshd[1849]: Accepted publickey for adaeze from 10.0.2.15 port 42786 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:48:36 web01 sshd[1850]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)",
+        "parts": [
+          {
+            "id": "B1a",
+            "prompt": "Source IP address of the brute-force attack?",
+            "kind": "ip",
+            "scored": true
+          },
+          {
+            "id": "B1b",
+            "prompt": "Account the attacker successfully logged in to?",
+            "kind": "text",
+            "scored": true
+          },
+          {
+            "id": "B1c",
+            "prompt": "Number of `Failed password` entries from that IP?",
+            "kind": "integer",
+            "scored": true
+          },
+          {
+            "id": "B1d",
+            "prompt": "Write a one-line command that counts failed logins per source IP.",
+            "kind": "text",
+            "scored": false
+          }
+        ]
+      }
+    },
+    {
+      "order": 2,
+      "section": "pbqB",
+      "displayNumber": "B2",
+      "kind": "pbq",
+      "domain": "2.0",
+      "points": 3,
+      "stem": "Find insecure services with nmap",
+      "template": "nmap",
+      "payload": {
+        "template": "nmap",
+        "intro": "You scan the company mail and directory server. Policy: no credentials may cross the network in cleartext.",
+        "scan": "analyst@kali:~$ nmap -sV 10.0.7.15\nStarting Nmap 7.94 ( https://nmap.org ) at 2026-11-03 10:40 WAT\nNmap scan report for mail01 (10.0.7.15)\nHost is up (0.0009s latency).\nNot shown: 992 closed tcp ports (reset)\nPORT     STATE SERVICE   VERSION\n22/tcp   open  ssh       OpenSSH 9.6p1 Ubuntu 3ubuntu13.5 (Ubuntu Linux; protocol 2.0)\n25/tcp   open  smtp      Postfix smtpd\n110/tcp  open  pop3      Dovecot pop3d\n143/tcp  open  imap      Dovecot imapd\n389/tcp  open  ldap      OpenLDAP 2.2.X - 2.3.X\n443/tcp  open  ssl/http  nginx 1.24.0\n636/tcp  open  ssl/ldap  OpenLDAP 2.2.X - 2.3.X\n993/tcp  open  ssl/imap  Dovecot imapd\nService Info: Host: mail01; OS: Linux\nNmap done: 1 IP address (1 host up) scanned in 13.08 seconds",
+        "parts": [
+          {
+            "id": "B2a",
+            "prompt": "Staff read mail with POP3 today. Which open port carries it in cleartext, and which port should they use instead?",
+            "kind": "portPair"
+          },
+          {
+            "id": "B2b",
+            "prompt": "Which cleartext mail retrieval port has a secure equivalent already open on this server, and what is that secure port?",
+            "kind": "portPair"
+          },
+          {
+            "id": "B2c",
+            "prompt": "Which port should be closed so directory queries only use LDAPS?",
+            "kind": "port"
+          }
+        ]
+      }
+    },
+    {
+      "order": 3,
+      "section": "pbqB",
+      "displayNumber": "B3",
+      "kind": "pbq",
+      "domain": "1.0",
+      "points": 3,
+      "stem": "Verify installer integrity",
+      "template": "hashCheck",
+      "payload": {
+        "template": "hashCheck",
+        "intro": "Installers are staged for rollout. The vendors' published SHA-256 values are in `vendor_hashes.txt`.",
+        "vendorHashes": "analyst@ws-it-07:~/downloads$ cat vendor_hashes.txt\nd3487499bf97aa135a8934ed7ca8537190ecea815dffce2378f361862d5c60a4  agent-installer-v4.2.exe\n5c21158f9252b05fbe99a81a162b364f5498d30afcaff6e1f229fb7ba7756d5a  vpn-client-3.1.msi\nbcc593fc2d87645d35553756b615e641215c0f80b264158f8c76d8d4bb9b4ddc  backup-tool-1.8.deb\n9d5e16ff7c20d8e4fd0182ef734ecc14ea1c7e25d24e7c939fe2d19c3f5f6437  pdf-reader-2026.2.exe",
+        "computed": "analyst@ws-it-07:~/downloads$ sha256sum agent-installer-v4.2.exe vpn-client-3.1.msi backup-tool-1.8.deb pdf-reader-2026.2.exe\nd34874d34b56fd815f437ecbd846161f3551087e73122b82195d48b25d5c60a4  agent-installer-v4.2.exe\n5c21158f9252b05fbe99a81a162b364f5498d30afcaff6e1f229fb7ba7756d5a  vpn-client-3.1.msi\nbcc593fc2d87645d35553756b615e641215c0f80b264158f8c76d8d4bb9b4ddc  backup-tool-1.8.deb\n9d5e16ff7c20d8e4fd0182ef734ecc14ea1c7e25d24e7c939fe2d19c3f5f6437  pdf-reader-2026.2.exe",
+        "parts": [
+          {
+            "id": "B3a",
+            "prompt": "Which file failed the integrity check?",
+            "kind": "pick",
+            "choices": [
+              "agent-installer-v4.2.exe",
+              "vpn-client-3.1.msi",
+              "backup-tool-1.8.deb",
+              "pdf-reader-2026.2.exe"
+            ]
+          },
+          {
+            "id": "B3b",
+            "prompt": "What should you do with that file?",
+            "kind": "mcq",
+            "options": [
+              {
+                "id": "A",
+                "text": "Deploy it, because the other three files passed"
+              },
+              {
+                "id": "B",
+                "text": "Quarantine it, report it, and obtain a fresh copy from the vendor's official source, then verify again"
+              },
+              {
+                "id": "C",
+                "text": "Rename the file and run sha256sum again"
+              },
+              {
+                "id": "D",
+                "text": "Recalculate the vendor's hash and update vendor_hashes.txt to match"
+              }
+            ]
+          },
+          {
+            "id": "B3c",
+            "prompt": "Which security goal does comparing hashes confirm?",
+            "kind": "mcq",
+            "options": [
+              {
+                "id": "A",
+                "text": "Confidentiality"
+              },
+              {
+                "id": "B",
+                "text": "Integrity"
+              },
+              {
+                "id": "C",
+                "text": "Availability"
+              },
+              {
+                "id": "D",
+                "text": "Non-repudiation"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "section": "pbqB",
+      "displayNumber": "B4",
+      "kind": "pbq",
+      "domain": "4.0",
+      "points": 4,
+      "stem": "Harden file permissions and SSH",
+      "template": "permissions",
+      "payload": {
+        "template": "permissions",
+        "intro": "Hardening review of `web01`. Record the fixes you would make.",
+        "listings": "analyst@web01:~$ ls -l /etc\ntotal 24\n-rw-r--r-- 1 root     root            93 Nov  3 09:14 group\n-rw-r--r-- 1 root     root             6 Nov  3 09:14 hostname\n-rw-r--r-- 1 root     root           342 Nov  3 09:14 passwd\n-rw-r--rw- 1 root     shadow         455 Nov  3 09:14 shadow\ndrwxr-xr-x 2 root     root          4096 Nov  3 09:14 ssh\n-r--r----- 1 root     root            66 Nov  3 09:14 sudoers\n\nanalyst@web01:~$ ls -la /home/deploy/.ssh\ntotal 20\ndrwxr-xr-x 2 deploy   deploy        4096 Nov  3 09:14 .\ndrwxr-xr-x 2 deploy   deploy        4096 Nov  3 09:14 ..\n-rw------- 1 deploy   deploy         566 Nov  3 09:14 authorized_keys\n-rw-r--r-- 1 deploy   deploy        2602 Nov  3 09:14 id_rsa\n-rw-r--r-- 1 deploy   deploy         566 Nov  3 09:14 id_rsa.pub",
+        "sshdConfig": "analyst@web01:~$ cat /etc/ssh/sshd_config\n# This is the sshd server system-wide configuration file.\n# See sshd_config(5) for more information.\nInclude /etc/ssh/sshd_config.d/*.conf\n\nPort 22\n#AddressFamily any\n#ListenAddress 0.0.0.0\n\nPermitRootLogin yes\nMaxAuthTries 6\nPubkeyAuthentication yes\nPasswordAuthentication yes\nPermitEmptyPasswords no\nKbdInteractiveAuthentication no\nUsePAM yes\nX11Forwarding yes\nPrintMotd no\nAcceptEnv LANG LC_*\nSubsystem sftp /usr/lib/openssh/sftp-server",
+        "parts": [
+          {
+            "id": "B4a",
+            "prompt": "Which file in `/etc` has dangerously permissive permissions?",
+            "kind": "path",
+            "scored": true
+          },
+          {
+            "id": "B4b",
+            "prompt": "Octal mode for that file (owner read/write, group read, others nothing)?",
+            "kind": "octal",
+            "scored": true
+          },
+          {
+            "id": "B4c",
+            "prompt": "Octal mode for the private key `id_rsa`?",
+            "kind": "octal",
+            "scored": true
+          },
+          {
+            "id": "B4d",
+            "prompt": "Which `sshd_config` directive should be set to `no` to block direct root logins?",
+            "kind": "directive",
+            "scored": true
+          }
+        ]
+      }
+    },
+    {
+      "order": 5,
+      "section": "pbqB",
+      "displayNumber": "B5",
+      "kind": "pbq",
+      "domain": "3.0",
+      "points": 4,
+      "stem": "Configure the perimeter firewall",
+      "template": "firewall",
+      "payload": {
+        "template": "firewall",
+        "intro": "Rules are processed top to bottom; first match wins. Fill in **Port** and **Action** for each rule.",
+        "requirements": [
+          "Mail from anywhere can be delivered to mail01 with SMTP.",
+          "Staff anywhere can read mail on mail01 over encrypted IMAP only.",
+          "The admin LAN can manage mail01 over SSH.",
+          "Everything else is blocked."
+        ],
+        "diagram": "  Internet ──┐\n             ▼\n        [ Firewall ]──► DMZ   mail01  10.1.1.25  (SMTP, IMAPS)\n             │\n  Admin LAN 192.168.10.0/24",
+        "rules": [
+          {
+            "source": "Any",
+            "destination": "10.1.1.25",
+            "protocol": "TCP"
+          },
+          {
+            "source": "Any",
+            "destination": "10.1.1.25",
+            "protocol": "TCP"
+          },
+          {
+            "source": "192.168.10.0/24",
+            "destination": "10.1.1.25",
+            "protocol": "TCP"
+          },
+          {
+            "source": "Any",
+            "destination": "Any",
+            "protocol": "TCP"
+          }
+        ],
+        "portChoices": ["Any", "22", "25", "110", "143", "993", "3389"],
+        "actionChoices": ["ALLOW", "DENY"]
+      }
+    },
+    {
+      "order": 1,
+      "section": "mcq",
+      "displayNumber": "6",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "The security team inserts a fake customer record with a unique email address into the production database. Any email sent to that address would prove the data was stolen. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "DNS sinkhole"
+        },
+        {
+          "id": "B",
+          "text": "Honeynet"
+        },
+        {
+          "id": "C",
+          "text": "Honeytoken"
+        },
+        {
+          "id": "D",
+          "text": "Honeypot"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 2,
+      "section": "mcq",
+      "displayNumber": "7",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "The SOC confirms ransomware on three workstations and it is spreading. What should the analyst do FIRST?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Isolate the affected workstations from the network"
+        },
+        {
+          "id": "B",
+          "text": "Reimage the workstations immediately"
+        },
+        {
+          "id": "C",
+          "text": "Notify all customers"
+        },
+        {
+          "id": "D",
+          "text": "Restore files from backup"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 3,
+      "section": "mcq",
+      "displayNumber": "8",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A server is worth $200,000. A flood would damage 25% of it, and floods are expected once every two years. What is the annualized loss expectancy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "$25,000"
+        },
+        {
+          "id": "B",
+          "text": "$12,500"
+        },
+        {
+          "id": "C",
+          "text": "$50,000"
+        },
+        {
+          "id": "D",
+          "text": "$100,000"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 4,
+      "section": "mcq",
+      "displayNumber": "9",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "Attackers compromise an industry association's website that engineers at a target company visit every week, and plant an exploit kit on it. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Drive-by download from malvertising"
+        },
+        {
+          "id": "B",
+          "text": "Spear phishing"
+        },
+        {
+          "id": "C",
+          "text": "Watering hole attack"
+        },
+        {
+          "id": "D",
+          "text": "Typosquatting"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 5,
+      "section": "mcq",
+      "displayNumber": "10",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "What is the BEST way to measure whether security awareness training is working?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Count how many employees finished the course"
+        },
+        {
+          "id": "B",
+          "text": "Track phishing simulation click and report rates over time"
+        },
+        {
+          "id": "C",
+          "text": "Ask employees if they enjoyed the course"
+        },
+        {
+          "id": "D",
+          "text": "Measure training video length"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 6,
+      "section": "mcq",
+      "displayNumber": "11",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "An accounts payable clerk receives an email from ceo@contoso-group.co (the real domain is contosogroup.com) asking for an urgent wire to a new supplier before end of day. What attack is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Business email compromise"
+        },
+        {
+          "id": "B",
+          "text": "Watering hole"
+        },
+        {
+          "id": "C",
+          "text": "Pharming"
+        },
+        {
+          "id": "D",
+          "text": "Smishing"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 7,
+      "section": "mcq",
+      "displayNumber": "12",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A DevOps team defines its servers, networks and firewall rules in version-controlled templates so every environment is built identically. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Serverless computing"
+        },
+        {
+          "id": "B",
+          "text": "Infrastructure as code"
+        },
+        {
+          "id": "C",
+          "text": "Microservices"
+        },
+        {
+          "id": "D",
+          "text": "Containerization"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 8,
+      "section": "mcq",
+      "displayNumber": "13",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A government ministry's website is defaced with a political slogan protesting a new law. Which threat actor is most likely?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Hacktivist"
+        },
+        {
+          "id": "B",
+          "text": "Nation-state"
+        },
+        {
+          "id": "C",
+          "text": "Competitor"
+        },
+        {
+          "id": "D",
+          "text": "Organized crime"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 9,
+      "section": "mcq",
+      "displayNumber": "14",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "Which document lists identified risks with their likelihood, impact, owner and planned response?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Incident response plan"
+        },
+        {
+          "id": "B",
+          "text": "Asset inventory"
+        },
+        {
+          "id": "C",
+          "text": "Business impact analysis"
+        },
+        {
+          "id": "D",
+          "text": "Risk register"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 10,
+      "section": "mcq",
+      "displayNumber": "15",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A popular web application must stay available if one of its three web servers fails. Which device distributes requests and stops sending traffic to a failed server?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Forward proxy"
+        },
+        {
+          "id": "B",
+          "text": "IDS sensor"
+        },
+        {
+          "id": "C",
+          "text": "Web application firewall"
+        },
+        {
+          "id": "D",
+          "text": "Load balancer"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 11,
+      "section": "mcq",
+      "displayNumber": "16",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A customer asks an online retailer to permanently delete all personal data it holds about her. Which privacy right is she exercising?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Data retention"
+        },
+        {
+          "id": "B",
+          "text": "Right to be forgotten"
+        },
+        {
+          "id": "C",
+          "text": "Data portability"
+        },
+        {
+          "id": "D",
+          "text": "Data minimization"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 12,
+      "section": "mcq",
+      "displayNumber": "17",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A storage array fails on average once every 18,000 hours. Which metric is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "MTBF"
+        },
+        {
+          "id": "B",
+          "text": "RTO"
+        },
+        {
+          "id": "C",
+          "text": "RPO"
+        },
+        {
+          "id": "D",
+          "text": "MTTR"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 13,
+      "section": "mcq",
+      "displayNumber": "18",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "Administrators must reach servers in a restricted zone only through a single hardened, monitored host. What is that host called?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Load balancer"
+        },
+        {
+          "id": "B",
+          "text": "Jump server"
+        },
+        {
+          "id": "C",
+          "text": "Proxy server"
+        },
+        {
+          "id": "D",
+          "text": "Bastion VLAN"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 14,
+      "section": "mcq",
+      "displayNumber": "19",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A company wants to be able to inspect a cloud vendor's security controls at any time. What should the contract include?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Right-to-audit clause"
+        },
+        {
+          "id": "B",
+          "text": "Indemnification clause"
+        },
+        {
+          "id": "C",
+          "text": "Force majeure clause"
+        },
+        {
+          "id": "D",
+          "text": "Non-compete clause"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 15,
+      "section": "mcq",
+      "displayNumber": "20",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "A user's account appears to have signed in from another country while she was at her desk. Which TWO data sources BEST confirm this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "VPN concentrator logs"
+        },
+        {
+          "id": "B",
+          "text": "Identity provider sign-in logs"
+        },
+        {
+          "id": "C",
+          "text": "Patch management reports"
+        },
+        {
+          "id": "D",
+          "text": "Printer logs"
+        },
+        {
+          "id": "E",
+          "text": "Badge system battery reports"
+        }
+      ],
+      "chooseCount": 2
+    },
+    {
+      "order": 16,
+      "section": "mcq",
+      "displayNumber": "21",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A file server shows thousands of documents renamed with a .locked extension, very high disk activity, and a README_RESTORE.txt in every folder. What type of malware is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Logic bomb"
+        },
+        {
+          "id": "B",
+          "text": "Spyware"
+        },
+        {
+          "id": "C",
+          "text": "Ransomware"
+        },
+        {
+          "id": "D",
+          "text": "Rootkit"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 17,
+      "section": "mcq",
+      "displayNumber": "22",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Legal counsel tells IT to stop the automatic deletion of a former manager's mailbox because of a pending lawsuit. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Data retention policy"
+        },
+        {
+          "id": "B",
+          "text": "E-discovery"
+        },
+        {
+          "id": "C",
+          "text": "Chain of custody"
+        },
+        {
+          "id": "D",
+          "text": "Legal hold"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 18,
+      "section": "mcq",
+      "displayNumber": "23",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A regulator requires that records about a country's citizens be stored on servers physically located within that country. Which concept is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Data classification"
+        },
+        {
+          "id": "B",
+          "text": "Data masking"
+        },
+        {
+          "id": "C",
+          "text": "Geofencing"
+        },
+        {
+          "id": "D",
+          "text": "Data sovereignty"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 19,
+      "section": "mcq",
+      "displayNumber": "24",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A hosting contract guarantees 99.9% monthly uptime and service credits if it is missed. What type of agreement contains this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "MOU"
+        },
+        {
+          "id": "B",
+          "text": "NDA"
+        },
+        {
+          "id": "C",
+          "text": "BPA"
+        },
+        {
+          "id": "D",
+          "text": "SLA"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 20,
+      "section": "mcq",
+      "displayNumber": "25",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "An analyst wants to open a suspicious attachment to see what it does without risking production systems. What should she use?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Proxy"
+        },
+        {
+          "id": "B",
+          "text": "Sandbox"
+        },
+        {
+          "id": "C",
+          "text": "Jump server"
+        },
+        {
+          "id": "D",
+          "text": "Honeypot"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 21,
+      "section": "mcq",
+      "displayNumber": "26",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "Which TWO are direct consequences an organization can face for failing to meet regulatory compliance requirements?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Lower single loss expectancy"
+        },
+        {
+          "id": "B",
+          "text": "Higher MTBF"
+        },
+        {
+          "id": "C",
+          "text": "Faster patch cycles"
+        },
+        {
+          "id": "D",
+          "text": "Fines"
+        },
+        {
+          "id": "E",
+          "text": "Loss of licence to operate"
+        }
+      ],
+      "chooseCount": 2
+    },
+    {
+      "order": 22,
+      "section": "mcq",
+      "displayNumber": "27",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A trusted vendor's software update server is compromised and pushes a signed update containing a backdoor to thousands of customers. What attack is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Zero-day exploit"
+        },
+        {
+          "id": "B",
+          "text": "Insider threat"
+        },
+        {
+          "id": "C",
+          "text": "Supply chain attack"
+        },
+        {
+          "id": "D",
+          "text": "Shadow IT"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 23,
+      "section": "mcq",
+      "displayNumber": "28",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "Call-centre agents see customer card numbers displayed as ************4417. Which technique is used?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Encryption"
+        },
+        {
+          "id": "B",
+          "text": "Hashing"
+        },
+        {
+          "id": "C",
+          "text": "Tokenization"
+        },
+        {
+          "id": "D",
+          "text": "Data masking"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 24,
+      "section": "mcq",
+      "displayNumber": "29",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "The company needs to detect suspicious process behaviour on laptops, isolate a laptop remotely, and roll back malicious changes. What fits BEST?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Host-based firewall"
+        },
+        {
+          "id": "B",
+          "text": "File integrity monitoring"
+        },
+        {
+          "id": "C",
+          "text": "EDR"
+        },
+        {
+          "id": "D",
+          "text": "Antivirus with signature updates"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 25,
+      "section": "mcq",
+      "displayNumber": "30",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A sales team frequently travels with laptops containing customer data. Which control BEST protects the data if a laptop is stolen?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Host-based firewall"
+        },
+        {
+          "id": "B",
+          "text": "Cable locks"
+        },
+        {
+          "id": "C",
+          "text": "Full-disk encryption"
+        },
+        {
+          "id": "D",
+          "text": "Screen privacy filters"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 26,
+      "section": "mcq",
+      "displayNumber": "31",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "Several hosts on a LAN show the default gateway's IP address mapped to the MAC address of an employee's laptop. What attack is most likely?",
+      "options": [
+        {
+          "id": "A",
+          "text": "DNS spoofing"
+        },
+        {
+          "id": "B",
+          "text": "ARP poisoning"
+        },
+        {
+          "id": "C",
+          "text": "VLAN hopping"
+        },
+        {
+          "id": "D",
+          "text": "MAC flooding"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 27,
+      "section": "mcq",
+      "displayNumber": "32",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Forty new IP cameras were just installed. What is the most important hardening step?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Turn on UPnP for easier access"
+        },
+        {
+          "id": "B",
+          "text": "Disable firmware updates"
+        },
+        {
+          "id": "C",
+          "text": "Enable the built-in Wi-Fi"
+        },
+        {
+          "id": "D",
+          "text": "Change the default administrator credentials"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 28,
+      "section": "mcq",
+      "displayNumber": "33",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A control would cost $90,000 a year to protect against a risk with an ALE of $4,000. Management decides to do nothing. Which risk response is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Transference"
+        },
+        {
+          "id": "B",
+          "text": "Acceptance"
+        },
+        {
+          "id": "C",
+          "text": "Mitigation"
+        },
+        {
+          "id": "D",
+          "text": "Avoidance"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 29,
+      "section": "mcq",
+      "displayNumber": "34",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Following the order of volatility, which should a forensic analyst collect FIRST from a running server?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Archived backups"
+        },
+        {
+          "id": "B",
+          "text": "RAM contents"
+        },
+        {
+          "id": "C",
+          "text": "Logs on the remote syslog server"
+        },
+        {
+          "id": "D",
+          "text": "Hard drive image"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 30,
+      "section": "mcq",
+      "displayNumber": "35",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Administrators receive elevated rights only after an approved request, and the rights expire automatically after two hours. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Role-based access control"
+        },
+        {
+          "id": "B",
+          "text": "Federation"
+        },
+        {
+          "id": "C",
+          "text": "Just-in-time access through PAM"
+        },
+        {
+          "id": "D",
+          "text": "Mandatory access control"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 31,
+      "section": "mcq",
+      "displayNumber": "36",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "While logged in to her bank, a user opens a forum post with a hidden image tag that silently submits a funds-transfer request to the bank using her session. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Clickjacking"
+        },
+        {
+          "id": "B",
+          "text": "Cross-site scripting"
+        },
+        {
+          "id": "C",
+          "text": "Session replay"
+        },
+        {
+          "id": "D",
+          "text": "Cross-site request forgery"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 32,
+      "section": "mcq",
+      "displayNumber": "37",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "After a retailer's breach, attackers try the leaked email and password pairs against a bank's login page. What attack is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Credential stuffing"
+        },
+        {
+          "id": "B",
+          "text": "Password spraying"
+        },
+        {
+          "id": "C",
+          "text": "Pass the hash"
+        },
+        {
+          "id": "D",
+          "text": "Birthday attack"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 33,
+      "section": "mcq",
+      "displayNumber": "38",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A subscription app needs to bill customers monthly without storing their actual card numbers. Which technique fits BEST?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Hashing"
+        },
+        {
+          "id": "B",
+          "text": "Steganography"
+        },
+        {
+          "id": "C",
+          "text": "Data masking"
+        },
+        {
+          "id": "D",
+          "text": "Tokenization"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 34,
+      "section": "mcq",
+      "displayNumber": "39",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "Which technique increases the computational cost of every password guess against stored hashes, for example by running the hash function thousands of times?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Obfuscation"
+        },
+        {
+          "id": "B",
+          "text": "Key stretching"
+        },
+        {
+          "id": "C",
+          "text": "Salting"
+        },
+        {
+          "id": "D",
+          "text": "Tokenization"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 35,
+      "section": "mcq",
+      "displayNumber": "40",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "A directory server must accept LDAP queries over TLS. Which port is used?",
+      "options": [
+        {
+          "id": "A",
+          "text": "389"
+        },
+        {
+          "id": "B",
+          "text": "636"
+        },
+        {
+          "id": "C",
+          "text": "3268"
+        },
+        {
+          "id": "D",
+          "text": "443"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 36,
+      "section": "mcq",
+      "displayNumber": "41",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "Before a board meeting, an analyst compares the company's current controls against the NIST Cybersecurity Framework to list what is missing. What is this activity?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Penetration test"
+        },
+        {
+          "id": "B",
+          "text": "Gap analysis"
+        },
+        {
+          "id": "C",
+          "text": "Tabletop exercise"
+        },
+        {
+          "id": "D",
+          "text": "Risk transference"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 37,
+      "section": "mcq",
+      "displayNumber": "42",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "With a SaaS email platform, which security responsibility stays with the customer?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Physical security of the data centre"
+        },
+        {
+          "id": "B",
+          "text": "Managing user accounts and access"
+        },
+        {
+          "id": "C",
+          "text": "Patching the mail servers"
+        },
+        {
+          "id": "D",
+          "text": "Replacing failed network hardware"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 38,
+      "section": "mcq",
+      "displayNumber": "43",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "Which activity identifies an organization's critical business functions and the impact of losing them over time?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Vulnerability assessment"
+        },
+        {
+          "id": "B",
+          "text": "Tabletop exercise"
+        },
+        {
+          "id": "C",
+          "text": "Business impact analysis"
+        },
+        {
+          "id": "D",
+          "text": "Risk register review"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 39,
+      "section": "mcq",
+      "displayNumber": "44",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "Which of the following is an asymmetric algorithm?",
+      "options": [
+        {
+          "id": "A",
+          "text": "ECC"
+        },
+        {
+          "id": "B",
+          "text": "3DES"
+        },
+        {
+          "id": "C",
+          "text": "ChaCha20"
+        },
+        {
+          "id": "D",
+          "text": "AES"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 40,
+      "section": "mcq",
+      "displayNumber": "45",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "What is the MOST secure way to protect a SCADA control network from internet-based attacks?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Change its subnet regularly"
+        },
+        {
+          "id": "B",
+          "text": "Air-gap it from other networks"
+        },
+        {
+          "id": "C",
+          "text": "Put it behind a NAT router"
+        },
+        {
+          "id": "D",
+          "text": "Use WPA3 on the plant Wi-Fi"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 41,
+      "section": "mcq",
+      "displayNumber": "46",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "A warehouse posts signs reading 'Premises protected by 24-hour CCTV.' What control type are the signs themselves?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Deterrent"
+        },
+        {
+          "id": "B",
+          "text": "Compensating"
+        },
+        {
+          "id": "C",
+          "text": "Preventive"
+        },
+        {
+          "id": "D",
+          "text": "Detective"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 42,
+      "section": "mcq",
+      "displayNumber": "47",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which control can block an outbound email because the attachment contains 50 payment card numbers?",
+      "options": [
+        {
+          "id": "A",
+          "text": "WAF"
+        },
+        {
+          "id": "B",
+          "text": "Proxy cache"
+        },
+        {
+          "id": "C",
+          "text": "IDS"
+        },
+        {
+          "id": "D",
+          "text": "DLP"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 43,
+      "section": "mcq",
+      "displayNumber": "48",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A medical imaging device runs an unsupported operating system that the vendor will not patch. What is the BEST mitigation?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Disable antivirus to improve performance"
+        },
+        {
+          "id": "B",
+          "text": "Expose it through a public IP so the vendor can monitor it"
+        },
+        {
+          "id": "C",
+          "text": "Accept the risk without further action"
+        },
+        {
+          "id": "D",
+          "text": "Place the device on an isolated network segment with tightly restricted access"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 44,
+      "section": "mcq",
+      "displayNumber": "49",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A company runs virtual machines on an IaaS cloud platform. Who is responsible for patching the guest operating system?",
+      "options": [
+        {
+          "id": "A",
+          "text": "The hypervisor vendor"
+        },
+        {
+          "id": "B",
+          "text": "The cloud provider"
+        },
+        {
+          "id": "C",
+          "text": "The customer"
+        },
+        {
+          "id": "D",
+          "text": "Shared equally"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 45,
+      "section": "mcq",
+      "displayNumber": "50",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "Which TWO settings provide the strongest security for a corporate wireless network?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Hiding the SSID"
+        },
+        {
+          "id": "B",
+          "text": "802.1X authentication against a RADIUS server"
+        },
+        {
+          "id": "C",
+          "text": "MAC address filtering"
+        },
+        {
+          "id": "D",
+          "text": "WEP with a 128-bit key"
+        },
+        {
+          "id": "E",
+          "text": "WPA3-Enterprise"
+        }
+      ],
+      "chooseCount": 2
+    },
+    {
+      "order": 46,
+      "section": "mcq",
+      "displayNumber": "51",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "Authentication logs show the password 'Summer2026!' tried once against 400 different accounts over an hour, and no accounts were locked out. What attack is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rainbow table"
+        },
+        {
+          "id": "B",
+          "text": "Password spraying"
+        },
+        {
+          "id": "C",
+          "text": "Brute force"
+        },
+        {
+          "id": "D",
+          "text": "Credential stuffing"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 47,
+      "section": "mcq",
+      "displayNumber": "52",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A firewall protecting a payment database loses its inspection engine. Policy says no traffic may pass uninspected. How should the firewall be configured?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Round-robin"
+        },
+        {
+          "id": "B",
+          "text": "Fail-closed"
+        },
+        {
+          "id": "C",
+          "text": "Fail-open"
+        },
+        {
+          "id": "D",
+          "text": "Active/passive"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 48,
+      "section": "mcq",
+      "displayNumber": "53",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Based on a new threat report, an analyst proactively searches the environment for signs of a technique that has not triggered any alerts. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Vulnerability scanning"
+        },
+        {
+          "id": "B",
+          "text": "Threat hunting"
+        },
+        {
+          "id": "C",
+          "text": "Incident response"
+        },
+        {
+          "id": "D",
+          "text": "Penetration testing"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 49,
+      "section": "mcq",
+      "displayNumber": "54",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "A photo-printing app asks for permission to read a user's cloud photo library without ever receiving the user's password. Which protocol enables this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "OAuth"
+        },
+        {
+          "id": "B",
+          "text": "SAML"
+        },
+        {
+          "id": "C",
+          "text": "LDAP"
+        },
+        {
+          "id": "D",
+          "text": "NTLM"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 50,
+      "section": "mcq",
+      "displayNumber": "55",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "A finance director wants recipients to be able to prove that a payment-approval email came from her and that she cannot later deny sending it. What should she use?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Encrypt the email with AES-256"
+        },
+        {
+          "id": "B",
+          "text": "Send the email over TLS"
+        },
+        {
+          "id": "C",
+          "text": "Digitally sign the email with her private key"
+        },
+        {
+          "id": "D",
+          "text": "Hash the email with SHA-256 and attach the hash"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 51,
+      "section": "mcq",
+      "displayNumber": "56",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "New employees must sign a document stating they will not install personal software or browse gambling sites on company devices. What is this document?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Service level agreement"
+        },
+        {
+          "id": "B",
+          "text": "Acceptable use policy"
+        },
+        {
+          "id": "C",
+          "text": "Non-disclosure agreement"
+        },
+        {
+          "id": "D",
+          "text": "Memorandum of understanding"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 52,
+      "section": "mcq",
+      "displayNumber": "57",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which document records every person who handled a seized laptop, when, and why, so the evidence is admissible in court?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Legal hold"
+        },
+        {
+          "id": "B",
+          "text": "Chain of custody"
+        },
+        {
+          "id": "C",
+          "text": "Rules of engagement"
+        },
+        {
+          "id": "D",
+          "text": "Incident report"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 53,
+      "section": "mcq",
+      "displayNumber": "58",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Why would an analyst run a credentialed vulnerability scan instead of a non-credentialed one?",
+      "options": [
+        {
+          "id": "A",
+          "text": "It does not need any network access"
+        },
+        {
+          "id": "B",
+          "text": "It is faster"
+        },
+        {
+          "id": "C",
+          "text": "It can read installed software versions and configurations, giving fewer false positives"
+        },
+        {
+          "id": "D",
+          "text": "It shows what an outside attacker sees"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 54,
+      "section": "mcq",
+      "displayNumber": "59",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which DNS record tells receiving mail servers what to do with messages that fail SPF and DKIM checks, and where to send reports?",
+      "options": [
+        {
+          "id": "A",
+          "text": "MX"
+        },
+        {
+          "id": "B",
+          "text": "CNAME"
+        },
+        {
+          "id": "C",
+          "text": "PTR"
+        },
+        {
+          "id": "D",
+          "text": "DMARC"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 55,
+      "section": "mcq",
+      "displayNumber": "60",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "Management says the business can tolerate losing at most 15 minutes of transaction data. Which metric does this define?",
+      "options": [
+        {
+          "id": "A",
+          "text": "RTO"
+        },
+        {
+          "id": "B",
+          "text": "RPO"
+        },
+        {
+          "id": "C",
+          "text": "MTTR"
+        },
+        {
+          "id": "D",
+          "text": "MTBF"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 56,
+      "section": "mcq",
+      "displayNumber": "61",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "A vulnerability scanner reports an Apache vulnerability on a server that runs only Microsoft IIS. What is this finding?",
+      "options": [
+        {
+          "id": "A",
+          "text": "False positive"
+        },
+        {
+          "id": "B",
+          "text": "False negative"
+        },
+        {
+          "id": "C",
+          "text": "True positive"
+        },
+        {
+          "id": "D",
+          "text": "True negative"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 57,
+      "section": "mcq",
+      "displayNumber": "62",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A company buys a cyber insurance policy to cover the cost of a data breach. Which risk response is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Transfer"
+        },
+        {
+          "id": "B",
+          "text": "Mitigate"
+        },
+        {
+          "id": "C",
+          "text": "Avoid"
+        },
+        {
+          "id": "D",
+          "text": "Accept"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 58,
+      "section": "mcq",
+      "displayNumber": "63",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A developer added code that deletes the payroll database if his employee ID is ever removed from the HR system. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Trojan"
+        },
+        {
+          "id": "B",
+          "text": "Worm"
+        },
+        {
+          "id": "C",
+          "text": "Logic bomb"
+        },
+        {
+          "id": "D",
+          "text": "Backdoor"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 59,
+      "section": "mcq",
+      "displayNumber": "64",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "An attacker sends a 5,000-character input to a C program that expects 64 characters, overwriting the return address on the stack so execution jumps to injected code. What vulnerability is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Memory leak"
+        },
+        {
+          "id": "B",
+          "text": "Integer overflow"
+        },
+        {
+          "id": "C",
+          "text": "Race condition"
+        },
+        {
+          "id": "D",
+          "text": "Buffer overflow"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 60,
+      "section": "mcq",
+      "displayNumber": "65",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "Which document gives step-by-step instructions for how the help desk resets a user's password?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Standard"
+        },
+        {
+          "id": "B",
+          "text": "Policy"
+        },
+        {
+          "id": "C",
+          "text": "Procedure"
+        },
+        {
+          "id": "D",
+          "text": "Guideline"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 61,
+      "section": "mcq",
+      "displayNumber": "66",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "An employee is terminated this morning. What should IT do FIRST with the employee's accounts?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Leave them active until the end of the month"
+        },
+        {
+          "id": "B",
+          "text": "Disable them"
+        },
+        {
+          "id": "C",
+          "text": "Delete them immediately"
+        },
+        {
+          "id": "D",
+          "text": "Reset the passwords and email the new ones to the manager"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 62,
+      "section": "mcq",
+      "displayNumber": "67",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which vulnerability should be remediated FIRST?",
+      "options": [
+        {
+          "id": "A",
+          "text": "CVSS 7.5 on an internal print server"
+        },
+        {
+          "id": "B",
+          "text": "CVSS 9.8 on an isolated lab machine"
+        },
+        {
+          "id": "C",
+          "text": "CVSS 5.3 on an internet-facing web server"
+        },
+        {
+          "id": "D",
+          "text": "CVSS 9.8 on an internet-facing web server"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 63,
+      "section": "mcq",
+      "displayNumber": "68",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which tool aggregates logs from firewalls, servers and endpoints and correlates them to raise alerts?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SIEM"
+        },
+        {
+          "id": "B",
+          "text": "NAC"
+        },
+        {
+          "id": "C",
+          "text": "SOAR"
+        },
+        {
+          "id": "D",
+          "text": "DLP"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 64,
+      "section": "mcq",
+      "displayNumber": "69",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "Penetration testers are given network diagrams, source code and administrator documentation before the test. What type of test is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Known environment"
+        },
+        {
+          "id": "B",
+          "text": "Partially known environment"
+        },
+        {
+          "id": "C",
+          "text": "Passive reconnaissance"
+        },
+        {
+          "id": "D",
+          "text": "Unknown environment"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 65,
+      "section": "mcq",
+      "displayNumber": "70",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "Users report a site at paypa1-secure.com that looks identical to a real payment provider. The attacker registered it hoping users mistype or misread the name. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Typosquatting"
+        },
+        {
+          "id": "B",
+          "text": "Domain hijacking"
+        },
+        {
+          "id": "C",
+          "text": "DNS poisoning"
+        },
+        {
+          "id": "D",
+          "text": "Session hijacking"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 66,
+      "section": "mcq",
+      "displayNumber": "71",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "Concrete bollards are installed in front of a data centre's glass entrance to stop vehicles from ramming it. Which control category is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Technical"
+        },
+        {
+          "id": "B",
+          "text": "Managerial"
+        },
+        {
+          "id": "C",
+          "text": "Physical"
+        },
+        {
+          "id": "D",
+          "text": "Operational"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 67,
+      "section": "mcq",
+      "displayNumber": "72",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A bank must be operating from an alternate site within one hour of a disaster, with current data. Which recovery site fits?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Hot site"
+        },
+        {
+          "id": "B",
+          "text": "Warm site"
+        },
+        {
+          "id": "C",
+          "text": "Mobile site"
+        },
+        {
+          "id": "D",
+          "text": "Cold site"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 68,
+      "section": "mcq",
+      "displayNumber": "73",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A company uses an external payroll provider that processes employee data only on the company's instructions. Under data privacy law, what is the payroll provider?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Data processor"
+        },
+        {
+          "id": "B",
+          "text": "Data subject"
+        },
+        {
+          "id": "C",
+          "text": "Data custodian"
+        },
+        {
+          "id": "D",
+          "text": "Data controller"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 69,
+      "section": "mcq",
+      "displayNumber": "74",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "The board states it is willing to accept moderate cyber risk in exchange for faster product launches. What does this statement describe?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Inherent risk"
+        },
+        {
+          "id": "B",
+          "text": "Residual risk"
+        },
+        {
+          "id": "C",
+          "text": "Risk threshold"
+        },
+        {
+          "id": "D",
+          "text": "Risk appetite"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 70,
+      "section": "mcq",
+      "displayNumber": "75",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A stealthy intrusion at a defence contractor persisted for 14 months, used custom malware, and was attributed to a foreign government. Which threat actor is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Nation-state"
+        },
+        {
+          "id": "B",
+          "text": "Organized crime"
+        },
+        {
+          "id": "C",
+          "text": "Hacktivist"
+        },
+        {
+          "id": "D",
+          "text": "Insider"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 71,
+      "section": "mcq",
+      "displayNumber": "76",
+      "kind": "mcq",
+      "domain": "5.0",
+      "points": 1,
+      "stem": "A customer wants evidence that a SaaS provider's controls operated effectively over the past twelve months. Which report should they request?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SOC 2 Type II"
+        },
+        {
+          "id": "B",
+          "text": "An internal audit memo"
+        },
+        {
+          "id": "C",
+          "text": "SOC 2 Type I"
+        },
+        {
+          "id": "D",
+          "text": "SOC 1 Type I"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 72,
+      "section": "mcq",
+      "displayNumber": "77",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "A user types a username, enters a password, then approves a push notification on their phone. Which part of AAA do the password and push approval satisfy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Identification"
+        },
+        {
+          "id": "B",
+          "text": "Accounting"
+        },
+        {
+          "id": "C",
+          "text": "Authentication"
+        },
+        {
+          "id": "D",
+          "text": "Authorization"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 73,
+      "section": "mcq",
+      "displayNumber": "78",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "Which TWO controls most directly reduce the success of phishing emails against staff?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Security awareness training with phishing simulations"
+        },
+        {
+          "id": "B",
+          "text": "Disabling ICMP at the perimeter"
+        },
+        {
+          "id": "C",
+          "text": "Full-disk encryption on laptops"
+        },
+        {
+          "id": "D",
+          "text": "SPF, DKIM and DMARC on the email domain"
+        },
+        {
+          "id": "E",
+          "text": "Increasing minimum password length to 16"
+        }
+      ],
+      "chooseCount": 2
+    },
+    {
+      "order": 74,
+      "section": "mcq",
+      "displayNumber": "79",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "After isolating the infected hosts, the team removes the malware and the scheduled tasks it created for persistence. Which incident response phase is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Recovery"
+        },
+        {
+          "id": "B",
+          "text": "Containment"
+        },
+        {
+          "id": "C",
+          "text": "Lessons learned"
+        },
+        {
+          "id": "D",
+          "text": "Eradication"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 75,
+      "section": "mcq",
+      "displayNumber": "80",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "Before approving a database patch, the change advisory board requires a documented way to return the system to its previous state if the patch fails. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Maintenance window"
+        },
+        {
+          "id": "B",
+          "text": "Standard operating procedure"
+        },
+        {
+          "id": "C",
+          "text": "Impact analysis"
+        },
+        {
+          "id": "D",
+          "text": "Backout plan"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 76,
+      "section": "mcq",
+      "displayNumber": "81",
+      "kind": "mcq",
+      "domain": "1.0",
+      "points": 1,
+      "stem": "In a zero trust architecture, which component evaluates policy and decides whether a subject may access a resource?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Implicit trust zone"
+        },
+        {
+          "id": "B",
+          "text": "Data plane"
+        },
+        {
+          "id": "C",
+          "text": "Policy enforcement point"
+        },
+        {
+          "id": "D",
+          "text": "Policy engine"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 77,
+      "section": "mcq",
+      "displayNumber": "82",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "The marketing team starts storing customer lists in a free file-sharing service that IT never approved. Which threat does this represent?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Unskilled attacker"
+        },
+        {
+          "id": "B",
+          "text": "Hacktivist"
+        },
+        {
+          "id": "C",
+          "text": "Shadow IT"
+        },
+        {
+          "id": "D",
+          "text": "Nation-state actor"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 78,
+      "section": "mcq",
+      "displayNumber": "83",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which version of SNMP adds authentication and encryption?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SNMPv1"
+        },
+        {
+          "id": "B",
+          "text": "All versions"
+        },
+        {
+          "id": "C",
+          "text": "SNMPv3"
+        },
+        {
+          "id": "D",
+          "text": "SNMPv2c"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 79,
+      "section": "mcq",
+      "displayNumber": "84",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "Which combination is multifactor authentication?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Smart card and hardware token"
+        },
+        {
+          "id": "B",
+          "text": "Password and fingerprint"
+        },
+        {
+          "id": "C",
+          "text": "Password and PIN"
+        },
+        {
+          "id": "D",
+          "text": "Security question and password"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 80,
+      "section": "mcq",
+      "displayNumber": "85",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A program checks that a user may write to a file, and in the moment before it opens the file, an attacker replaces it with a link to /etc/passwd. What is this vulnerability called?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Directory traversal"
+        },
+        {
+          "id": "B",
+          "text": "Memory injection"
+        },
+        {
+          "id": "C",
+          "text": "Time-of-check to time-of-use (TOCTOU)"
+        },
+        {
+          "id": "D",
+          "text": "Privilege escalation via SUID"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 81,
+      "section": "mcq",
+      "displayNumber": "86",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "A web server log shows the login field received `admin' OR 1=1 --`. Which control BEST prevents this attack?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Limit the username field to 20 characters"
+        },
+        {
+          "id": "B",
+          "text": "Encrypt the database at rest"
+        },
+        {
+          "id": "C",
+          "text": "Run the WAF in detection-only mode"
+        },
+        {
+          "id": "D",
+          "text": "Use parameterized queries (prepared statements)"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 82,
+      "section": "mcq",
+      "displayNumber": "87",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "When a phishing report arrives, the team wants a playbook to automatically pull the email headers, check URLs against threat intel, and block the sender. Which tool does this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "EDR"
+        },
+        {
+          "id": "B",
+          "text": "IPS"
+        },
+        {
+          "id": "C",
+          "text": "SIEM"
+        },
+        {
+          "id": "D",
+          "text": "SOAR"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 83,
+      "section": "mcq",
+      "displayNumber": "88",
+      "kind": "mcq",
+      "domain": "4.0",
+      "points": 1,
+      "stem": "An organization wants employees to sign in once to its identity provider and access several web apps using XML-based assertions. Which standard is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SAML"
+        },
+        {
+          "id": "B",
+          "text": "RADIUS"
+        },
+        {
+          "id": "C",
+          "text": "TACACS+"
+        },
+        {
+          "id": "D",
+          "text": "Kerberos"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 84,
+      "section": "mcq",
+      "displayNumber": "89",
+      "kind": "mcq",
+      "domain": "2.0",
+      "points": 1,
+      "stem": "An attacker posts a product review containing a script. Every visitor who later opens the review page runs the script in their browser. What is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Stored XSS"
+        },
+        {
+          "id": "B",
+          "text": "Reflected XSS"
+        },
+        {
+          "id": "C",
+          "text": "CSRF"
+        },
+        {
+          "id": "D",
+          "text": "SSRF"
+        }
+      ],
+      "chooseCount": 1
+    },
+    {
+      "order": 85,
+      "section": "mcq",
+      "displayNumber": "90",
+      "kind": "mcq",
+      "domain": "3.0",
+      "points": 1,
+      "stem": "A company wants secure web gateway, CASB and zero trust network access delivered from the cloud to staff wherever they work. Which architecture is this?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SD-WAN only"
+        },
+        {
+          "id": "B",
+          "text": "Site-to-site VPN"
+        },
+        {
+          "id": "C",
+          "text": "Screened subnet"
+        },
+        {
+          "id": "D",
+          "text": "SASE"
+        }
+      ],
+      "chooseCount": 1
+    }
+  ],
+  "answerKeys": [
+    {
+      "displayNumber": "1",
+      "parts": {
+        "parts": {
+          "1a": "193.32.162.71",
+          "1b": "backup",
+          "1c": "54"
+        },
+        "practice": {
+          "1d": "grep 'Failed password' auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr"
+        }
+      },
+      "explanation": "Count failures per source with: grep 'Failed password' /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr. 193.32.162.71 leads with 54 failures (the other sources are a small scanner and a user mistyping a password). Note that grep '193.32.162.71' | wc -l over-counts, because 'Invalid user' lines also contain the IP. Then grep 'Accepted' shows 'Accepted password for backup' from the same IP right after the attempts, so that account is compromised. In a real incident: disable the account, end its sessions, block the IP, and review what the session did."
+    },
+    {
+      "displayNumber": "2",
+      "parts": {
+        "parts": {
+          "2a": "23",
+          "2b": "22",
+          "2c": "21"
+        }
+      },
+      "explanation": "nmap -sV 10.0.5.20 shows telnet on 23 (cleartext shell, replace with SSH on 22) and FTP on 21 (cleartext credentials and files, replace with SFTP over 22 or FTPS). For extra credit in a real report: MySQL on 3306 and SMB on 139/445 should not be reachable from the whole subnet."
+    },
+    {
+      "displayNumber": "3",
+      "parts": {
+        "parts": {
+          "3a": "backup-tool-1.8.deb",
+          "3b": "B",
+          "3c": "B"
+        }
+      },
+      "explanation": "sha256sum -c vendor_hashes.txt reports backup-tool-1.8.deb: FAILED. Its hash starts and ends with the same characters as the published value, which is a trap for anyone comparing only the first few characters: always compare the full hash (or let -c do it). A mismatch means the file was altered or corrupted, so it must not be deployed. Hashing proves integrity; proving who produced the file needs a digital signature."
+    },
+    {
+      "displayNumber": "4",
+      "parts": {
+        "parts": {
+          "4a": "/etc/shadow",
+          "4b": "640",
+          "4c": "600",
+          "4d": "PermitRootLogin"
+        }
+      },
+      "explanation": "ls -l /etc shows /etc/shadow as -rw-r--rw-: anyone can read and even modify password hashes. It should be 640 (rw-r-----, root:shadow). The deploy user's private key is -rw-r--r--, readable by every user; SSH keys must be 600. In sshd_config, PermitRootLogin yes should be no (and PasswordAuthentication no would block the kind of brute force in PBQ 1)."
+    },
+    {
+      "displayNumber": "5",
+      "parts": {
+        "rules": [
+          {
+            "port": "443",
+            "action": "ALLOW"
+          },
+          {
+            "port": "22",
+            "action": "ALLOW"
+          },
+          {
+            "port": "3306",
+            "action": "ALLOW"
+          },
+          {
+            "port": "Any",
+            "action": "DENY"
+          }
+        ]
+      },
+      "explanation": "Allow only what is needed: HTTPS (443) from anywhere to web01, SSH (22) from the admin LAN to web01, MySQL (3306) only from web01 to db01, and finish with a deny any/any rule (implicit deny). Opening port 80 or 3389, or allowing 3306 from Any, would fail the requirement."
+    },
+    {
+      "displayNumber": "B1",
+      "parts": {
+        "parts": {
+          "B1a": "91.240.118.29",
+          "B1b": "svc_web",
+          "B1c": "56"
+        },
+        "practice": {
+          "B1d": "grep 'Failed password' auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr"
+        }
+      },
+      "explanation": "Count failures per source with: grep 'Failed password' /var/log/auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr. 91.240.118.29 leads with 56 failures (the other sources are a small scanner and a user mistyping a password). Note that grep '91.240.118.29' | wc -l over-counts, because 'Invalid user' lines also contain the IP. Then grep 'Accepted' shows 'Accepted password for svc_web' from the same IP right after the attempts, so that account is compromised. In a real incident: disable the account, end its sessions, block the IP, and review what the session did."
+    },
+    {
+      "displayNumber": "B2",
+      "parts": {
+        "parts": {
+          "B2a": ["110", "995"],
+          "B2b": ["143", "993"],
+          "B2c": "389"
+        }
+      },
+      "explanation": "B2a: 110 is cleartext POP3; use 995 (POP3S). Note 995 is not open yet, so it needs enabling.\nB2b: 143 (IMAP) has its secure equivalent 993 (IMAPS) already open.\nB2c: close 389 so directory traffic uses LDAPS on 636."
+    },
+    {
+      "displayNumber": "B3",
+      "parts": {
+        "parts": {
+          "B3a": "agent-installer-v4.2.exe",
+          "B3b": "B",
+          "B3c": "B"
+        }
+      },
+      "explanation": "sha256sum -c vendor_hashes.txt reports agent-installer-v4.2.exe: FAILED. Its hash starts and ends with the same characters as the published value, which is a trap for anyone comparing only the first few characters: always compare the full hash (or let -c do it). A mismatch means the file was altered or corrupted, so it must not be deployed. Hashing proves integrity; proving who produced the file needs a digital signature."
+    },
+    {
+      "displayNumber": "B4",
+      "parts": {
+        "parts": {
+          "B4a": "/etc/shadow",
+          "B4b": "640",
+          "B4c": "600",
+          "B4d": "PermitRootLogin"
+        }
+      },
+      "explanation": "ls -l /etc shows /etc/shadow as -rw-r--rw-: anyone can read and even modify password hashes. It should be 640 (rw-r-----, root:shadow). The deploy user's private key is -rw-r--r--, readable by every user; SSH keys must be 600. In sshd_config, PermitRootLogin yes should be no (and PasswordAuthentication no would block the kind of brute force in PBQ 1)."
+    },
+    {
+      "displayNumber": "B5",
+      "parts": {
+        "rules": [
+          {
+            "port": "25",
+            "action": "ALLOW"
+          },
+          {
+            "port": "993",
+            "action": "ALLOW"
+          },
+          {
+            "port": "22",
+            "action": "ALLOW"
+          },
+          {
+            "port": "Any",
+            "action": "DENY"
+          }
+        ]
+      },
+      "explanation": "Allowing 110 or 143 would fail requirement 2 (encrypted IMAP only). The last rule is the explicit deny."
+    },
+    {
+      "displayNumber": "6",
+      "correct": ["C"],
+      "explanation": "A honeytoken is fake data that alerts when used. A honeypot is a decoy system; a honeynet is a network of them."
+    },
+    {
+      "displayNumber": "7",
+      "correct": ["A"],
+      "explanation": "Containment comes first to stop the spread. Reimaging is eradication and recovery, and doing it first destroys evidence."
+    },
+    {
+      "displayNumber": "8",
+      "correct": ["A"],
+      "explanation": "SLE = $200,000 x 0.25 = $50,000. ARO = 0.5. ALE = SLE x ARO = $25,000."
+    },
+    {
+      "displayNumber": "9",
+      "correct": ["C"],
+      "explanation": "A watering hole compromises a site the victims already trust and visit."
+    },
+    {
+      "displayNumber": "10",
+      "correct": ["B"],
+      "explanation": "Behavioural metrics such as fewer clicks and more reports show real change."
+    },
+    {
+      "displayNumber": "11",
+      "correct": ["A"],
+      "explanation": "Impersonating an executive by email to trigger a fraudulent payment is BEC. Smishing uses SMS; pharming redirects traffic via DNS or hosts files."
+    },
+    {
+      "displayNumber": "12",
+      "correct": ["B"],
+      "explanation": "IaC makes deployments repeatable and reviewable and reduces configuration drift."
+    },
+    {
+      "displayNumber": "13",
+      "correct": ["A"],
+      "explanation": "Defacement with a political or social message points to hacktivists, whose motive is ideology."
+    },
+    {
+      "displayNumber": "14",
+      "correct": ["D"],
+      "explanation": "The risk register is the central record of risks and how they are managed."
+    },
+    {
+      "displayNumber": "15",
+      "correct": ["D"],
+      "explanation": "A load balancer spreads traffic and uses health checks to remove failed nodes."
+    },
+    {
+      "displayNumber": "16",
+      "correct": ["B"],
+      "explanation": "The right to erasure, often called the right to be forgotten, is a key GDPR right."
+    },
+    {
+      "displayNumber": "17",
+      "correct": ["A"],
+      "explanation": "Mean time between failures measures reliability. MTTR is mean time to repair."
+    },
+    {
+      "displayNumber": "18",
+      "correct": ["B"],
+      "explanation": "A jump server (jump box or bastion host) is the controlled entry point for admin access to a secure zone."
+    },
+    {
+      "displayNumber": "19",
+      "correct": ["A"],
+      "explanation": "A right-to-audit clause allows the customer (or a third party) to assess the vendor's controls."
+    },
+    {
+      "displayNumber": "20",
+      "correct": ["A", "B"],
+      "explanation": "IdP sign-in logs show where and how she authenticated, and VPN logs show remote session origins."
+    },
+    {
+      "displayNumber": "21",
+      "correct": ["C"],
+      "explanation": "Mass encryption plus a ransom note is ransomware."
+    },
+    {
+      "displayNumber": "22",
+      "correct": ["D"],
+      "explanation": "A legal hold suspends normal deletion so relevant data is preserved."
+    },
+    {
+      "displayNumber": "23",
+      "correct": ["D"],
+      "explanation": "Data sovereignty means data is subject to the laws of the country where it is stored, so some laws require in-country storage."
+    },
+    {
+      "displayNumber": "24",
+      "correct": ["D"],
+      "explanation": "A service level agreement sets measurable performance commitments and remedies."
+    },
+    {
+      "displayNumber": "25",
+      "correct": ["B"],
+      "explanation": "A sandbox is an isolated environment for detonating and observing suspicious files."
+    },
+    {
+      "displayNumber": "26",
+      "correct": ["D", "E"],
+      "explanation": "Non-compliance can bring fines, sanctions and loss of licence, as well as reputational damage."
+    },
+    {
+      "displayNumber": "27",
+      "correct": ["C"],
+      "explanation": "Compromising a supplier to reach its customers is a supply chain attack."
+    },
+    {
+      "displayNumber": "28",
+      "correct": ["D"],
+      "explanation": "Masking hides part of the value in the display while the real data remains stored elsewhere."
+    },
+    {
+      "displayNumber": "29",
+      "correct": ["C"],
+      "explanation": "Endpoint detection and response provides behavioural detection, remote isolation and response actions."
+    },
+    {
+      "displayNumber": "30",
+      "correct": ["C"],
+      "explanation": "FDE protects data at rest when the device leaves your control."
+    },
+    {
+      "displayNumber": "31",
+      "correct": ["B"],
+      "explanation": "Forged ARP replies tie the gateway IP to the attacker's MAC so traffic passes through them: an on-path attack via ARP poisoning."
+    },
+    {
+      "displayNumber": "32",
+      "correct": ["D"],
+      "explanation": "Default credentials are the most common way IoT devices are compromised."
+    },
+    {
+      "displayNumber": "33",
+      "correct": ["B"],
+      "explanation": "When the control costs more than the expected loss, accepting the risk can be reasonable, as long as it is documented."
+    },
+    {
+      "displayNumber": "34",
+      "correct": ["B"],
+      "explanation": "Memory is lost at power-off, so it is collected before disk, remote logs and backups."
+    },
+    {
+      "displayNumber": "35",
+      "correct": ["C"],
+      "explanation": "Privileged access management with just-in-time, time-limited elevation reduces standing privileges."
+    },
+    {
+      "displayNumber": "36",
+      "correct": ["D"],
+      "explanation": "CSRF makes the victim's browser send an authenticated request. Anti-CSRF tokens and SameSite cookies mitigate it."
+    },
+    {
+      "displayNumber": "37",
+      "correct": ["A"],
+      "explanation": "Reusing breached credential pairs on other sites is credential stuffing. MFA and breached-password checks are the key mitigations."
+    },
+    {
+      "displayNumber": "38",
+      "correct": ["D"],
+      "explanation": "Tokenization replaces the card number with a surrogate token that maps back only inside the payment provider's vault."
+    },
+    {
+      "displayNumber": "39",
+      "correct": ["B"],
+      "explanation": "Key stretching (PBKDF2, bcrypt, scrypt, Argon2) makes each guess slow. Salting defeats precomputed rainbow tables but does not slow a single guess."
+    },
+    {
+      "displayNumber": "40",
+      "correct": ["B"],
+      "explanation": "LDAPS uses TCP 636. Plain LDAP is 389."
+    },
+    {
+      "displayNumber": "41",
+      "correct": ["B"],
+      "explanation": "A gap analysis compares current state to a target framework or baseline."
+    },
+    {
+      "displayNumber": "42",
+      "correct": ["B"],
+      "explanation": "Even in SaaS the customer remains responsible for its data and who has access to it."
+    },
+    {
+      "displayNumber": "43",
+      "correct": ["C"],
+      "explanation": "A BIA identifies critical processes, their dependencies, and the RTO and RPO needed for each."
+    },
+    {
+      "displayNumber": "44",
+      "correct": ["A"],
+      "explanation": "Elliptic curve cryptography uses public/private key pairs. AES, 3DES and ChaCha20 are symmetric."
+    },
+    {
+      "displayNumber": "45",
+      "correct": ["B"],
+      "explanation": "Physical separation (air gap) gives the strongest isolation for critical industrial systems."
+    },
+    {
+      "displayNumber": "46",
+      "correct": ["A"],
+      "explanation": "Signs discourage an attacker but do not stop or record anything, so they are deterrent. The cameras would be detective."
+    },
+    {
+      "displayNumber": "47",
+      "correct": ["D"],
+      "explanation": "Data loss prevention inspects content leaving the organization and blocks sensitive data."
+    },
+    {
+      "displayNumber": "48",
+      "correct": ["D"],
+      "explanation": "When patching is impossible, segmentation and isolation act as a compensating control."
+    },
+    {
+      "displayNumber": "49",
+      "correct": ["C"],
+      "explanation": "In IaaS the provider secures the physical hosts and hypervisor; the customer owns the guest OS, applications and data."
+    },
+    {
+      "displayNumber": "50",
+      "correct": ["B", "E"],
+      "explanation": "WPA3-Enterprise with 802.1X/RADIUS gives per-user authentication and strong encryption. MAC filtering and hidden SSIDs are easily bypassed, and WEP is broken."
+    },
+    {
+      "displayNumber": "51",
+      "correct": ["B"],
+      "explanation": "Spraying tries one or a few common passwords across many accounts to stay under lockout thresholds."
+    },
+    {
+      "displayNumber": "52",
+      "correct": ["B"],
+      "explanation": "Fail-closed blocks traffic on failure, favouring security over availability."
+    },
+    {
+      "displayNumber": "53",
+      "correct": ["B"],
+      "explanation": "Threat hunting is proactive and hypothesis-driven, looking for threats that slipped past existing detections."
+    },
+    {
+      "displayNumber": "54",
+      "correct": ["A"],
+      "explanation": "OAuth delegates authorization with access tokens. OpenID Connect adds authentication on top of it."
+    },
+    {
+      "displayNumber": "55",
+      "correct": ["C"],
+      "explanation": "Only the holder of the private key can produce the signature, which gives non-repudiation. A bare hash proves integrity but anyone can recompute it; AES and TLS provide confidentiality."
+    },
+    {
+      "displayNumber": "56",
+      "correct": ["B"],
+      "explanation": "The AUP defines acceptable use of company systems."
+    },
+    {
+      "displayNumber": "57",
+      "correct": ["B"],
+      "explanation": "Chain of custody proves the evidence was not tampered with."
+    },
+    {
+      "displayNumber": "58",
+      "correct": ["C"],
+      "explanation": "Logging in lets the scanner see patch levels and settings directly. A non-credentialed scan shows the outsider's view."
+    },
+    {
+      "displayNumber": "59",
+      "correct": ["D"],
+      "explanation": "DMARC sets the policy (none, quarantine, reject) and reporting addresses."
+    },
+    {
+      "displayNumber": "60",
+      "correct": ["B"],
+      "explanation": "Recovery point objective is the maximum acceptable data loss measured in time. RTO is how fast service must be restored."
+    },
+    {
+      "displayNumber": "61",
+      "correct": ["A"],
+      "explanation": "A reported issue that does not exist is a false positive."
+    },
+    {
+      "displayNumber": "62",
+      "correct": ["A"],
+      "explanation": "Insurance shifts the financial impact to a third party: risk transference."
+    },
+    {
+      "displayNumber": "63",
+      "correct": ["C"],
+      "explanation": "Malicious code that triggers on a condition is a logic bomb."
+    },
+    {
+      "displayNumber": "64",
+      "correct": ["D"],
+      "explanation": "Writing past an allocated buffer into adjacent memory is a buffer overflow."
+    },
+    {
+      "displayNumber": "65",
+      "correct": ["C"],
+      "explanation": "Procedures are step-by-step. Policies state intent, standards set mandatory specifics, guidelines are recommendations."
+    },
+    {
+      "displayNumber": "66",
+      "correct": ["B"],
+      "explanation": "Disabling removes access immediately while preserving data and audit history for investigation or handover."
+    },
+    {
+      "displayNumber": "67",
+      "correct": ["D"],
+      "explanation": "Prioritize by severity and exposure: a critical flaw reachable from the internet carries the most risk."
+    },
+    {
+      "displayNumber": "68",
+      "correct": ["A"],
+      "explanation": "A SIEM collects and correlates events. SOAR automates the response to them."
+    },
+    {
+      "displayNumber": "69",
+      "correct": ["A"],
+      "explanation": "A known environment test (formerly white box) gives testers full information."
+    },
+    {
+      "displayNumber": "70",
+      "correct": ["A"],
+      "explanation": "Typosquatting registers look-alike domains. Domain hijacking takes control of the real domain's registration."
+    },
+    {
+      "displayNumber": "71",
+      "correct": ["C"],
+      "explanation": "Bollards are a physical control. Technical controls are enforced by systems (firewalls, EDR), managerial controls are policies and risk assessments, and operational controls are carried out by people day to day."
+    },
+    {
+      "displayNumber": "72",
+      "correct": ["A"],
+      "explanation": "A hot site is fully equipped and replicated, ready almost immediately. Warm sites need time to load data; cold sites have only space and power."
+    },
+    {
+      "displayNumber": "73",
+      "correct": ["A"],
+      "explanation": "The controller decides why and how data is processed; the processor acts on the controller's behalf."
+    },
+    {
+      "displayNumber": "74",
+      "correct": ["D"],
+      "explanation": "Risk appetite is how much risk the organization is willing to take on in pursuit of its goals."
+    },
+    {
+      "displayNumber": "75",
+      "correct": ["A"],
+      "explanation": "Long-term, well-funded, stealthy operations attributed to a government are the hallmark of nation-state actors (often called APTs)."
+    },
+    {
+      "displayNumber": "76",
+      "correct": ["A"],
+      "explanation": "SOC 2 Type II tests operating effectiveness over a period. Type I covers design at a single point in time."
+    },
+    {
+      "displayNumber": "77",
+      "correct": ["C"],
+      "explanation": "The username is identification. The password and push prove the identity, which is authentication. Authorization decides what they may access; accounting records what they did."
+    },
+    {
+      "displayNumber": "78",
+      "correct": ["A", "D"],
+      "explanation": "Training helps users spot phishing, and email authentication blocks spoofed senders. The other options address different risks."
+    },
+    {
+      "displayNumber": "79",
+      "correct": ["D"],
+      "explanation": "Removing the threat and its persistence is eradication. Recovery is restoring systems to normal operation."
+    },
+    {
+      "displayNumber": "80",
+      "correct": ["D"],
+      "explanation": "A backout (rollback) plan restores the prior state. Impact analysis assesses consequences; the maintenance window is when the change happens."
+    },
+    {
+      "displayNumber": "81",
+      "correct": ["D"],
+      "explanation": "The policy engine (control plane) makes the decision, the policy administrator relays it, and the policy enforcement point (data plane) carries it out."
+    },
+    {
+      "displayNumber": "82",
+      "correct": ["C"],
+      "explanation": "Unapproved technology used inside the organization is shadow IT."
+    },
+    {
+      "displayNumber": "83",
+      "correct": ["C"],
+      "explanation": "SNMPv1 and v2c send community strings in cleartext. SNMPv3 adds authentication and encryption."
+    },
+    {
+      "displayNumber": "84",
+      "correct": ["B"],
+      "explanation": "MFA needs different factor types: something you know (password) plus something you are (fingerprint). The others pair two of the same type."
+    },
+    {
+      "displayNumber": "85",
+      "correct": ["C"],
+      "explanation": "The state changed between the check and the use: a TOCTOU race condition."
+    },
+    {
+      "displayNumber": "86",
+      "correct": ["D"],
+      "explanation": "This is SQL injection. Parameterized queries keep input as data, never as SQL. Length limits are easy to bypass and detection-only mode blocks nothing."
+    },
+    {
+      "displayNumber": "87",
+      "correct": ["D"],
+      "explanation": "Security orchestration, automation and response runs automated playbooks."
+    },
+    {
+      "displayNumber": "88",
+      "correct": ["A"],
+      "explanation": "SAML exchanges XML assertions between an identity provider and service providers for web SSO."
+    },
+    {
+      "displayNumber": "89",
+      "correct": ["A"],
+      "explanation": "The payload is saved on the server and served to every visitor, so it is stored (persistent) XSS."
+    },
+    {
+      "displayNumber": "90",
+      "correct": ["D"],
+      "explanation": "Secure Access Service Edge combines networking and security services delivered from the cloud."
+    }
+  ],
+  "oralQuestions": [
+    {
+      "order": 1,
+      "question": "Walk me through the incident response process, in order.",
+      "modelAnswer": "Preparation, detection, analysis, containment, eradication, recovery, lessons learned. Bonus: containment comes before eradication so evidence is preserved and spread stops."
+    },
+    {
+      "order": 2,
+      "question": "What is the difference between RTO and RPO? Give an example of each.",
+      "modelAnswer": "RTO is how quickly a system must be back (e.g. 4 hours). RPO is how much data loss is acceptable measured in time (e.g. 15 minutes, so backups or replication at least that often)."
+    },
+    {
+      "order": 3,
+      "question": "How does a digital signature give integrity, authentication and non-repudiation?",
+      "modelAnswer": "The sender hashes the message and encrypts the hash with their private key. The receiver decrypts with the sender's public key and compares hashes: a match proves the message is unchanged and that only the private key holder could have signed it."
+    },
+    {
+      "order": 4,
+      "question": "IDS versus IPS: where does each sit and what can each do?",
+      "modelAnswer": "An IDS is passive (often on a SPAN or tap) and only alerts. An IPS is inline and can block or drop traffic. Inline means it can also cause outages if it fails closed or has false positives."
+    },
+    {
+      "order": 5,
+      "question": "What do SPF, DKIM and DMARC each do?",
+      "modelAnswer": "SPF lists servers allowed to send for a domain. DKIM signs messages so receivers can verify them. DMARC tells receivers what to do when SPF or DKIM fail (none, quarantine, reject) and where to send reports."
+    },
+    {
+      "order": 6,
+      "question": "Name the four risk responses and give an example of each.",
+      "modelAnswer": "Mitigate (add MFA), transfer (cyber insurance), accept (document a low risk), avoid (stop the risky activity, such as not launching a feature)."
+    },
+    {
+      "order": 7,
+      "question": "Hashing versus encryption versus encoding.",
+      "modelAnswer": "Hashing is one-way and proves integrity. Encryption is reversible with a key and gives confidentiality. Encoding (Base64) is reversible by anyone and gives no security."
+    },
+    {
+      "order": 8,
+      "question": "Explain zero trust in thirty seconds. What are the control plane and data plane?",
+      "modelAnswer": "Never trust based on network location; verify every request using identity, device and context. Control plane: policy engine and administrator decide. Data plane: policy enforcement points carry out the decision."
+    },
+    {
+      "order": 9,
+      "question": "Give four insecure protocols and their secure replacements, with ports.",
+      "modelAnswer": "Telnet 23 to SSH 22; HTTP 80 to HTTPS 443; FTP 21 to SFTP 22 or FTPS 990; LDAP 389 to LDAPS 636; SNMPv1/v2c to SNMPv3 (161)."
+    },
+    {
+      "order": 10,
+      "question": "Calculate the ALE: asset worth $80,000, exposure factor 50%, expected once every four years.",
+      "modelAnswer": "SLE = 80,000 x 0.5 = $40,000. ARO = 0.25. ALE = $10,000 per year."
+    }
+  ],
+  "lab": {
+    "intro": "This lab creates real practice files on your own computer so you can type every command yourself, not just read output. Nothing here touches your system files: everything lives in a `secplus-lab` folder in your home directory.\n\n**Where to run it:** Ubuntu or Kali Linux, a Linux VM, or WSL on Windows (`wsl --install` in PowerShell, then open Ubuntu). macOS works for most tasks, but use `stat -f '%Lp %N'` instead of `stat -c` and replace `shuf -n1` with `ls | sort -R | head -n1`.",
+    "steps": [
+      {
+        "title": "Step 1. Build the lab",
+        "body": "Copy this whole block into a file called `build-lab.sh`, then run `bash build-lab.sh`.\n\n```bash\n#!/usr/bin/env bash\n# Security+ practice lab: creates ~/secplus-lab with log, hash and permission exercises\nset -e\nLAB=\"$HOME/secplus-lab\"\nrm -rf \"$LAB\" && mkdir -p \"$LAB\"/{log,downloads,etc/ssh,home/deploy/.ssh}\ncd \"$LAB\"\n\n# ---- Lab A: authentication log ----\ncat > log/auth.log <<'EOF'\nNov  3 01:48:56 web01 CRON[1834]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:54:05 web01 sshd[1843]: Accepted publickey for adaeze from 10.0.2.15 port 48034 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 01:54:06 web01 sshd[1844]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 01:55:09 web01 CRON[1835]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 01:58:00 web01 sshd[1851]: Invalid user test from 45.155.205.233 port 61210\nNov  3 01:58:01 web01 sshd[1852]: Failed password for invalid user test from 45.155.205.233 port 61210 ssh2\nNov  3 01:58:05 web01 sshd[1853]: Invalid user guest from 45.155.205.233 port 38235\nNov  3 01:58:06 web01 sshd[1854]: Failed password for invalid user guest from 45.155.205.233 port 38235 ssh2\nNov  3 01:58:08 web01 sshd[1855]: Invalid user guest from 45.155.205.233 port 31897\nNov  3 01:58:09 web01 sshd[1856]: Failed password for invalid user guest from 45.155.205.233 port 31897 ssh2\nNov  3 01:58:12 web01 sshd[1857]: Invalid user test from 45.155.205.233 port 41342\nNov  3 01:58:13 web01 sshd[1858]: Failed password for invalid user test from 45.155.205.233 port 41342 ssh2\nNov  3 01:58:16 web01 sshd[1859]: Invalid user user from 45.155.205.233 port 51655\nNov  3 01:58:17 web01 sshd[1860]: Failed password for invalid user user from 45.155.205.233 port 51655 ssh2\nNov  3 01:58:20 web01 sshd[1861]: Invalid user user from 45.155.205.233 port 42102\nNov  3 01:58:21 web01 sshd[1862]: Failed password for invalid user user from 45.155.205.233 port 42102 ssh2\nNov  3 01:58:24 web01 sshd[1863]: Invalid user guest from 45.155.205.233 port 56361\nNov  3 01:58:25 web01 sshd[1864]: Failed password for invalid user guest from 45.155.205.233 port 56361 ssh2\nNov  3 01:58:28 web01 sshd[1865]: Invalid user admin from 45.155.205.233 port 50090\nNov  3 01:58:29 web01 sshd[1866]: Failed password for invalid user admin from 45.155.205.233 port 50090 ssh2\nNov  3 01:58:34 web01 sshd[1867]: Invalid user admin from 45.155.205.233 port 33551\nNov  3 01:58:35 web01 sshd[1868]: Failed password for invalid user admin from 45.155.205.233 port 33551 ssh2\nNov  3 01:58:41 web01 sshd[1869]: Invalid user guest from 45.155.205.233 port 35176\nNov  3 01:58:42 web01 sshd[1870]: Failed password for invalid user guest from 45.155.205.233 port 35176 ssh2\nNov  3 01:58:46 web01 sshd[1871]: Invalid user guest from 45.155.205.233 port 59880\nNov  3 01:58:47 web01 sshd[1872]: Failed password for invalid user guest from 45.155.205.233 port 59880 ssh2\nNov  3 01:58:49 web01 sshd[1873]: Invalid user pi from 45.155.205.233 port 43574\nNov  3 01:58:50 web01 sshd[1874]: Failed password for invalid user pi from 45.155.205.233 port 43574 ssh2\nNov  3 02:02:00 web01 CRON[1836]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:03:24 web01 sshd[1875]: Failed password for chidi from 102.89.34.12 port 32070 ssh2\nNov  3 02:03:39 web01 sshd[1876]: Failed password for chidi from 102.89.34.12 port 30076 ssh2\nNov  3 02:03:48 web01 sshd[1877]: Accepted password for chidi from 102.89.34.12 port 50838 ssh2\nNov  3 02:09:41 web01 CRON[1837]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:13:00 web01 sshd[1878]: Invalid user oracle from 185.220.101.47 port 44687\nNov  3 02:13:01 web01 sshd[1879]: Failed password for invalid user oracle from 185.220.101.47 port 44687 ssh2\nNov  3 02:13:02 web01 sshd[1880]: Failed password for root from 185.220.101.47 port 48743 ssh2\nNov  3 02:13:06 web01 sshd[1881]: Failed password for backup from 185.220.101.47 port 56334 ssh2\nNov  3 02:13:09 web01 sshd[1882]: Invalid user test from 185.220.101.47 port 57652\nNov  3 02:13:10 web01 sshd[1883]: Failed password for invalid user test from 185.220.101.47 port 57652 ssh2\nNov  3 02:13:12 web01 sshd[1884]: Failed password for backup from 185.220.101.47 port 37123 ssh2\nNov  3 02:13:18 web01 sshd[1885]: Invalid user admin from 185.220.101.47 port 61080\nNov  3 02:13:19 web01 sshd[1886]: Failed password for invalid user admin from 185.220.101.47 port 61080 ssh2\nNov  3 02:13:20 web01 sshd[1887]: Invalid user admin from 185.220.101.47 port 63855\nNov  3 02:13:21 web01 sshd[1888]: Failed password for invalid user admin from 185.220.101.47 port 63855 ssh2\nNov  3 02:13:23 web01 sshd[1889]: Invalid user oracle from 185.220.101.47 port 40606\nNov  3 02:13:24 web01 sshd[1890]: Failed password for invalid user oracle from 185.220.101.47 port 40606 ssh2\nNov  3 02:13:27 web01 sshd[1891]: Invalid user ubuntu from 185.220.101.47 port 56170\nNov  3 02:13:28 web01 sshd[1892]: Failed password for invalid user ubuntu from 185.220.101.47 port 56170 ssh2\nNov  3 02:13:29 web01 sshd[1893]: Failed password for backup from 185.220.101.47 port 48670 ssh2\nNov  3 02:13:35 web01 sshd[1894]: Failed password for backup from 185.220.101.47 port 33751 ssh2\nNov  3 02:13:39 web01 sshd[1895]: Invalid user oracle from 185.220.101.47 port 37334\nNov  3 02:13:40 web01 sshd[1896]: Failed password for invalid user oracle from 185.220.101.47 port 37334 ssh2\nNov  3 02:13:45 web01 sshd[1897]: Invalid user admin from 185.220.101.47 port 31881\nNov  3 02:13:46 web01 sshd[1898]: Failed password for invalid user admin from 185.220.101.47 port 31881 ssh2\nNov  3 02:13:48 web01 sshd[1899]: Invalid user test from 185.220.101.47 port 59069\nNov  3 02:13:49 web01 sshd[1845]: Accepted publickey for adaeze from 10.0.2.15 port 52836 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:13:49 web01 sshd[1900]: Failed password for invalid user test from 185.220.101.47 port 59069 ssh2\nNov  3 02:13:50 web01 sshd[1846]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:13:52 web01 sshd[1901]: Invalid user admin from 185.220.101.47 port 38770\nNov  3 02:13:53 web01 sshd[1902]: Failed password for invalid user admin from 185.220.101.47 port 38770 ssh2\nNov  3 02:13:54 web01 sshd[1903]: Invalid user postgres from 185.220.101.47 port 33769\nNov  3 02:13:55 web01 sshd[1904]: Failed password for invalid user postgres from 185.220.101.47 port 33769 ssh2\nNov  3 02:13:58 web01 sshd[1905]: Invalid user ubuntu from 185.220.101.47 port 36373\nNov  3 02:13:59 web01 sshd[1906]: Failed password for invalid user ubuntu from 185.220.101.47 port 36373 ssh2\nNov  3 02:14:03 web01 sshd[1907]: Invalid user admin from 185.220.101.47 port 41685\nNov  3 02:14:04 web01 sshd[1908]: Failed password for invalid user admin from 185.220.101.47 port 41685 ssh2\nNov  3 02:14:08 web01 sshd[1909]: Invalid user ubuntu from 185.220.101.47 port 56698\nNov  3 02:14:09 web01 sshd[1910]: Failed password for invalid user ubuntu from 185.220.101.47 port 56698 ssh2\nNov  3 02:14:11 web01 sshd[1911]: Failed password for root from 185.220.101.47 port 50509 ssh2\nNov  3 02:14:13 web01 sshd[1912]: Invalid user oracle from 185.220.101.47 port 52871\nNov  3 02:14:14 web01 sshd[1913]: Failed password for invalid user oracle from 185.220.101.47 port 52871 ssh2\nNov  3 02:14:15 web01 sshd[1914]: Invalid user oracle from 185.220.101.47 port 63740\nNov  3 02:14:16 web01 sshd[1915]: Failed password for invalid user oracle from 185.220.101.47 port 63740 ssh2\nNov  3 02:14:17 web01 sshd[1916]: Invalid user admin from 185.220.101.47 port 53119\nNov  3 02:14:18 web01 sshd[1917]: Failed password for invalid user admin from 185.220.101.47 port 53119 ssh2\nNov  3 02:14:23 web01 sshd[1918]: Invalid user oracle from 185.220.101.47 port 61052\nNov  3 02:14:24 web01 sshd[1919]: Failed password for invalid user oracle from 185.220.101.47 port 61052 ssh2\nNov  3 02:14:25 web01 sshd[1920]: Failed password for root from 185.220.101.47 port 33720 ssh2\nNov  3 02:14:27 web01 sshd[1921]: Invalid user oracle from 185.220.101.47 port 35019\nNov  3 02:14:28 web01 sshd[1922]: Failed password for invalid user oracle from 185.220.101.47 port 35019 ssh2\nNov  3 02:14:32 web01 sshd[1923]: Invalid user test from 185.220.101.47 port 56740\nNov  3 02:14:33 web01 sshd[1924]: Failed password for invalid user test from 185.220.101.47 port 56740 ssh2\nNov  3 02:14:36 web01 sshd[1925]: Failed password for root from 185.220.101.47 port 30045 ssh2\nNov  3 02:14:41 web01 sshd[1926]: Invalid user ubuntu from 185.220.101.47 port 42892\nNov  3 02:14:42 web01 sshd[1927]: Failed password for invalid user ubuntu from 185.220.101.47 port 42892 ssh2\nNov  3 02:14:46 web01 sshd[1928]: Failed password for root from 185.220.101.47 port 33762 ssh2\nNov  3 02:14:49 web01 sshd[1929]: Invalid user ubuntu from 185.220.101.47 port 51692\nNov  3 02:14:50 web01 sshd[1930]: Failed password for invalid user ubuntu from 185.220.101.47 port 51692 ssh2\nNov  3 02:14:51 web01 sshd[1931]: Failed password for root from 185.220.101.47 port 45404 ssh2\nNov  3 02:14:55 web01 sshd[1932]: Invalid user test from 185.220.101.47 port 57422\nNov  3 02:14:56 web01 sshd[1933]: Failed password for invalid user test from 185.220.101.47 port 57422 ssh2\nNov  3 02:15:00 web01 sshd[1934]: Invalid user test from 185.220.101.47 port 52970\nNov  3 02:15:01 web01 sshd[1935]: Failed password for invalid user test from 185.220.101.47 port 52970 ssh2\nNov  3 02:15:02 web01 sshd[1936]: Failed password for backup from 185.220.101.47 port 54750 ssh2\nNov  3 02:15:07 web01 sshd[1937]: Invalid user oracle from 185.220.101.47 port 41303\nNov  3 02:15:08 web01 sshd[1938]: Failed password for invalid user oracle from 185.220.101.47 port 41303 ssh2\nNov  3 02:15:09 web01 sshd[1939]: Invalid user ubuntu from 185.220.101.47 port 34969\nNov  3 02:15:10 web01 sshd[1940]: Failed password for invalid user ubuntu from 185.220.101.47 port 34969 ssh2\nNov  3 02:15:12 web01 sshd[1941]: Invalid user ubuntu from 185.220.101.47 port 58960\nNov  3 02:15:13 web01 sshd[1942]: Failed password for invalid user ubuntu from 185.220.101.47 port 58960 ssh2\nNov  3 02:15:16 web01 sshd[1943]: Invalid user test from 185.220.101.47 port 62929\nNov  3 02:15:17 web01 sshd[1944]: Failed password for invalid user test from 185.220.101.47 port 62929 ssh2\nNov  3 02:15:19 web01 sshd[1945]: Invalid user ubuntu from 185.220.101.47 port 57924\nNov  3 02:15:20 web01 sshd[1946]: Failed password for invalid user ubuntu from 185.220.101.47 port 57924 ssh2\nNov  3 02:15:25 web01 sshd[1947]: Invalid user admin from 185.220.101.47 port 30188\nNov  3 02:15:26 web01 sshd[1948]: Failed password for invalid user admin from 185.220.101.47 port 30188 ssh2\nNov  3 02:15:27 web01 sshd[1949]: Invalid user test from 185.220.101.47 port 47213\nNov  3 02:15:28 web01 sshd[1950]: Failed password for invalid user test from 185.220.101.47 port 47213 ssh2\nNov  3 02:15:29 web01 sshd[1951]: Invalid user ubuntu from 185.220.101.47 port 53083\nNov  3 02:15:30 web01 sshd[1952]: Failed password for invalid user ubuntu from 185.220.101.47 port 53083 ssh2\nNov  3 02:15:33 web01 sshd[1953]: Invalid user postgres from 185.220.101.47 port 47168\nNov  3 02:15:34 web01 sshd[1954]: Failed password for invalid user postgres from 185.220.101.47 port 47168 ssh2\nNov  3 02:15:38 web01 sshd[1955]: Failed password for backup from 185.220.101.47 port 47128 ssh2\nNov  3 02:15:42 web01 sshd[1956]: Invalid user oracle from 185.220.101.47 port 48092\nNov  3 02:15:43 web01 sshd[1957]: Failed password for invalid user oracle from 185.220.101.47 port 48092 ssh2\nNov  3 02:15:47 web01 sshd[1958]: Failed password for backup from 185.220.101.47 port 53661 ssh2\nNov  3 02:15:52 web01 sshd[1959]: Failed password for backup from 185.220.101.47 port 34441 ssh2\nNov  3 02:15:55 web01 sshd[1960]: Failed password for backup from 185.220.101.47 port 37931 ssh2\nNov  3 02:15:58 web01 sshd[1961]: Failed password for backup from 185.220.101.47 port 60650 ssh2\nNov  3 02:16:01 web01 sshd[1962]: Accepted password for backup from 185.220.101.47 port 34929 ssh2\nNov  3 02:16:02 web01 sshd[1963]: pam_unix(sshd:session): session opened for user backup(uid=1001) by (uid=0)\nNov  3 02:16:38 web01 CRON[1838]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:23:33 web01 CRON[1839]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:30:44 web01 CRON[1840]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:31:26 web01 sshd[1847]: Accepted publickey for adaeze from 10.0.2.15 port 57931 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:31:27 web01 sshd[1848]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nNov  3 02:37:01 web01 CRON[1841]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:44:55 web01 CRON[1842]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)\nNov  3 02:51:19 web01 sshd[1849]: Accepted publickey for adaeze from 10.0.2.15 port 38433 ssh2: ED25519 SHA256:q8fC2v...\nNov  3 02:51:20 web01 sshd[1850]: pam_unix(sshd:session): session opened for user adaeze(uid=1002) by (uid=0)\nEOF\n\n# ---- Lab B: installer integrity (random tampered file each build) ----\ncd downloads\nfor f in agent-installer-v4.2.exe vpn-client-3.1.msi backup-tool-1.8.deb pdf-reader-2026.2.exe; do\n  head -c 2097152 /dev/urandom > \"$f\"\ndone\nsha256sum *.exe *.msi *.deb > vendor_hashes.txt\nvictim=$(ls *.exe *.msi *.deb | shuf -n1)\nprintf 'injected-payload' >> \"$victim\"\necho \"$victim\" > \"$LAB/.answer-lab-b\"\ncd ..\n\n# ---- Lab C: permissions and SSH hardening ----\ncat > etc/passwd <<'EOF'\nroot:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nsyslog:x:104:110::/home/syslog:/usr/sbin/nologin\nsshd:x:110:65534::/run/sshd:/usr/sbin/nologin\nadaeze:x:1002:1002:Adaeze O.:/home/adaeze:/bin/bash\ndeploy:x:1001:1001:Deploy user:/home/deploy:/bin/bash\nanalyst:x:1003:1003:Security analyst:/home/analyst:/bin/bash\nEOF\nchmod 644 etc/passwd\ncat > etc/group <<'EOF'\nroot:x:0:\nadm:x:4:syslog,adaeze\nsudo:x:27:adaeze\nshadow:x:42:\ndeploy:x:1001:\nanalyst:x:1003:\nEOF\nchmod 644 etc/group\ncat > etc/shadow <<'EOF'\nroot:$y$j9T$4dd03c0cc945e50a3265c9$4421e807491242206a734f426d2db165d48490ed87a:20390:0:99999:7:::\ndaemon:*:20390:0:99999:7:::\nsyslog:*:20390:0:99999:7:::\nadaeze:$y$j9T$16432b4411dfad4437fd83$460d69bcbe05ed3eead403c731a2dc9bbb9870828bf:20401:0:99999:7:::\ndeploy:$y$j9T$cea034810a22978ce9d110$ff5460d50f9da44cd31b32676191dea3283f0dc08a7:20388:0:99999:7:::\nanalyst:$y$j9T$a26850374ff15cd5b3b5d1$40a69d5ebb8c7e7c7f7b5aa13b1f2f26d8bb7df1034:20410:0:99999:7:::\nEOF\nchmod 646 etc/shadow\ncat > etc/ssh/sshd_config <<'EOF'\n# This is the sshd server system-wide configuration file.\n# See sshd_config(5) for more information.\nInclude /etc/ssh/sshd_config.d/*.conf\n\nPort 22\n#AddressFamily any\n#ListenAddress 0.0.0.0\n\nPermitRootLogin yes\nMaxAuthTries 6\nPubkeyAuthentication yes\nPasswordAuthentication yes\nPermitEmptyPasswords no\nKbdInteractiveAuthentication no\nUsePAM yes\nX11Forwarding yes\nPrintMotd no\nAcceptEnv LANG LC_*\nSubsystem sftp /usr/lib/openssh/sftp-server\nEOF\nchmod 644 etc/ssh/sshd_config\nprintf 'Defaults env_reset\\nroot ALL=(ALL:ALL) ALL\\n' > etc/sudoers && chmod 440 etc/sudoers\nprintf -- '-----BEGIN OPENSSH PRIVATE KEY-----\\n(practice key, not real)\\n-----END OPENSSH PRIVATE KEY-----\\n' > home/deploy/.ssh/id_rsa && chmod 644 home/deploy/.ssh/id_rsa\nprintf 'ssh-ed25519 AAAAC3Nza... deploy@web01\\n' > home/deploy/.ssh/id_rsa.pub && chmod 644 home/deploy/.ssh/id_rsa.pub\ntouch home/deploy/.ssh/authorized_keys && chmod 600 home/deploy/.ssh/authorized_keys\n\necho \"Lab ready in $LAB\"\n```\n\nRun `bash build-lab.sh` again any time to reset the lab. Lab B picks a new tampered file on every build."
+      },
+      {
+        "title": "Step 2. Lab A: find the brute force",
+        "body": "Work in `~/secplus-lab/log`. Answer the same three questions as PBQ 1:\n\n1. Which IP made the brute-force attempts?\n2. Which account did it log in to?\n3. How many `Failed password` entries came from that IP?\n\nCommands worth trying, in this order:\n\n```bash\ncd ~/secplus-lab/log\nhead auth.log\ngrep -c 'Failed password' auth.log\ngrep 'Failed password' auth.log | awk '{print $(NF-3)}' | sort | uniq -c | sort -nr\ngrep 'Accepted' auth.log\ngrep 'Invalid user' auth.log | awk '{print $8}' | sort | uniq -c | sort -nr\n```\n\nAsk yourself why `grep '<attacker IP>' auth.log | wc -l` gives a bigger number than your answer to question 3."
+      },
+      {
+        "title": "Step 3. Lab B: verify the installers",
+        "body": "```bash\ncd ~/secplus-lab/downloads\ncat vendor_hashes.txt\nsha256sum *.exe *.msi *.deb\nsha256sum -c vendor_hashes.txt\ncat ~/secplus-lab/.answer-lab-b    # check your answer\n```\n\nThen answer: what would you do with the failed file, and what would prove who created the file, not just that it is unchanged?"
+      },
+      {
+        "title": "Step 4. Lab C: find and fix permissions",
+        "body": "This time you actually fix things. Work in `~/secplus-lab`.\n\n```bash\ncd ~/secplus-lab\nls -l etc\nls -la home/deploy/.ssh\ngrep -n 'PermitRootLogin\\|PasswordAuthentication' etc/ssh/sshd_config\n\n# Your fixes (work out the right numbers before you look at Part 6):\nchmod ??? etc/shadow\nchmod ??? home/deploy/.ssh/id_rsa\nsed -i 's/^PermitRootLogin yes/PermitRootLogin ??/' etc/ssh/sshd_config\n\n# Verify\nstat -c '%a %n' etc/shadow home/deploy/.ssh/id_rsa\ngrep '^PermitRootLogin' etc/ssh/sshd_config\n```\n\nYou pass Lab C when `stat` shows `640 etc/shadow` and `600 home/deploy/.ssh/id_rsa`, and the config line reads `PermitRootLogin no`."
+      },
+      {
+        "title": "Step 5. Lab D: scan your own machine",
+        "body": "Install nmap (`sudo apt install nmap`) and scan only machines you own. Scanning other people's systems without permission is illegal.\n\n```bash\nnmap localhost\nnmap -sV localhost\nss -tlnp        # which processes are listening, compare with nmap\n```\n\nFor each open port, write the service name, whether it is cleartext or encrypted, and its secure replacement if one exists."
+      }
+    ],
+    "cheatSheet": [
+      {
+        "command": "grep -i -c -v -n -o",
+        "description": "search; ignore case, count, invert, line numbers, only the match"
+      },
+      {
+        "command": "awk '{print $N}'",
+        "description": "print field N; $NF is the last field, $(NF-3) the fourth from last"
+      },
+      {
+        "command": "cut -d ' ' -f N",
+        "description": "split on a delimiter and keep field N"
+      },
+      {
+        "command": "sort | uniq -c | sort -nr",
+        "description": "count repeats and list the most frequent first"
+      },
+      {
+        "command": "wc -l",
+        "description": "count lines"
+      },
+      {
+        "command": "head / tail -n 20",
+        "description": "first or last 20 lines"
+      },
+      {
+        "command": "sha256sum -c file",
+        "description": "check files against a list of published hashes"
+      },
+      {
+        "command": "ls -l / stat -c '%a %n'",
+        "description": "show permissions as letters / as octal"
+      },
+      {
+        "command": "chmod 640 file",
+        "description": "owner rw, group r, others none (r=4 w=2 x=1)"
+      },
+      {
+        "command": "nmap -sn / -sV / -p",
+        "description": "host discovery / service versions / specific ports"
+      },
+      {
+        "command": "ss -tlnp",
+        "description": "listening TCP ports and their processes"
+      }
+    ]
+  },
+  "labAnswers": [
+    "Lab A: attacker **185.220.101.47**, compromised account **backup**, **50** failed password entries.",
+    "Lab B: the tampered file is random on every build; she checks it with `cat ~/secplus-lab/.answer-lab-b`. Correct action: quarantine, report, get a fresh copy from the vendor and verify again. A digital signature proves who created the file.",
+    "Lab C: `chmod 640 etc/shadow`, `chmod 600 home/deploy/.ssh/id_rsa`, `PermitRootLogin no`. Bonus: `PasswordAuthentication no` once SSH keys are in place.",
+    "Lab D: answers depend on her machine. Check she correctly labels each service cleartext or encrypted."
+  ]
+}

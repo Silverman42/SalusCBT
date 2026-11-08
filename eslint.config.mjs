@@ -16,7 +16,7 @@ export default withNuxt(
   },
   {
     // SE-1: answer keys stay on the server. Browser code must not import marking
-    // code or the source exam (which holds the answer key).
+    // code, the source exam or the seed JSON (both hold the answer keys).
     files: ["app/**"],
     rules: {
       "no-restricted-imports": [
@@ -27,6 +27,10 @@ export default withNuxt(
             {
               group: ["**/content/source/**"],
               message: "Source content holds answer keys (SE-1).",
+            },
+            {
+              group: ["**/content/seed/**", "**/sy0-701.json"],
+              message: "Seed JSON holds answer keys (SE-1).",
             },
           ],
         },
