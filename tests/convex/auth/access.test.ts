@@ -64,6 +64,10 @@ const FUNCTIONS: Record<string, Spec> = {
   "invitations:peek": { access: "public" },
   "invitations:accept": { access: "public" },
   "profiles:me": { access: "public" },
+  "shareLinks:create": { access: "public" },
+  "shareLinks:revoke": { access: "public" },
+  "shareLinks:forAttempt": { access: "public" },
+  "shareLinks:view": { access: "public" },
 
   // Tutor (admin passes too).
   "classes:create": {
@@ -105,6 +109,11 @@ const FUNCTIONS: Record<string, Spec> = {
   },
   "editor:validate": { access: "tutor", args: ({ versionId }) => ({ versionId }) },
   "editor:publish": { access: "tutor", args: ({ versionId }) => ({ versionId }) },
+  "editor:generate": {
+    access: "tutor",
+    args: ({ versionId, questionId }) => ({ versionId, questionId, seed: 1 }),
+  },
+  "editor:previewAttempt": { access: "tutor", args: ({ versionId }) => ({ versionId }) },
 
   // Admin only.
   "admin:tutors": { access: "admin" },
