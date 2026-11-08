@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as admin from "../admin.js";
 import type * as attempts from "../attempts.js";
 import type * as auth from "../auth.js";
 import type * as classes from "../classes.js";
@@ -27,6 +28,7 @@ import type * as generators_sshLog from "../generators/sshLog.js";
 import type * as http from "../http.js";
 import type * as lib_anon from "../lib/anon.js";
 import type * as lib_answers from "../lib/answers.js";
+import type * as lib_attemptDeletion from "../lib/attemptDeletion.js";
 import type * as lib_audit from "../lib/audit.js";
 import type * as lib_classCodes from "../lib/classCodes.js";
 import type * as lib_clientIp from "../lib/clientIp.js";
@@ -48,6 +50,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  admin: typeof admin;
   attempts: typeof attempts;
   auth: typeof auth;
   classes: typeof classes;
@@ -67,6 +70,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/anon": typeof lib_anon;
   "lib/answers": typeof lib_answers;
+  "lib/attemptDeletion": typeof lib_attemptDeletion;
   "lib/audit": typeof lib_audit;
   "lib/classCodes": typeof lib_classCodes;
   "lib/clientIp": typeof lib_clientIp;
