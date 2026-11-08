@@ -46,6 +46,7 @@ import type * as lib_review from "../lib/review.js";
 import type * as lib_rng from "../lib/rng.js";
 import type * as marking_normalise from "../marking/normalise.js";
 import type * as marking_score from "../marking/score.js";
+import type * as privacy from "../privacy.js";
 import type * as profiles from "../profiles.js";
 import type * as review from "../review.js";
 import type * as seed from "../seed.js";
@@ -95,6 +96,7 @@ declare const fullApi: ApiFromModules<{
   "lib/rng": typeof lib_rng;
   "marking/normalise": typeof marking_normalise;
   "marking/score": typeof marking_score;
+  privacy: typeof privacy;
   profiles: typeof profiles;
   review: typeof review;
   seed: typeof seed;

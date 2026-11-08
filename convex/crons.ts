@@ -14,4 +14,7 @@ crons.interval("sweepOpenAttempts", { minutes: 10 }, internal.attempts.sweepOpen
 // each invitation also schedules its own expiry job at `expiresAt`.
 crons.cron("expireInvitations", "0 2 * * *", internal.invitations.expireInvitations, {});
 
+// PR-3: clear IP hashes (and Better Auth's raw IPs) older than 30 days (T-219).
+crons.cron("purgeIpHashes", "30 2 * * *", internal.privacy.purgeIpHashes, {});
+
 export default crons;

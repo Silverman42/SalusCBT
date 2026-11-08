@@ -163,7 +163,9 @@ export default defineSchema({
   })
     .index("by_anonKey", ["anonKey", "startedAt"])
     .index("by_class", ["classId", "startedAt"])
-    .index("by_status_deadline", ["status", "deadline"]),
+    .index("by_status_deadline", ["status", "deadline"])
+    // T-219: only rows still holding a hash, for the 30-day purge (PR-3).
+    .index("by_ipHash", ["ipHash"]),
 
   // One row per answered or flagged question (D9).
   responses: defineTable({
@@ -195,5 +197,8 @@ export default defineSchema({
     meta: v.optional(v.any()),
     ipHash: v.optional(v.string()),
     at: v.number(),
-  }).index("by_at", ["at"]),
+  })
+    .index("by_at", ["at"])
+    // T-219: only rows still holding a hash, for the 30-day purge (PR-3).
+    .index("by_ipHash", ["ipHash"]),
 });
