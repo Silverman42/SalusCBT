@@ -12,6 +12,7 @@ import type * as admin from "../admin.js";
 import type * as attempts from "../attempts.js";
 import type * as auth from "../auth.js";
 import type * as classes from "../classes.js";
+import type * as editor from "../editor.js";
 import type * as email_console from "../email/console.js";
 import type * as email_provider from "../email/provider.js";
 import type * as email_resend from "../email/resend.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   attempts: typeof attempts;
   auth: typeof auth;
   classes: typeof classes;
+  editor: typeof editor;
   "email/console": typeof email_console;
   "email/provider": typeof email_provider;
   "email/resend": typeof email_resend;
