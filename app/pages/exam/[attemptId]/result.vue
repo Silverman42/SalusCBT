@@ -54,19 +54,7 @@ const { result, failure, loading, retry } = useStudentResult(attemptId);
             class="h-14 text-base font-bold"
           />
           <ResultShareLinkPanel :attempt-id="attemptId" />
-          <div
-            role="note"
-            class="flex gap-2.5 rounded-[18px] bg-surface-2 p-3.5 text-[13px] leading-normal text-muted-fg"
-          >
-            <UIcon name="i-lucide-info" class="mt-0.5 size-4 flex-none text-brand-ink" />
-            <span>
-              History lives in this browser only.
-              <NuxtLink to="/history" class="font-semibold text-brand-ink underline">
-                Export it on your history page
-              </NuxtLink>
-              to keep it — the file holds your private ID.
-            </span>
-          </div>
+          <HistoryRecent />
         </template>
       </ResultSummary>
     </template>
