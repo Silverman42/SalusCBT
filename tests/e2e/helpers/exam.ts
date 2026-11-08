@@ -98,11 +98,20 @@ export const KEY_ONLY_SNIPPETS: string[] = (() => {
 
 // --- runner ------------------------------------------------------------------
 
-/** /start → "Start the exam" → the runner. Returns the attempt id. */
-export async function startExam(page: Page, displayName: string): Promise<string> {
-  await page.goto("/start");
+/**
+ * /start → "Start the exam" (or `/start?mode=retake` → "Start the PBQ retake",
+ * T-307) → the runner. Returns the attempt id.
+ */
+export async function startExam(
+  page: Page,
+  displayName: string,
+  mode: "standard" | "retake" = "standard",
+): Promise<string> {
+  await page.goto(mode === "retake" ? "/start?mode=retake" : "/start");
   await page.getByLabel(/Display name/).fill(displayName);
-  const start = page.getByRole("button", { name: "Start the exam" });
+  const start = page.getByRole("button", {
+    name: mode === "retake" ? "Start the PBQ retake" : "Start the exam",
+  });
   await expect(start).toBeEnabled();
   await start.click();
   await page.waitForURL(/\/exam\/[^/]+$/);

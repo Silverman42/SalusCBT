@@ -107,7 +107,7 @@ const cardLabel = "text-xs font-semibold text-muted-fg @3xl:hidden";
               role="columnheader"
               scope="col"
               :class="headClass"
-              class="w-[120px]"
+              class="w-[160px]"
             >
               Result
             </th>

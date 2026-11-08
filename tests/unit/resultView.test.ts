@@ -179,7 +179,11 @@ describe("resultView helpers (T-504)", () => {
       correctAnswer: { kind: "pbq", parts: { "3b": "A" } },
       partResults: [true],
     };
-    expect(partRows(hash)[0]).toMatchObject({ yours: "Delete it", correct: "Delete it", ok: true });
+    expect(partRows(hash)[0]).toMatchObject({
+      yours: "A · Delete it",
+      correct: "A · Delete it",
+      ok: true,
+    });
 
     const fw: Pbq = {
       ...pbqBase,
@@ -197,7 +201,7 @@ describe("resultView helpers (T-504)", () => {
       partResults: [false],
     };
     expect(partRows(fw)).toEqual([
-      { id: "1", prompt: "Any → Web (TCP)", yours: "443 · —", correct: "443 · ALLOW", ok: false },
+      { id: "1", prompt: "Any → Web (TCP)", yours: "443 · —", correct: "443 · Allow", ok: false },
     ]);
   });
 });

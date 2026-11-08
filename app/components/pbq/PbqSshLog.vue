@@ -8,6 +8,8 @@
 // browser find, selection and screen readers then see the whole log.
 // Search: type to highlight; Enter / Shift+Enter jump to the next / previous
 // match (wrapping); Escape clears. It stays usable when `readOnly`.
+//
+// Slot `part-mark` ({ part }) after each part is for review marks (T-309).
 import type { AttemptPaperPbq } from "~/composables/useAttempt";
 import type { AnswerValue, TextPart } from "~~/shared/content";
 import { setPbqPart } from "~/lib/examRunner";
@@ -232,6 +234,7 @@ const fieldClass =
           maxlength="200"
           @input="setText(part.id, $event)"
         />
+        <slot name="part-mark" :part="part" />
       </div>
 
       <slot name="footer" />

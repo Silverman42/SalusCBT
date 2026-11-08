@@ -6,6 +6,7 @@
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../convex/_generated/api";
 import type { AnswerValue, PbqPart } from "../../shared/content";
+import { partMarks, ruleMarks } from "./pbq/review";
 
 /** What `shareLinks.view` returns for a live link. */
 export type SharedView = NonNullable<FunctionReturnType<typeof api.shareLinks.view>>;
@@ -171,21 +172,6 @@ export function partAnswerText(answer: AnswerValue | null, partId: string): stri
   return text.trim() === "" ? "—" : text;
 }
 
-/** A firewall answer's rule `index` as "443 · ALLOW" ("—" for blanks). */
-export function firewallRuleText(answer: AnswerValue | null, index: number): string {
-  if (answer?.kind !== "firewall") return "—";
-  const r = answer.rules[index];
-  return `${r?.port ?? "—"} · ${r?.action ?? "—"}`;
-}
-
-/** Display text for an MCQ-type PBQ part answer (option id → option text). */
-export function optionText(options: readonly { id: string; text: string }[], id: string): string {
-  return options.find((o) => o.id === id)?.text ?? id;
-}
-
-/** Practice parts (`scored: false`, e.g. 1d) carry no mark (PB-2). */
-const isScored = (part: PbqPart) => !("scored" in part) || part.scored !== false;
-
 export type PartRow = {
   id: string;
   prompt: string;
@@ -198,41 +184,26 @@ export type PartRow = {
 
 type PbqEntry = Extract<ReviewEntry, { kind: "pbq" }>;
 
-/** One row per PBQ part (or firewall rule), with "yours", "correct" and the mark. */
+/**
+ * One row per PBQ part (or firewall rule), with "yours", "correct" and the
+ * mark: the stacked-card fallback when a template has no review component.
+ */
 export function partRows(item: PbqEntry): PartRow[] {
   const payload = item.payload;
   if (payload.template === "firewall") {
+    const marks = ruleMarks(item);
     return payload.rules.map((r, i) => ({
       id: String(i + 1),
       prompt: `${r.source} → ${r.destination} (${r.protocol})`,
-      yours: firewallRuleText(item.yourAnswer, i),
-      correct: firewallRuleText(item.correctAnswer, i),
-      ok: item.partResults[i] ?? false,
+      yours: marks[i]!.yours,
+      correct: marks[i]!.correct,
+      ok: marks[i]!.ok,
     }));
   }
+  const marks = partMarks(item);
   const parts: PbqPart[] = payload.parts;
-  let scoredIndex = 0;
   return parts.map((part) => {
-    const label = (answer: AnswerValue | null) => {
-      const text = partAnswerText(answer, part.id);
-      return part.kind === "mcq" && text !== "—" ? optionText(part.options, text) : text;
-    };
-    if (!isScored(part)) {
-      return {
-        id: part.id,
-        prompt: part.prompt,
-        yours: label(item.yourAnswer),
-        correct: item.practiceAnswer?.[part.id] ?? "—",
-        ok: null,
-      };
-    }
-    const ok = item.partResults[scoredIndex++] ?? false;
-    return {
-      id: part.id,
-      prompt: part.prompt,
-      yours: label(item.yourAnswer),
-      correct: label(item.correctAnswer),
-      ok,
-    };
+    const m = marks.get(part.id)!;
+    return { id: part.id, prompt: part.prompt, yours: m.yours, correct: m.correct, ok: m.ok };
   });
 }
