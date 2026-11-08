@@ -117,6 +117,42 @@ export function filterReview<T extends Pick<ReviewEntry, "earned" | "max" | "fla
   return [...items];
 }
 
+/** Domain filter value: one domain, or every domain. */
+export type DomainFilter = Domain | "all";
+
+/** EX-18: the status filter and the domain filter combine (both must match). */
+export function queryReview<T extends Pick<ReviewEntry, "earned" | "max" | "flagged" | "domain">>(
+  items: readonly T[],
+  filter: ReviewFilter,
+  domain: DomainFilter,
+): T[] {
+  const inDomain = domain === "all" ? items : items.filter((i) => i.domain === domain);
+  return filterReview(inDomain, filter);
+}
+
+/** `?filter=` from the review page URL; anything unknown is "all". */
+export function parseReviewFilter(value: unknown): ReviewFilter {
+  return value === "wrong" || value === "flagged" ? value : "all";
+}
+
+/** `?domain=` from the review page URL; anything unknown is "all". */
+export function parseDomainFilter(value: unknown): DomainFilter {
+  return typeof value === "string" && Object.hasOwn(DOMAIN_NAMES, value)
+    ? (value as Domain)
+    : "all";
+}
+
+/** The domains present in a review, in domain order, with how many questions each has. */
+export function reviewDomains(
+  items: readonly Pick<ReviewEntry, "domain">[],
+): { domain: Domain; label: string; count: number }[] {
+  const counts = new Map<Domain, number>();
+  for (const i of items) counts.set(i.domain, (counts.get(i.domain) ?? 0) + 1);
+  return [...counts.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([domain, count]) => ({ domain, label: domainLabel(domain), count }));
+}
+
 /** "Q26" for MCQs, "PBQ 3" / "PBQ B3" for PBQs. */
 export function questionLabel(item: Pick<ReviewEntry, "kind" | "displayNumber">): string {
   return item.kind === "mcq" ? `Q${item.displayNumber}` : `PBQ ${item.displayNumber}`;
