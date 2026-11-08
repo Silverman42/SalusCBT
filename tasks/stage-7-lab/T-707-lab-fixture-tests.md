@@ -25,10 +25,10 @@ Stage 7 gate.
 
 ## Acceptance criteria
 
-- [ ] **Stage 7 gate:** every lab command matches; Labs A–C give the Part 6 answers.
+- [x] **Stage 7 gate:** every lab command matches; Labs A–C give the Part 6 answers.
 - [x] Fixtures for every Lab A–C step command (stdout, stderr, exit status, one session, fresh build) in `tests/fixtures/lab/`, with a capture script (`scripts/capture-lab-fixtures.sh`).
 - [x] Vitest replays every command in the in-browser terminal and compares byte for byte (`tests/unit/terminal-lab-fixtures.test.ts`); Labs A–C answers checked against Part 6.
-- [ ] Fixtures confirmed equal to a real Ubuntu run (the `lab-fixtures` CI job passes).
+- [x] Fixtures confirmed equal to a real Ubuntu run (the `lab-fixtures` CI job passes).
 
 ## Notes
 
@@ -37,3 +37,5 @@ Stage 7 gate.
 - `cat ~/secplus-lab/.answer-lab-b` is download-only: its fixture is checked against the session's tampered file instead of being replayed (the browser lab has no answer file). Lab D (nmap, ss) has no fixtures (machine-dependent, not in the browser lab).
 - CI: the `checks` job now installs gawk before `npm test`, so the real-tool comparisons in `terminal-seed`, `terminal-files` and `terminal-text` run (not skip) with gawk as `awk`; `terminal-lab-fixtures.test.ts` fails on GitHub Actions if the GNU tools are missing.
 - No terminal bugs found locally (fixtures pass); any GNU mismatch will show up in the `lab-fixtures` job or the existing comparisons on CI.
+
+- **2026-11-08:** first CI run (c783068) — `lab-fixtures` passed on ubuntu-latest, so the committed fixtures equal a real GNU run; the replay test passes against them.
