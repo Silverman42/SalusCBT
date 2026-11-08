@@ -10,6 +10,7 @@
 
 import type * as attempts from "../attempts.js";
 import type * as auth from "../auth.js";
+import type * as classes from "../classes.js";
 import type * as email_console from "../email/console.js";
 import type * as email_provider from "../email/provider.js";
 import type * as email_resend from "../email/resend.js";
@@ -27,6 +28,7 @@ import type * as http from "../http.js";
 import type * as lib_anon from "../lib/anon.js";
 import type * as lib_answers from "../lib/answers.js";
 import type * as lib_audit from "../lib/audit.js";
+import type * as lib_classCodes from "../lib/classCodes.js";
 import type * as lib_clientIp from "../lib/clientIp.js";
 import type * as lib_codes from "../lib/codes.js";
 import type * as lib_errors from "../lib/errors.js";
@@ -48,6 +50,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   attempts: typeof attempts;
   auth: typeof auth;
+  classes: typeof classes;
   "email/console": typeof email_console;
   "email/provider": typeof email_provider;
   "email/resend": typeof email_resend;
@@ -65,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   "lib/anon": typeof lib_anon;
   "lib/answers": typeof lib_answers;
   "lib/audit": typeof lib_audit;
+  "lib/classCodes": typeof lib_classCodes;
   "lib/clientIp": typeof lib_clientIp;
   "lib/codes": typeof lib_codes;
   "lib/errors": typeof lib_errors;
