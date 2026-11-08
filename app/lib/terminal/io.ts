@@ -40,6 +40,8 @@ export class OutputLimitError extends Error {
 /** Where a command writes. */
 export interface Output {
   write(chunk: FileContent): void;
+  /** True for the screen (like isatty(1)); `ls` then prints columns. */
+  readonly isTerminal?: boolean;
 }
 
 /** What a command reads. Terminal stdin is empty (as if `< /dev/null`). */
@@ -123,7 +125,7 @@ export class TerminalOutput {
   constructor(readonly limit: number) {}
 
   stream(stream: TerminalStream): Output {
-    return { write: (chunk) => this.write(stream, chunk) };
+    return { write: (chunk) => this.write(stream, chunk), isTerminal: true };
   }
 
   clear(): void {
