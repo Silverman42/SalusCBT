@@ -8,6 +8,8 @@
  *   dashboard updates as soon as a student's submit commits (CL-5). They
  *   never return `anonKey`, `ipHash` or anything else that identifies the
  *   student's browser.
+ * - `exportCsv` / `deleteAttempts` (T-503) export results (CL-8) and delete
+ *   attempts with their responses and share links (CL-11, PR-5).
  * - `lookupCode` is public, for the start screen. It reveals only the class
  *   name and whether it accepts new attempts.
  *
@@ -17,9 +19,15 @@
  * each attempt stores its own `versionId`.
  */
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
-import { mutation, query, type QueryCtx } from "./_generated/server";
+import { action, internalQuery, mutation, query, type QueryCtx } from "./_generated/server";
+import {
+  deleteAttempts as deleteAttemptsCascade,
+  MAX_DELETE_ATTEMPTS,
+} from "./lib/attemptDeletion";
 import { writeAudit } from "./lib/audit";
+import { classCsv } from "./lib/classCsv";
 import { allocateClassCode } from "./lib/classCodes";
 import {
   attemptFilterValidator,
@@ -388,5 +396,81 @@ export const attemptReview = query({
     const profile = await requireProfile(ctx, ["tutor"]);
     const { attempt } = await ownedClassAttempt(ctx, profile, args.attemptId);
     return await buildReview(ctx, attempt);
+  },
+});
+
+// ---------------------------------------------------------------------------
+// CSV export and deleting attempts (T-503; LLD §5.2; CL-8, CL-11, PR-5)
+// ---------------------------------------------------------------------------
+
+/** `exportCsv`'s read; `ctx.runQuery` passes the caller's identity through. */
+export const exportCsvData = internalQuery({
+  args: { classId: v.id("classes") },
+  returns: v.string(),
+  handler: async (ctx, args) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const cls = await requireClassOwner(ctx, profile, args.classId);
+    return classCsv(await classAttempts(ctx, cls._id));
+  },
+});
+
+/**
+ * CL-8: the class's attempts as one CSV string (newest first, at most
+ * `CLASS_ATTEMPTS_LIMIT`), built by `lib/classCsv.ts`: RFC 4180 escaping,
+ * CRLF, UTF-8 BOM, and student-entered text neutralised against formula
+ * injection. Columns: name, mode, status, start/submit times (ISO UTC),
+ * submitted by, time used, scaled score, pass/fail, points, flagged count,
+ * per-domain percentages and the attempt id. No `anonKey`, `ipHash` or
+ * share-link data. An action, so the export is a one-off read rather than a
+ * live subscription.
+ *
+ * Errors: `UNAUTHENTICATED` / `FORBIDDEN`; `NOT_FOUND` (missing class or
+ * another tutor's).
+ */
+export const exportCsv = action({
+  args: { classId: v.id("classes") },
+  returns: v.string(),
+  handler: async (ctx, args): Promise<string> => {
+    return await ctx.runQuery(internal.classes.exportCsvData, args);
+  },
+});
+
+/**
+ * CL-11: permanently delete attempts in the caller's classes, with their
+ * responses and share links (`lib/attemptDeletion.ts`); a pending auto-submit
+ * is cancelled. At most `MAX_DELETE_ATTEMPTS` ids (duplicates count once).
+ *
+ * Every id is checked before anything is deleted: if any is missing, outside
+ * a class, or in another tutor's class, the whole call fails with
+ * `NOT_FOUND` and nothing changes (a missing id is treated like a foreign
+ * one so the error reveals nothing). The admin may delete attempts in any
+ * class here; `admin.deleteAttempts` also covers attempts without a class.
+ * Writes one `attempt.deleted` audit entry with the count.
+ *
+ * Errors: `UNAUTHENTICATED` / `FORBIDDEN`; `VALIDATION_FAILED` (over the
+ * limit); `NOT_FOUND`.
+ */
+export const deleteAttempts = mutation({
+  args: { attemptIds: v.array(v.id("attempts")) },
+  returns: v.object({ deleted: v.number() }),
+  handler: async (ctx, args) => {
+    const profile = await requireProfile(ctx, ["tutor"]);
+    const ids = [...new Set(args.attemptIds)];
+    if (ids.length > MAX_DELETE_ATTEMPTS) fail("VALIDATION_FAILED");
+    const classIds = new Set<Id<"classes">>();
+    for (const attemptId of ids) {
+      const { cls } = await ownedClassAttempt(ctx, profile, attemptId);
+      classIds.add(cls._id);
+    }
+    const deleted = await deleteAttemptsCascade(ctx, ids);
+    if (deleted > 0) {
+      await writeAudit(ctx, {
+        actorId: profile._id,
+        action: "attempt.deleted",
+        ...(classIds.size === 1 ? { target: [...classIds][0] } : {}),
+        meta: { count: deleted, classIds: [...classIds] },
+      });
+    }
+    return { deleted };
   },
 });
