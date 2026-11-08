@@ -21,6 +21,7 @@ import type { Component } from "vue";
 import type { AttemptPaperPbq } from "~/composables/useAttempt";
 import type { AnswerValue, PbqTemplate } from "~~/shared/content";
 import PbqGeneric from "~/components/pbq/PbqGeneric.vue";
+import PbqFirewall from "~/components/pbq/PbqFirewall.vue";
 import PbqHashCheck from "~/components/pbq/PbqHashCheck.vue";
 import PbqPermissions from "~/components/pbq/PbqPermissions.vue";
 
@@ -38,7 +39,7 @@ const COMPONENTS: Record<PbqTemplate, Component> = {
   nmap: PbqGeneric, // T-303: PbqNmap
   hashCheck: PbqHashCheck, // T-304
   permissions: PbqPermissions, // T-305
-  firewall: PbqGeneric, // T-306: PbqFirewall
+  firewall: PbqFirewall, // T-306
 };
 
 function onUpdate(value: AnswerValue | null, opts?: { debounce?: boolean }) {
