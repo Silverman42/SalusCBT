@@ -488,7 +488,8 @@ export function fieldDomId(prefix: string, field: McqField): string {
 
 // ------------------------------------------------------------------ errors
 
-export type EditorAction = "load" | "createDraft" | "save" | "delete" | "reorder" | "publish";
+export type EditorAction =
+  "load" | "createDraft" | "save" | "delete" | "reorder" | "publish" | "generate" | "preview";
 
 /** A message for a failed editor call (LLD §16). */
 export function editorErrorMessage(err: unknown, action: EditorAction): string {
@@ -506,6 +507,11 @@ export function editorErrorMessage(err: unknown, action: EditorAction): string {
         return "This version can't be changed any more. Create a draft from it to edit.";
       if (action === "publish") return "Fix the issues listed before publishing.";
       if (action === "createDraft") return "Check the draft name and try again.";
+      if (action === "generate") {
+        if (issues.some((i) => i.startsWith("seed:")))
+          return "The seed must be a whole number from 0 to 4294967295.";
+        return "Only a PBQ in a draft can get new values.";
+      }
       return "That change wasn't accepted. Check the highlighted fields.";
     }
   }

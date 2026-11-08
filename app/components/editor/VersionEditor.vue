@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// One exam version in the editor (mockup screen 11; LLD §10; ED-3, ED-8,
-// ED-9): header with status and Publish, PBQ / multiple-choice tabs, the
-// question list (add, select, reorder), the MCQ form or PBQ summary, the
+// One exam version in the editor (mockup screen 11; LLD §10; ED-1–ED-3,
+// ED-8, ED-9): header with status, Preview as student and Publish, PBQ /
+// multiple-choice tabs, the question list (add, select, reorder), the MCQ
+// form or the PBQ template form (T-608), the
 // live validation list with jump-to-question, totals, and the line's
 // published versions with Restore. Published, archived and other people's
 // drafts are read-only. Live: `getDraft`, `validate`, `myVersions`.
@@ -28,10 +29,17 @@ import {
   type Section,
   type VersionSummary,
 } from "~/lib/editor";
+import {
+  previewModeLabel,
+  previewPath,
+  savePreviewTicket,
+  type PreviewMode,
+} from "~/lib/editorPreview";
 
 const props = defineProps<{ versionId: Id<"examVersions"> }>();
 
 const { $convex } = useNuxtApp();
+const toast = useToast();
 const draft = useStaffQuery(api.editor.getDraft, { versionId: props.versionId });
 const check = useStaffQuery(api.editor.validate, { versionId: props.versionId });
 const mine = useStaffQuery(api.editor.myVersions, {});
@@ -204,6 +212,50 @@ async function publish() {
   if (result) publishOpen.value = false;
 }
 
+// ------------------------------------------------------------- previewing
+
+const previewAction = useEditorAction();
+const previewOpen = ref(false);
+const previewMode = ref<PreviewMode>("standard");
+
+/**
+ * ED-1: start a preview attempt and open it in the editor's preview page.
+ * The preview's anon token stays in this tab's sessionStorage, never in the
+ * student identity (`useAnonIdentity`).
+ */
+async function startPreview() {
+  const mode = previewMode.value === "retake" && totals.value.pbqB > 0 ? "retake" : "standard";
+  const result = await previewAction.run("preview", () =>
+    $convex.mutation(api.editor.previewAttempt, { versionId: props.versionId, mode }),
+  );
+  if (!result) return;
+  let storage: Storage | null = null;
+  try {
+    storage = window.sessionStorage;
+  } catch {
+    storage = null;
+  }
+  const kept = savePreviewTicket(storage, {
+    attemptId: result.attemptId,
+    versionId: props.versionId,
+    anonToken: result.anonToken,
+  });
+  if (!kept) {
+    toast.add({
+      title: "This browser blocks session storage, so the preview can't open.",
+      color: "error",
+      icon: "i-lucide-circle-alert",
+    });
+    return;
+  }
+  previewOpen.value = false;
+  await navigateTo(previewPath(props.versionId, result.attemptId));
+}
+
+const selectedIssues = computed(() =>
+  (check.data.value ?? []).filter((i) => i.questionId === selected.value?.question._id),
+);
+
 // ------------------------------------------------ drafts from this version
 
 const draftOpen = ref(false);
@@ -298,6 +350,16 @@ const subtitle = computed(() =>
           </button>
         </div>
         <UButton
+          v-if="version.authored"
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-eye"
+          label="Preview as student"
+          class="justify-center self-start font-semibold xl:self-auto"
+          :disabled="entries.length === 0"
+          @click="previewOpen = true"
+        />
+        <UButton
           v-if="editable"
           :label="`Publish ${versionName(version)}`"
           icon="i-lucide-upload"
@@ -361,12 +423,17 @@ const subtitle = computed(() =>
             @remove="removeOpen = true"
             @dirty="(d: boolean) => (formDirty = d)"
           />
-          <EditorPbqSummary
+          <EditorPbqForm
             v-else-if="selected"
             ref="formRef"
             :key="selected.question._id"
+            :version-id="versionId"
             :entry="selected"
             :editable="editable"
+            :issues="selectedIssues"
+            @saved="onSaved"
+            @remove="removeOpen = true"
+            @dirty="(d: boolean) => (formDirty = d)"
           />
           <p v-else class="m-0 text-sm text-muted-fg">
             {{ tab === "pbq" ? "This version has no PBQs." : "No multiple-choice questions yet." }}
@@ -498,6 +565,63 @@ const subtitle = computed(() =>
               :label="`Publish ${versionName(version)}`"
               :loading="publishAction.busy.value"
               @click="publish"
+            />
+          </div>
+        </template>
+      </UModal>
+
+      <UModal
+        v-model:open="previewOpen"
+        title="Preview as a student"
+        description="Sit this version exactly as a student would, then submit to see the marking and the review. Previews never appear in class results or stats; starting a new one replaces your last preview of that paper."
+        :dismissible="!previewAction.busy.value"
+      >
+        <template #body>
+          <fieldset class="m-0 flex flex-col gap-2 border-0 p-0 text-sm">
+            <legend class="mb-2 p-0 font-bold">Which paper?</legend>
+            <label
+              v-for="m in ['standard', 'retake'] as const"
+              :key="m"
+              class="flex items-center gap-3 rounded-[16px] bg-surface-2 px-4 py-3"
+              :class="m === 'retake' && totals.pbqB === 0 ? 'opacity-60' : ''"
+            >
+              <input
+                v-model="previewMode"
+                type="radio"
+                name="preview-mode"
+                :value="m"
+                class="size-5 flex-none accent-brand"
+                :disabled="m === 'retake' && totals.pbqB === 0"
+              />
+              <span class="flex flex-col">
+                <span class="font-bold">{{ previewModeLabel(m) }}</span>
+                <span class="text-[13px] text-muted-fg">
+                  {{
+                    m === "retake"
+                      ? totals.pbqB === 0
+                        ? "This version has no set B PBQs."
+                        : `${totals.pbqB} PBQs, then the multiple-choice questions`
+                      : `${totals.pbqA} PBQs, then the multiple-choice questions`
+                  }}
+                </span>
+              </span>
+            </label>
+          </fieldset>
+        </template>
+        <template #footer>
+          <div class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <UButton
+              color="neutral"
+              variant="soft"
+              label="Cancel"
+              :disabled="previewAction.busy.value"
+              @click="previewOpen = false"
+            />
+            <UButton
+              icon="i-lucide-play"
+              label="Start preview"
+              :loading="previewAction.busy.value"
+              @click="startPreview"
             />
           </div>
         </template>
