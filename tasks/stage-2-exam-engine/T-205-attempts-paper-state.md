@@ -23,6 +23,16 @@ Give the student their paper with no answer data, and the saved state for refres
 
 ## Acceptance criteria
 
-- [ ] Same attempt always returns the same option order.
-- [ ] Other tokens get `NOT_FOUND`.
-- [ ] No key or explanation fields in the response.
+- [x] Same attempt always returns the same option order.
+- [x] Other tokens get `NOT_FOUND`.
+- [x] No key or explanation fields in the response.
+
+## Notes
+
+- Implemented 2026-11-08. `convex/attempts.ts` (`getPaper`, `getState`) and `convex/lib/paper.ts` (paper building, shared with T-206/T-207/T-208). Tests: `tests/convex/attempts/paper.test.ts` (real seed).
+- `getPaper({ attemptId, anonToken })` → `{ attemptId, mode, questions[] }`. Each question is `{ questionId, kind: "mcq", section, displayNumber, points, stem, chooseCount, options }` or `{ questionId, kind: "pbq", section, displayNumber, points, stem, payload }`. Fields are copied one by one (payloads per template), so a new column is not sent until it is listed. `domain`, `order`, `versionId` and system fields are left out (not needed to sit the exam).
+- Sections: `loadPaperQuestions` returns the PBQ set for the mode (`pbqA`, or `pbqB` for a retake) then `mcq`, each by `order`. T-206 should use it (or `sectionsFor`) to check a question belongs to the attempt; T-207 to load the questions to mark.
+- Shuffle: MCQ options use `questionSeed(shuffleSeed, questionId)` (as in LLD §7.3). PBQ MCQ parts (3b, 3c) use `questionSeed(shuffleSeed, "<questionId>:<partId>")`, so two parts with the same option count don't always share a permutation (and the key positions don't correlate). Pick choices (3a) and firewall choices keep their stored order. Review (T-208) must use `paperOptions` / `paperPartOptions`.
+- `getState({ attemptId, anonToken })` → `{ status, startedAt, deadline, serverNow, responses: { questionId, value?, flagged, updatedAt }[] }`. `startedAt` (for pacing, LLD §14.3) and `updatedAt` (for merging the local cache, T-212) are additions to the LLD shape. `value` is typed as `AnswerValue`; T-206 must store only valid values or this query fails its return validator.
+- `serverNow` is `Date.now()` in a query: a cached result can carry an older time. Fine as a clock estimate; T-212 may prefer the `serverNow` from `start` or a mutation if drift matters.
+- Leak test: field-name scan, exact key sets per question, and a value scan — every string in the version's `answerKeys` (explanations, practice answers, key parts) that doesn't already appear in the question content must not appear in the paper. Also checks the paper is unchanged with every answer key deleted. T-209 generalises this to all student functions.

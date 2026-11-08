@@ -7,15 +7,21 @@
  * as `NUXT_SERVER_SECRET`) and `ipHash` (HMAC of the client IP, computed with
  * `NUXT_IP_PEPPER` so the raw IP never leaves Nuxt; PR-3). The start time and
  * deadline are set here, never by the client (EX-3).
+ *
+ * `getPaper` and `getState` are the student's reads (T-205). Both take the
+ * anon token and give the same `NOT_FOUND` for a missing or foreign attempt.
  */
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import type { Doc } from "./_generated/dataModel";
-import { env, internalMutation, mutation, type MutationCtx } from "./_generated/server";
-import { anonKeyOf } from "./lib/anon";
+import { env, internalMutation, mutation, query, type MutationCtx } from "./_generated/server";
+import type { AnswerValue } from "../shared/content";
+import { answerValueValidator } from "../shared/validate";
+import { anonKeyOf, loadOwnAttempt } from "./lib/anon";
 import { secretsMatch } from "./lib/clientIp";
 import { normaliseClassCode, randomUint32 } from "./lib/codes";
 import { fail } from "./lib/errors";
+import { loadPaperQuestions, paperValidator, toPaperQuestion } from "./lib/paper";
 import { enforceRateLimit } from "./lib/rateLimits";
 
 /** The exam a start without a class code sits (its `defaultVersionId`). */
@@ -163,6 +169,80 @@ export const start = mutation({
 
     // 8.
     return { attemptId, deadline, serverNow: now };
+  },
+});
+
+/** More responses than a paper has questions; keeps the read bounded. */
+const RESPONSE_LIMIT = 1000;
+
+/**
+ * The paper for an attempt (LLD §7.3, EX-6, EX-10, SE-1): the PBQ set for its
+ * mode (pbqA, or pbqB for a retake), then the MCQs by number. Options, and the
+ * options of PBQ MCQ parts, are in this attempt's seeded order with their
+ * original ids. Built from `questions` only: `answerKeys` is never read.
+ *
+ * Errors: `BAD_TOKEN`, `NOT_FOUND` (missing attempt or another token's; same
+ * error for both, SE-3).
+ */
+export const getPaper = query({
+  args: { attemptId: v.id("attempts"), anonToken: v.string() },
+  returns: paperValidator,
+  handler: async (ctx, args) => {
+    const attempt = await loadOwnAttempt(ctx, args.attemptId, args.anonToken);
+    const questions = await loadPaperQuestions(ctx, attempt);
+    return {
+      attemptId: attempt._id,
+      mode: attempt.mode,
+      questions: questions.map((q) => toPaperQuestion(q, attempt.shuffleSeed)),
+    };
+  },
+});
+
+/**
+ * Saved state for load and refresh (LLD §5.1, §14.2, EX-11): status, timing
+ * and each saved response's value and flag. Marks (`earned`, `partResults`)
+ * are never included; results come from `review.getResult` (T-208).
+ *
+ * `serverNow` is read in a query, so it is the time this result was computed:
+ * a cached result can be older than the request. The runner treats it as a
+ * clock estimate only (T-212); the deadline itself is enforced on the server.
+ *
+ * Errors: `BAD_TOKEN`, `NOT_FOUND` (as for `getPaper`).
+ */
+export const getState = query({
+  args: { attemptId: v.id("attempts"), anonToken: v.string() },
+  returns: v.object({
+    status: v.union(v.literal("in_progress"), v.literal("submitted"), v.literal("expired")),
+    startedAt: v.number(),
+    deadline: v.number(),
+    serverNow: v.number(),
+    responses: v.array(
+      v.object({
+        questionId: v.id("questions"),
+        value: v.optional(answerValueValidator),
+        flagged: v.boolean(),
+        updatedAt: v.number(),
+      }),
+    ),
+  }),
+  handler: async (ctx, args) => {
+    const attempt = await loadOwnAttempt(ctx, args.attemptId, args.anonToken);
+    const rows = await ctx.db
+      .query("responses")
+      .withIndex("by_attempt_question", (q) => q.eq("attemptId", attempt._id))
+      .take(RESPONSE_LIMIT);
+    return {
+      status: attempt.status,
+      startedAt: attempt.startedAt,
+      deadline: attempt.deadline,
+      serverNow: Date.now(),
+      responses: rows.map((r) => ({
+        questionId: r.questionId,
+        ...(r.value !== undefined && r.value !== null ? { value: r.value as AnswerValue } : {}),
+        flagged: r.flagged,
+        updatedAt: r.updatedAt,
+      })),
+    };
   },
 });
 
