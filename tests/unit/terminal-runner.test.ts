@@ -617,7 +617,7 @@ describe("builtins", () => {
     expect(r.chunks.map((c) => c.type)).toEqual(["text", "clear", "text"]);
     expect(r.stdout).toBe("after\n");
     const help = (await sh.run("help")).stdout;
-    for (const name of ["cd", "pwd", "echo", "clear", "help", "upper"]) {
+    for (const name of ["cd", "pwd", "echo", "clear", "help", "sha256sum", "upper"]) {
       expect(help).toMatch(new RegExp(`^  ${name} +\\S`, "m"));
     }
   });

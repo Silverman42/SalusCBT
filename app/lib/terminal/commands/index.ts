@@ -4,10 +4,11 @@
 
 import type { CommandSpec } from "../command";
 import { BUILTINS } from "./builtins";
+import { sha256sum } from "./sha256sum";
 
 export const DEFAULT_COMMANDS: readonly CommandSpec[] = [
   ...BUILTINS,
-  // T-705: sha256sum
+  sha256sum,
   // T-703: ls, cat, head, tail, stat, chmod
   // T-704: grep, awk, cut, sort, uniq, wc, sed
 ];
