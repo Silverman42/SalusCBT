@@ -2,14 +2,19 @@
 import betterAuthTest from "@convex-dev/better-auth/test";
 import rateLimiterTest from "@convex-dev/rate-limiter/test";
 import { convexTest } from "convex-test";
+import type { TransactionMetrics } from "convex-test/dist/transactionMetrics.js";
 import { components } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import schema from "../../../convex/schema";
 
 const modules = import.meta.glob("../../../convex/**/*.ts");
 
-export function setup() {
-  const t = convexTest(schema, modules);
+/**
+ * A fresh test deployment. `transactionLimits` (off by default) makes
+ * convex-test enforce Convex's per-function read and write limits.
+ */
+export function setup(opts: { transactionLimits?: Partial<TransactionMetrics> | boolean } = {}) {
+  const t = convexTest({ schema, modules, transactionLimits: opts.transactionLimits ?? false });
   rateLimiterTest.register(t, "rateLimiter");
   betterAuthTest.register(t, "betterAuth");
   return t;
