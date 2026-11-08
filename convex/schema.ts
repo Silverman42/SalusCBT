@@ -40,7 +40,8 @@ export default defineSchema({
     acceptedAt: v.optional(v.number()),
   })
     .index("by_tokenHash", ["tokenHash"])
-    .index("by_email_status", ["email", "status"]),
+    .index("by_email_status", ["email", "status"])
+    .index("by_status_and_expiresAt", ["status", "expiresAt"]), // expiry cron (T-405)
 
   exams: defineTable({
     slug: v.string(), // "sy0-701"
