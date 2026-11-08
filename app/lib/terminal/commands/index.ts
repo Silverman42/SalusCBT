@@ -5,10 +5,24 @@
 import type { CommandSpec } from "../command";
 import { BUILTINS } from "./builtins";
 import { sha256sum } from "./sha256sum";
+import { awkCommand } from "./awk";
+import { cutCommand } from "./cut";
+import { grepCommand } from "./grep";
+import { sedCommand } from "./sed";
+import { sortCommand } from "./sort";
+import { uniqCommand } from "./uniq";
+import { wcCommand } from "./wc";
 
 export const DEFAULT_COMMANDS: readonly CommandSpec[] = [
   ...BUILTINS,
   sha256sum,
   // T-703: ls, cat, head, tail, stat, chmod
   // T-704: grep, awk, cut, sort, uniq, wc, sed
+  grepCommand,
+  awkCommand,
+  cutCommand,
+  sortCommand,
+  uniqCommand,
+  wcCommand,
+  sedCommand,
 ];
