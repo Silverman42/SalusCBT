@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { api } from "~~/convex/_generated/api";
 import { getAuthClient } from "~/lib/authClient";
 import { roleFromProfile, type StaffRole } from "~/lib/authGuard";
+import { parseRetryAfter } from "~/lib/signIn";
 
 /**
  * Tutor and admin sign-in through Better Auth (LLD §9.1). Browser only.
@@ -28,15 +29,39 @@ export function useAuth() {
   /**
    * Ask for a sign-in code. Always resolves the same way whether or not the
    * email has an account (no enumeration); `error` is set only for a
-   * malformed request or a rate limit.
+   * malformed request or a rate limit. `retryAfterS` comes from the 429's
+   * `X-Retry-After` header (seconds), else `null`.
    */
-  function sendCode(email: string) {
-    return client.emailOtp.sendVerificationOtp({ email, type: "sign-in" });
+  async function sendCode(email: string) {
+    let retryAfterS: number | null = null;
+    const result = await client.emailOtp.sendVerificationOtp({
+      email,
+      type: "sign-in",
+      fetchOptions: {
+        onError: (ctx: { response: Response }) => {
+          retryAfterS = parseRetryAfter(ctx.response.headers.get("X-Retry-After"));
+        },
+      },
+    });
+    return { ...result, retryAfterS };
   }
 
-  /** Exchange a code for a session; sets the session cookie on success. */
-  function verifyCode(email: string, otp: string) {
-    return client.signIn.emailOtp({ email, otp });
+  /**
+   * Exchange a code for a session; sets the session cookie on success.
+   * `retryAfterS` as for `sendCode`.
+   */
+  async function verifyCode(email: string, otp: string) {
+    let retryAfterS: number | null = null;
+    const result = await client.signIn.emailOtp({
+      email,
+      otp,
+      fetchOptions: {
+        onError: (ctx: { response: Response }) => {
+          retryAfterS = parseRetryAfter(ctx.response.headers.get("X-Retry-After"));
+        },
+      },
+    });
+    return { ...result, retryAfterS };
   }
 
   function signOut() {

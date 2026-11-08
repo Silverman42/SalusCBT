@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     "/tutor/**": { ssr: false },
     "/admin/**": { ssr: false },
     "/sign-in": { ssr: false },
+    "/invite/**": { ssr: false },
   },
 
   // Mockup defaults to the light theme; the header toggle switches to dark.
