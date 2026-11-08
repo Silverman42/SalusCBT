@@ -23,6 +23,9 @@ import type { AnswerValue, PbqTemplate } from "~~/shared/content";
 import PbqGeneric from "~/components/pbq/PbqGeneric.vue";
 import PbqSshLog from "~/components/pbq/PbqSshLog.vue";
 import PbqNmap from "~/components/pbq/PbqNmap.vue";
+import PbqFirewall from "~/components/pbq/PbqFirewall.vue";
+import PbqHashCheck from "~/components/pbq/PbqHashCheck.vue";
+import PbqPermissions from "~/components/pbq/PbqPermissions.vue";
 
 defineProps<{
   question: AttemptPaperPbq;
@@ -36,9 +39,9 @@ const emit = defineEmits<{
 const COMPONENTS: Record<PbqTemplate, Component> = {
   sshLog: PbqSshLog, // T-302
   nmap: PbqNmap, // T-303
-  hashCheck: PbqGeneric, // T-304: PbqHashCheck
-  permissions: PbqGeneric, // T-305: PbqPermissions
-  firewall: PbqGeneric, // T-306: PbqFirewall
+  hashCheck: PbqHashCheck, // T-304
+  permissions: PbqPermissions, // T-305
+  firewall: PbqFirewall, // T-306
 };
 
 function onUpdate(value: AnswerValue | null, opts?: { debounce?: boolean }) {
@@ -48,7 +51,7 @@ function onUpdate(value: AnswerValue | null, opts?: { debounce?: boolean }) {
 
 <template>
   <component
-    :is="COMPONENTS[question.payload.template]"
+    :is="COMPONENTS[question.payload.template] ?? PbqGeneric"
     :question="question"
     :model-value="modelValue"
     :read-only="readOnly"
