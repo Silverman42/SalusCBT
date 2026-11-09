@@ -14,8 +14,8 @@ export function staffMiddleware(required: StaffRole) {
     let signedIn: boolean;
     let role: StaffRole | null | undefined;
     try {
-      signedIn = Boolean((await auth.fetchSession())?.session);
-      if (signedIn) role = await auth.fetchRole();
+      // Cached for a few minutes after a pass; UX only (Convex re-checks every call).
+      ({ signedIn, role } = await auth.checkAccess());
     } catch {
       // Network or server trouble: treat as signed out; sign-in shows the error.
       signedIn = false;

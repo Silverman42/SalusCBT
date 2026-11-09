@@ -1,3 +1,4 @@
+import { clearAuthCaches } from "~/lib/authClient";
 import { ref } from "vue";
 import { adminErrorMessage, isSessionError, type AdminAction } from "~/lib/admin";
 import { SIGN_IN_PATH } from "~/lib/authGuard";
@@ -32,6 +33,7 @@ export function useAdminAction() {
         icon: "i-lucide-circle-alert",
       });
       if (isSessionError(err)) {
+        clearAuthCaches();
         await navigateTo(`${SIGN_IN_PATH}?redirect=${encodeURIComponent(route.fullPath)}`, {
           replace: true,
         });

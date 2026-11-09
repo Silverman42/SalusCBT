@@ -1,6 +1,6 @@
 import { ConvexClient } from "convex/browser";
 import { watch } from "vue";
-import { getAuthClient } from "~/lib/authClient";
+import { clearAuthCaches, getAuthClient, getTokenCache } from "~/lib/authClient";
 
 /**
  * The browser's Convex client, as `useNuxtApp().$convex` (LLD §2: a thin
@@ -20,19 +20,24 @@ export default defineNuxtPlugin(() => {
     if (connected) return;
     connected = true;
     const auth = getAuthClient();
-    const fetchToken = async () => {
-      const { data } = await auth.convex.token();
-      return data?.token ?? null;
-    };
+    // Shared with the route guard, so a page load fetches the JWT once.
+    // Convex asks for a forced refresh when the server rejects the token.
+    const tokens = getTokenCache();
+    const fetchToken = ({ forceRefreshToken }: { forceRefreshToken: boolean }) =>
+      tokens.get(forceRefreshToken);
 
     // ConvexClient asks for a token only when setAuth is called, so call it
     // again whenever the Better Auth session changes (sign-in, sign-out, user
     // switch). Without this, queries stay unauthenticated after sign-in
     // (LLD §18.1 finding 2).
     const session = auth.useSession();
+    let lastId: string | null = null;
     watch(
       () => session.value.data?.session.id ?? null,
       (id) => {
+        // A different session (or none) makes cached tokens and roles stale.
+        if (id !== lastId && lastId !== null) clearAuthCaches();
+        lastId = id;
         if (id) convex.setAuth(fetchToken);
         else convex.client.clearAuth();
       },

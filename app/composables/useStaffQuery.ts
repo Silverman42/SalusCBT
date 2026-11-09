@@ -2,6 +2,7 @@ import type { FunctionArgs, FunctionReference, FunctionReturnType } from "convex
 import { computed, onScopeDispose, shallowRef, watch } from "vue";
 import { useAuth } from "~/composables/useAuth";
 import { isSessionError } from "~/lib/admin";
+import { clearAuthCaches } from "~/lib/authClient";
 import { SIGN_IN_PATH } from "~/lib/authGuard";
 
 /**
@@ -46,6 +47,7 @@ export function useStaffQuery<Q extends FunctionReference<"query">>(
         (err) => {
           error.value = err;
           if (isSessionError(err)) {
+            clearAuthCaches(); // the guard must check again, not trust its cache
             void navigateTo(`${SIGN_IN_PATH}?redirect=${encodeURIComponent(route.fullPath)}`, {
               replace: true,
             });

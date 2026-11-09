@@ -1,7 +1,7 @@
 import { ConvexHttpClient } from "convex/browser";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { api } from "~~/convex/_generated/api";
-import { getAuthClient } from "~/lib/authClient";
+import { clearAuthCaches, getAccessCache, getAuthClient, getTokenCache } from "~/lib/authClient";
 import { roleFromProfile, type StaffRole } from "~/lib/authGuard";
 import { parseRetryAfter } from "~/lib/signIn";
 
@@ -52,6 +52,7 @@ export function useAuth() {
    */
   async function verifyCode(email: string, otp: string) {
     let retryAfterS: number | null = null;
+    clearAuthCaches(); // a new session replaces any cached token or role
     const result = await client.signIn.emailOtp({
       email,
       otp,
@@ -64,8 +65,13 @@ export function useAuth() {
     return { ...result, retryAfterS };
   }
 
-  function signOut() {
-    return client.signOut();
+  async function signOut() {
+    clearAuthCaches();
+    try {
+      return await client.signOut();
+    } finally {
+      clearAuthCaches();
+    }
   }
 
   /** The current session, fetched from the server (not the cached store). */
@@ -84,11 +90,56 @@ export function useAuth() {
    * runs, and would then answer as signed out.
    */
   async function fetchRole(): Promise<StaffRole | null> {
-    const { data } = await client.convex.token();
-    if (!data?.token) return null;
+    const token = await getTokenCache().get();
+    if (!token) return null;
+    return await roleWithToken(token);
+  }
+
+  async function roleWithToken(token: string): Promise<StaffRole | null> {
     const http = new ConvexHttpClient(convexUrl);
-    http.setAuth(data.token);
+    http.setAuth(token);
     return roleFromProfile(await http.query(api.profiles.me, {}));
+  }
+
+  /** The loaded session id, waiting for Better Auth's store (it loads once per page). */
+  function loadedSessionId(): Promise<string | null> {
+    return new Promise((resolve) => {
+      let done = false;
+      const stop = watch(
+        () => session.value,
+        (s) => {
+          if (done || s.isPending) return;
+          done = true;
+          resolve(s.data?.session.id ?? null);
+          // With `immediate`, this can run before `stop` exists: stop afterwards.
+          queueMicrotask(() => stop());
+        },
+        { immediate: true },
+      );
+    });
+  }
+
+  /**
+   * Signed in, and with which role? For the staff route guard.
+   *
+   * "Signed in" comes from Better Auth's session store, which every page
+   * loads once anyway (no extra request, and no 401 when signed out). The
+   * role is cached per session (`AccessCache`, this tab's sessionStorage), so
+   * navigations and reloads within a few minutes cost nothing more; a cold
+   * check is one token request (shared with the Convex connection) plus
+   * `profiles.me`.
+   */
+  async function checkAccess(): Promise<{ signedIn: boolean; role: StaffRole | null }> {
+    const sessionId = await loadedSessionId();
+    if (!sessionId) return { signedIn: false, role: null };
+    const access = getAccessCache();
+    const cached = access.get(sessionId);
+    if (cached) return { signedIn: true, role: cached };
+    const token = await getTokenCache().get();
+    if (!token) return { signedIn: false, role: null };
+    const role = await roleWithToken(token);
+    access.set(sessionId, role);
+    return { signedIn: true, role };
   }
 
   return {
@@ -102,5 +153,6 @@ export function useAuth() {
     signOut,
     fetchSession,
     fetchRole,
+    checkAccess,
   };
 }

@@ -1,3 +1,4 @@
+import { clearAuthCaches } from "~/lib/authClient";
 import { ref } from "vue";
 import { isSessionError } from "~/lib/admin";
 import { SIGN_IN_PATH } from "~/lib/authGuard";
@@ -42,6 +43,7 @@ export function useEditorAction() {
         });
       }
       if (isSessionError(err)) {
+        clearAuthCaches();
         await navigateTo(`${SIGN_IN_PATH}?redirect=${encodeURIComponent(route.fullPath)}`, {
           replace: true,
         });
