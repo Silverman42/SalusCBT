@@ -172,6 +172,64 @@ describe("profiles.ensureAdmin (AU-6)", () => {
   });
 });
 
+describe("admin login email drift (profile email edited by hand)", () => {
+  /** Admin created as old@, then the profile's email edited to new@. */
+  async function driftedAdmin() {
+    vi.stubEnv("ADMIN_EMAIL", "old@example.com");
+    const t = setup();
+    await t.mutation(internal.profiles.ensureAdmin, {});
+    await t.run(async (ctx) => {
+      const admin = (await ctx.db.query("profiles").collect())[0]!;
+      await ctx.db.patch(admin._id, { email: "new@example.com" });
+    });
+    vi.stubEnv("ADMIN_EMAIL", "new@example.com");
+    return t;
+  }
+
+  it("sends no code, logs why and writes no audit entry", async () => {
+    const t = await driftedAdmin();
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    await requestCode(t, "new@example.com");
+    expect(await codesSentTo(t, "new@example.com")).toEqual([]);
+    expect(errors.mock.calls.flat().join(" ")).toMatch(/different email.*repairAdminLogin/);
+    const audit = await t.run((ctx) => ctx.db.query("auditLog").collect());
+    expect(audit.filter((a) => a.action === "auth.otp_requested")).toEqual([]);
+    errors.mockRestore();
+  });
+
+  it("ensureAdmin reports the mismatch instead of saying the admin exists", async () => {
+    const t = await driftedAdmin();
+    expect(await errorOf(t.mutation(internal.profiles.ensureAdmin, {}))).toMatch(
+      /login account is old@example\.com.*repairAdminLogin/,
+    );
+  });
+
+  it("repairAdminLogin points the login account at ADMIN_EMAIL, then sign-in works", async () => {
+    const t = await driftedAdmin();
+    expect(await t.mutation(internal.profiles.repairAdminLogin, {})).toEqual({
+      status: "repaired",
+      email: "new@example.com",
+    });
+    expect(await t.mutation(internal.profiles.repairAdminLogin, {})).toEqual({
+      status: "ok",
+      email: "new@example.com",
+    });
+    expect(await t.mutation(internal.profiles.ensureAdmin, {})).toEqual({
+      status: "exists",
+      email: "new@example.com",
+    });
+    expect((await signInByCode(t, "new@example.com")).status).toBe(200);
+  });
+
+  it("repairAdminLogin refuses when ADMIN_EMAIL isn't the admin profile", async () => {
+    const t = await driftedAdmin();
+    vi.stubEnv("ADMIN_EMAIL", "someone-else@example.com");
+    expect(await errorOf(t.mutation(internal.profiles.repairAdminLogin, {}))).toMatch(
+      /admin profile is new@example\.com/,
+    );
+  });
+});
+
 describe("session gate and sign-in audit (AU-4, AU-7)", () => {
   it("audits the code request and the sign-in of an active tutor", async () => {
     const t = setup();

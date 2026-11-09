@@ -48,6 +48,30 @@ async function profilesByEmail(ctx: Pick<QueryCtx, "db">, email: string) {
 }
 
 /**
+ * The email on the Better Auth user behind a profile, or null if the user is
+ * gone. Better Auth looks codes up by this email, not the profile's, so the
+ * two must agree or sign-in silently sends nothing.
+ */
+async function loginEmailOf(ctx: MutationCtx, authUserId: string): Promise<string | null> {
+  const auth = await createAuth(ctx).$context;
+  const user = await auth.internalAdapter.findUserById(authUserId);
+  return user ? normalizeEmail(user.email) : null;
+}
+
+function adminEmailFromEnv(): string {
+  const email = normalizeEmail(env.ADMIN_EMAIL ?? "");
+  if (!email) {
+    throw new ConvexError(
+      "ADMIN_EMAIL is not set on this deployment. Set it with `npx convex env set ADMIN_EMAIL <email>` and run profiles:ensureAdmin again.",
+    );
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new ConvexError(`ADMIN_EMAIL is not a valid email address: "${email}".`);
+  }
+  return email;
+}
+
+/**
  * Create the Better Auth user and the `admin` profile for `ADMIN_EMAIL` if
  * they don't exist yet (LLD §9.2, PRD AU-6). Safe to run on every deploy.
  *
@@ -62,15 +86,7 @@ export const ensureAdmin = internalMutation({
     email: v.string(),
   }),
   handler: async (ctx) => {
-    const email = normalizeEmail(env.ADMIN_EMAIL ?? "");
-    if (!email) {
-      throw new ConvexError(
-        "ADMIN_EMAIL is not set on this deployment. Set it with `npx convex env set ADMIN_EMAIL <email>` and run profiles:ensureAdmin again.",
-      );
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw new ConvexError(`ADMIN_EMAIL is not a valid email address: "${email}".`);
-    }
+    const email = adminEmailFromEnv();
 
     // Profiles are few (one admin, a handful of tutors), and the schema has
     // no role index, so a filtered scan is fine here.
@@ -84,7 +100,16 @@ export const ensureAdmin = internalMutation({
         `Refusing to create a second admin: ${other.email} is already the admin (Salus supports one admin, AU-6).`,
       );
     }
-    if (admins.length > 0) return { status: "exists" as const, email };
+    const admin = admins[0];
+    if (admin) {
+      const loginEmail = await loginEmailOf(ctx, admin.authUserId);
+      if (loginEmail !== email) {
+        throw new ConvexError(
+          `The admin profile is ${email} but its login account is ${loginEmail ?? "missing"}, so sign-in codes can't be sent. Run profiles:repairAdminLogin to fix it.`,
+        );
+      }
+      return { status: "exists" as const, email };
+    }
 
     const sameEmail = await profilesByEmail(ctx, email);
     if (sameEmail.some((p) => p.status === "active")) {
@@ -115,6 +140,49 @@ export const ensureAdmin = internalMutation({
 });
 
 /**
+ * Point the admin's login account at `ADMIN_EMAIL` when the two have drifted
+ * apart (for example the profile's email was edited by hand). Dev repair tool:
+ * `npx convex run profiles:repairAdminLogin`. Refuses if the admin profile
+ * isn't `ADMIN_EMAIL`, or if another login account already uses that email.
+ */
+export const repairAdminLogin = internalMutation({
+  args: {},
+  returns: v.object({
+    status: v.union(v.literal("repaired"), v.literal("ok")),
+    email: v.string(),
+  }),
+  handler: async (ctx) => {
+    const email = adminEmailFromEnv();
+    const admin = (
+      await ctx.db
+        .query("profiles")
+        .filter((q) => q.eq(q.field("role"), "admin"))
+        .take(10)
+    )[0];
+    if (!admin) {
+      throw new ConvexError("There is no admin profile yet. Run profiles:ensureAdmin instead.");
+    }
+    if (admin.email !== email) {
+      throw new ConvexError(
+        `The admin profile is ${admin.email}, not ADMIN_EMAIL (${email}). Set ADMIN_EMAIL to ${admin.email} first.`,
+      );
+    }
+    const auth = await createAuth(ctx).$context;
+    const user = await auth.internalAdapter.findUserById(admin.authUserId);
+    if (!user) {
+      throw new ConvexError("The admin profile's login account no longer exists.");
+    }
+    if (normalizeEmail(user.email) === email) return { status: "ok" as const, email };
+    const taken = await auth.internalAdapter.findUserByEmail(email);
+    if (taken && taken.user.id !== user.id) {
+      throw new ConvexError(`Another login account already uses ${email}.`);
+    }
+    await auth.internalAdapter.updateUser(user.id, { email, name: email, emailVerified: true });
+    return { status: "repaired" as const, email };
+  },
+});
+
+/**
  * May a sign-in code be sent to `email`? (AU-3, LLD §9.1, §12.1)
  *
  * Spends one token from each limit whether or not the email has an account,
@@ -135,6 +203,14 @@ export const otpRequestAllowed = internalMutation({
     if (!(await tryRateLimit(ctx, "otpRequest", normalized))) return false;
     const active = (await profilesByEmail(ctx, normalized)).find((p) => p.status === "active");
     if (!active) return false;
+    // Better Auth finds the user by its own email; if that has drifted from
+    // the profile, no code would be sent. Say so in the logs (ids only).
+    if ((await loginEmailOf(ctx, active.authUserId)) !== normalized) {
+      console.error(
+        `otpRequestAllowed: profile ${active._id} has a login account with a different email; no code can be sent (run profiles:repairAdminLogin for the admin).`,
+      );
+      return false;
+    }
     await writeAudit(ctx, {
       action: "auth.otp_requested",
       // No actor: anyone who knows the email can ask for a code.
