@@ -20,6 +20,7 @@ import type * as email_provider from "../email/provider.js";
 import type * as email_resend from "../email/resend.js";
 import type * as email_send from "../email/send.js";
 import type * as email_templates from "../email/templates.js";
+import type * as email_test from "../email/test.js";
 import type * as generators_common from "../generators/common.js";
 import type * as generators_firewall from "../generators/firewall.js";
 import type * as generators_hashCheck from "../generators/hashCheck.js";
@@ -72,6 +73,7 @@ declare const fullApi: ApiFromModules<{
   "email/resend": typeof email_resend;
   "email/send": typeof email_send;
   "email/templates": typeof email_templates;
+  "email/test": typeof email_test;
   "generators/common": typeof generators_common;
   "generators/firewall": typeof generators_firewall;
   "generators/hashCheck": typeof generators_hashCheck;

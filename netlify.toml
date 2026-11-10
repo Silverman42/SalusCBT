@@ -1,0 +1,29 @@
+# Netlify build (LLD §15.3, T-110). One build deploys the Convex backend and
+# the Nuxt site together, so they never drift apart.
+#
+# `convex deploy` pushes the functions, schema and indexes to the deployment
+# that CONVEX_DEPLOY_KEY points at, then runs the Nuxt build with
+# NUXT_PUBLIC_CONVEX_URL set to that deployment's URL.
+#
+# Netlify environment variables (Site configuration → Environment variables;
+# never commit values, SE-8):
+#   CONVEX_DEPLOY_KEY     production deploy key (Convex dashboard → prod deployment → Settings)
+#   NUXT_CONVEX_SITE_URL  https://<prod deployment>.convex.site  (auth proxy target)
+#   NUXT_SERVER_SECRET    same value as SERVER_SECRET on Convex prod
+#   NUXT_IP_PEPPER        random; HMAC key for client-IP hashes
+# See docs/DEPLOY.md for the full production checklist.
+
+[build]
+  command = "npx convex deploy --cmd 'npx nuxi build' --cmd-url-env-var-name NUXT_PUBLIC_CONVEX_URL"
+  # Nitro's Netlify preset writes static files here (server code goes to
+  # .netlify/functions-internal, which Netlify picks up on its own).
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Deploy previews: give CONVEX_DEPLOY_KEY a *preview* deploy key in the
+# "Deploy previews" scope, and `convex deploy` creates a preview deployment
+# per branch. Convex reads its own variables, not Netlify's: previews take
+# theirs from the Convex project's default environment variables, so leave
+# EMAIL_PROVIDER unset there (console) and previews never send real email.

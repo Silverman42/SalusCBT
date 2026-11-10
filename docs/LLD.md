@@ -871,11 +871,10 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 # netlify.toml
 [build]
   command = "npx convex deploy --cmd 'npx nuxi build' --cmd-url-env-var-name NUXT_PUBLIC_CONVEX_URL"
-  publish = ".output/public"
-
-[context.deploy-preview.environment]
-  EMAIL_PROVIDER = "console"
+  publish = "dist"   # Nitro's Netlify preset output
 ```
+
+Deploy previews take Convex variables from the project's default environment variables (Convex reads its own env, not Netlify's), so leaving `EMAIL_PROVIDER` unset there keeps previews on the console provider. Full checklist: `docs/DEPLOY.md`.
 
 ---
 

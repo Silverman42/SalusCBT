@@ -101,3 +101,12 @@ export function invitation({
   );
   return { to: assertAddress(to), subject, text, html, tag: "invite" };
 }
+
+/** Setup check (`npx convex run email/test:sendTest`): proves the provider and sender work. */
+export function testEmail({ to }: { to: string }): EmailMessage {
+  const subject = "Salus email test";
+  const text =
+    "Your Salus email setup works. Sign-in codes and invitations will be sent like this.";
+  const html = layout(`<p>${escapeHtml(text)}</p>`);
+  return { to: assertAddress(to), subject, text, html };
+}
