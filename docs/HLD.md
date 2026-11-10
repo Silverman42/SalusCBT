@@ -44,7 +44,7 @@ flowchart LR
     RL[Rate limiter component]
   end
 
-  R[Resend<br/>no-reply@salus.fibreware.app]
+  R[Resend<br/>no-reply@salus.fibreware.dev]
   INBOX[Tutor / admin inbox]
 
   S -->|HTTPS| N
@@ -67,7 +67,7 @@ flowchart LR
 | Better Auth component | Convex Cloud (HTTP actions) | Email OTP sign-in, sessions, invitation-gated sign-up |
 | Convex database | Convex Cloud | All persistent data |
 | Rate limiter component | Convex Cloud | Limits on OTP requests, attempt starts and share links |
-| Resend | SaaS | Delivers OTP and invitation emails from `salus.fibreware.app` |
+| Resend | SaaS | Delivers OTP and invitation emails from `salus.fibreware.dev` |
 | Browser storage | Student's browser | Anonymous token, display name, in-progress answer cache, UI preferences |
 
 ---
@@ -299,7 +299,7 @@ flowchart LR
 | --- | --- | --- | --- | --- |
 | Local | `nuxi dev` on localhost | `npx convex dev` (personal dev deployment) | Console adapter (emails printed in the Convex logs) | Seeded from the Markdown files |
 | Preview | Netlify deploy preview per pull request | Convex preview deployment (created by `convex deploy` with a preview deploy key) | Console adapter | Lets you test a change before release |
-| Production | Netlify, Netlify subdomain for now (later `salus.fibreware.app` if wanted) | Convex Cloud production deployment | Resend from `no-reply@salus.fibreware.app` | Admin email set in `ADMIN_EMAIL` |
+| Production | Netlify, Netlify subdomain for now (later `salus.fibreware.dev` if wanted) | Convex Cloud production deployment | Resend from `no-reply@salus.fibreware.dev` | Admin email set in `ADMIN_EMAIL` |
 
 The Netlify build runs `npx convex deploy --cmd "npx nuxi build"`, so the Convex backend and the Nuxt frontend are always released together and the frontend is built with the matching Convex URL.
 
@@ -324,7 +324,7 @@ The Netlify build runs `npx convex deploy --cmd "npx nuxi build"`, so the Convex
 | Risk | Plan |
 | --- | --- |
 | The Nuxt integration for `@convex-dev/better-auth` is early-stage, and a bundling bug has been reported for email OTP on Convex | Stage 1 starts with a one-day spike: install the pinned versions, deploy, and send and verify a code end to end. If it fails, use the fallback in the [LLD](LLD.md#9-authentication): a small OTP module in Convex (hashed codes, the same limits) with sessions held in an `HttpOnly` cookie set by the Nuxt proxy |
-| Resend domain not verified in time | Development and preview use the console adapter, so only production waits on DNS for `salus.fibreware.app` |
+| Resend domain not verified in time | Development and preview use the console adapter, so only production waits on DNS for `salus.fibreware.dev` |
 | Markdown format drift in future exam files | The parser validates counts, domains and answer coverage, and fails loudly with line numbers |
 | Netlify Functions cold starts on share pages | Acceptable for v1; cache share pages at the CDN for 60 seconds |
 

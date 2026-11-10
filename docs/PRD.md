@@ -209,7 +209,7 @@ Students and tutors use the same Nuxt app. Marking runs only inside Convex, and 
 - AR-1. Exam content is imported by a script that parses `secplus-701-mock-exam.md` into seed data and loads it into Convex. Adding a new exam set means adding a new Markdown file in the same format.
 - AR-2. Students call only the functions marked for students. Tutor and admin functions require a valid session and the right role.
 - AR-3. Library support (Better Auth on Convex with Nuxt) is checked at the start of Stage 1, before any code is written.
-- AR-4. All email goes through one `EmailProvider` interface with a single method, `send({ to, subject, html, text })`. A Resend adapter implements it, picked by the `EMAIL_PROVIDER` environment setting, and a console adapter prints emails during local development. Live emails are sent from no-reply@salus.fibreware.app, a subdomain verified in Resend with DNS records (DKIM, SPF and a recommended DMARC record). Email templates (OTP code, invitation) are built outside the adapter, so switching provider means writing one new adapter and changing environment settings, with no other code changes.
+- AR-4. All email goes through one `EmailProvider` interface with a single method, `send({ to, subject, html, text })`. A Resend adapter implements it, picked by the `EMAIL_PROVIDER` environment setting, and a console adapter prints emails during local development. Live emails are sent from no-reply@salus.fibreware.dev, a subdomain verified in Resend with DNS records (DKIM, SPF and a recommended DMARC record). Email templates (OTP code, invitation) are built outside the adapter, so switching provider means writing one new adapter and changing environment settings, with no other code changes.
 
 ## Data model
 
@@ -309,4 +309,4 @@ The targets below are starting points, to be reviewed after the first class uses
 - [x] Decided: attempts are kept forever; tutors can delete them (CL-11, PR-5).
 - [x] Decided: one admin for now (AU-6).
 - [x] Decided: the product is called Salus, on a Netlify subdomain for now.
-- [x] Decided: emails are sent from the subdomain salus.fibreware.app, verified in Resend.
+- [x] Decided: emails are sent from the subdomain salus.fibreware.dev, verified in Resend.

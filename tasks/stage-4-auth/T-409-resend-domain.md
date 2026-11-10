@@ -1,4 +1,4 @@
-# T-409 · Resend domain setup for salus.fibreware.app
+# T-409 · Resend domain setup for salus.fibreware.dev
 
 | | |
 | --- | --- |
@@ -14,8 +14,8 @@ Production email from a verified domain so codes don't land in spam.
 
 ## Steps
 
-- Add `salus.fibreware.app` in Resend.
-- Add DKIM `TXT`, `send.` subdomain `MX` and SPF `TXT`, and DMARC `TXT` at the DNS host for `fibreware.app`.
+- Add `salus.fibreware.dev` in Resend.
+- Add DKIM `TXT`, `send.` subdomain `MX` and SPF `TXT`, and DMARC `TXT` at the DNS host for `fibreware.dev`.
 - Set `EMAIL_PROVIDER=resend`, `RESEND_API_KEY`, `EMAIL_FROM` in Convex production.
 
 ## Files

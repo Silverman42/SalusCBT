@@ -1,6 +1,6 @@
 # Production deployment
 
-How Salus goes live: Convex production in **EU West (Ireland)**, the site on **Netlify** at **https://salus.fibreware.app**, email through **Resend** from `no-reply@salus.fibreware.app`. Design reference: LLD §15.2–15.3, T-110, T-409.
+How Salus goes live: Convex production in **EU West (Ireland)**, the site on **Netlify** at **https://salus.fibreware.dev**, email through **Resend** from `no-reply@salus.fibreware.dev`. Design reference: LLD §15.2–15.3, T-110, T-409.
 
 Never paste secret values into chat, code or commits (SE-8). Generate each secret with `openssl rand -base64 32` and use **new** values for production, not the dev ones.
 
@@ -32,10 +32,10 @@ All `--prod` commands below then target it. Your `.env.local` keeps pointing at 
 ## 2. Convex variables that aren't secret
 
 ```bash
-npx convex env set --prod SITE_URL https://salus.fibreware.app
+npx convex env set --prod SITE_URL https://salus.fibreware.dev
 npx convex env set --prod ADMIN_EMAIL you@example.com
 npx convex env set --prod EMAIL_PROVIDER resend
-npx convex env set --prod EMAIL_FROM 'Salus <no-reply@salus.fibreware.app>'
+npx convex env set --prod EMAIL_FROM 'Salus <no-reply@salus.fibreware.dev>'
 ```
 
 ## 3. Convex secrets (your terminal only)
@@ -54,8 +54,8 @@ Check names only (values stay hidden): `npx convex env list --prod`.
 
 ## 4. Resend sending domain (T-409)
 
-1. Resend → **Domains → Add domain** → `salus.fibreware.app`, region **Ireland (eu-west-1)**.
-2. Add the records Resend shows at the DNS host for `fibreware.app`: the DKIM `TXT`, the `send` `MX` and SPF `TXT`, and a DMARC `TXT` (`_dmarc.salus` → `v=DMARC1; p=none;` to start).
+1. Resend → **Domains → Add domain** → `salus.fibreware.dev`, region **Ireland (eu-west-1)**.
+2. Add the records Resend shows at the DNS host for `fibreware.dev`: the DKIM `TXT`, the `send` `MX` and SPF `TXT`, and a DMARC `TXT` (`_dmarc.salus` → `v=DMARC1; p=none;` to start).
 3. Wait until Resend shows **Verified**.
 4. Use an API key with **Sending access** only, limited to this domain.
 
@@ -83,16 +83,16 @@ Site configuration → **Environment variables** (scope: Builds + Functions, con
 | `NUXT_SERVER_SECRET` | Same value as `SERVER_SECRET` on Convex prod |
 | `NUXT_IP_PEPPER` | `openssl rand -base64 32` (new) |
 
-`NUXT_PUBLIC_CONVEX_URL` is set by the build (`netlify.toml`), don't add it. Then **Domain management**: add `salus.fibreware.app`, and trigger a deploy. The build runs `convex deploy` and the Nuxt build together, so later deploys of `main` update both.
+`NUXT_PUBLIC_CONVEX_URL` is set by the build (`netlify.toml`), don't add it. Then **Domain management**: add `salus.fibreware.dev`, and trigger a deploy. The build runs `convex deploy` and the Nuxt build together, so later deploys of `main` update both.
 
 For deploy previews, add a separate *preview* deploy key as `CONVEX_DEPLOY_KEY` in the **Deploy previews** context (optional).
 
 ## 7. Smoke test
 
-1. https://salus.fibreware.app loads; the browser console shows no CSP errors.
+1. https://salus.fibreware.dev loads; the browser console shows no CSP errors.
 2. **Start mock exam → Start the exam** reaches question 1 (proves `SERVER_SECRET` and `NUXT_IP_PEPPER`).
 3. **Staff sign in** with `ADMIN_EMAIL`: the code arrives by email within a minute.
-4. Admin → invite a tutor → the invitation email arrives with a `https://salus.fibreware.app/invite/…` link.
+4. Admin → invite a tutor → the invitation email arrives with a `https://salus.fibreware.dev/invite/…` link.
 
 ## Later
 

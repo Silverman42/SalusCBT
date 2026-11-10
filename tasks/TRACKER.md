@@ -115,7 +115,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-406 | [Admin backend: tutors, removal, audit, deleting attempts](stage-4-auth/T-406-admin-backend.md) | T-404 | Done | | 2026-11-08 |  |
 | T-407 | [Sign-in and invitation pages](stage-4-auth/T-407-sign-in-invite-pages.md) | T-403, T-405 | Done | | 2026-11-08 |  |
 | T-408 | [Admin area UI](stage-4-auth/T-408-admin-ui.md) | T-406, T-407 | Done | | 2026-11-08 |  |
-| T-409 | [Resend domain setup for salus.fibreware.app](stage-4-auth/T-409-resend-domain.md) | T-401 | In progress | Claude (subagent) | 2026-11-08 | Prod env set (EMAIL_PROVIDER=resend, EMAIL_FROM); sendTest got Resend 403: domain salus.fibreware.app not verified yet |
+| T-409 | [Resend domain setup for salus.fibreware.dev](stage-4-auth/T-409-resend-domain.md) | T-401 | In progress | Claude (subagent) | 2026-11-08 | salus.fibreware.dev verified in Resend (DKIM, SPF, MX public on Cloudflare); domain-scoped key set; DMARC record and inbox test pending |
 | T-410 | [Auth tests and Stage 4 gate](stage-4-auth/T-410-auth-tests.md) | T-407, T-408 | Done | | 2026-11-08 | Stage 4 gate passed |
 
 ### Stage 5 · Classes
@@ -185,3 +185,4 @@ From the PRD release plan. Tick when the gate task passes.
 | 2026-11-08 | All 7 PRD suggestions accepted: EX-9 (4 Choose TWO), EX-20 (export warning), EX-21 (time multiplier), SE-3 (anon ID is a secret), SE-4 (30 s grace), SE-5 (200/hour per IP), LB-9 moves to Stage 3 | T-104, T-107, T-202, T-204, T-206, T-210, T-214, T-308, T-509 | Shared PRD doc rev 80; `docs/PRD.md` |
 | 2026-11-08 | Anonymous token is 256-bit (32 bytes), as in LLD §4; PRD SE-3 changed from 128-bit to match | T-106, T-210 | Shared PRD doc rev 81; `docs/PRD.md` |
 | 2026-11-10 | Convex production is `perfect-shrimp-573` in EU West (aws-eu-west-1), replacing the empty Sydney default; production starts from the committed seed, not a copy of dev | T-110, X-03 | docs/DEPLOY.md |
+| 2026-11-10 | Production domain is **salus.fibreware.dev** (not fibreware.app): site, SITE_URL and sender `no-reply@salus.fibreware.dev`; DNS on Cloudflare | T-110, T-409 | Resend domain setup |

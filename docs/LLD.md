@@ -700,10 +700,10 @@ export function getProvider(): EmailProvider {
 
 | Item | Value |
 | --- | --- |
-| From address | `Salus <no-reply@salus.fibreware.app>` (`EMAIL_FROM`) |
+| From address | `Salus <no-reply@salus.fibreware.dev>` (`EMAIL_FROM`) |
 | Templates | `templates.otp({ to, code })`, `templates.invitation({ to, link, invitedBy })`; plain text plus simple HTML; no tracking pixels |
 | Delivery | `internal.email.send` is an internal action; failures are retried 3 times with backoff by the scheduler and logged |
-| Domain setup | In Resend, add `salus.fibreware.app`; add the DKIM `TXT`, the `send.` subdomain `MX` and SPF `TXT`, and a DMARC `TXT` (`v=DMARC1; p=quarantine; rua=mailto:…`) at the DNS host for `fibreware.app` |
+| Domain setup | In Resend, add `salus.fibreware.dev`; add the DKIM `TXT`, the `send.` subdomain `MX` and SPF `TXT`, and a DMARC `TXT` (`v=DMARC1; p=quarantine; rua=mailto:…`) at the DNS host for `fibreware.dev` |
 | Changing provider | Add `convex/email/<name>.ts` implementing `EmailProvider`, add a `case`, set `EMAIL_PROVIDER`. Nothing else changes (AR-4). |
 
 ---
@@ -863,7 +863,7 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 | `ADMIN_EMAIL` | Convex | The single admin (AU-6) |
 | `EMAIL_PROVIDER` | Convex | `resend` or `console` |
 | `RESEND_API_KEY` | Convex | Resend API key |
-| `EMAIL_FROM` | Convex | `Salus <no-reply@salus.fibreware.app>` |
+| `EMAIL_FROM` | Convex | `Salus <no-reply@salus.fibreware.dev>` |
 
 ### 15.3 Netlify build
 
