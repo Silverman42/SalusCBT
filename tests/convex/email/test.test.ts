@@ -40,18 +40,20 @@ describe("email/test:sendTest (production email check)", () => {
     });
   });
 
-  it("reports a rejected request by status only", async () => {
+  it("reports a rejected request with Resend's reason, addresses redacted", async () => {
     vi.stubEnv("EMAIL_PROVIDER", "resend");
     vi.stubEnv("RESEND_API_KEY", "re_test_key");
     vi.stubEnv("EMAIL_FROM", "Salus <no-reply@salus.test>");
+    const message = "You can only send to me@example.com until you verify a domain.";
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response("{}", { status: 403 })),
+      vi.fn(async () => new Response(JSON.stringify({ message }), { status: 403 })),
     );
     const t = setup();
     expect(await t.action(internal.email.test.sendTest, { to: "me@example.com" })).toEqual({
       ok: false,
       error: "Resend responded 403",
+      detail: "You can only send to <address> until you verify a domain.",
     });
   });
 });

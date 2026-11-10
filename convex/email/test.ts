@@ -7,14 +7,15 @@
  */
 import { v } from "convex/values";
 import { env, internalAction } from "../_generated/server";
-import { EmailSendError, getProvider } from "./provider";
+import type { EmailSendError } from "./provider";
+import { getProvider } from "./provider";
 import { testEmail } from "./templates";
 
 export const sendTest = internalAction({
   args: { to: v.string() },
   returns: v.union(
     v.object({ ok: v.literal(true), provider: v.string(), id: v.optional(v.string()) }),
-    v.object({ ok: v.literal(false), error: v.string() }),
+    v.object({ ok: v.literal(false), error: v.string(), detail: v.optional(v.string()) }),
   ),
   handler: async (_ctx, { to }) => {
     try {
@@ -26,9 +27,12 @@ export const sendTest = internalAction({
         ...(id ? { id } : {}),
       };
     } catch (err) {
-      const error =
-        err instanceof EmailSendError || err instanceof Error ? err.message : "unknown error";
-      return { ok: false as const, error };
+      const error = err instanceof Error ? err.message : "unknown error";
+      // Read the field rather than `instanceof`: the class can be loaded twice
+      // across bundles, which makes `instanceof` false for a real EmailSendError.
+      const raw = (err as Partial<EmailSendError> | null)?.detail;
+      const detail = typeof raw === "string" ? raw : undefined;
+      return { ok: false as const, error, ...(detail ? { detail } : {}) };
     }
   },
 });

@@ -5,6 +5,7 @@
  */
 import {
   EmailSendError,
+  redactDetail,
   type EmailMessage,
   type EmailProvider,
   type SendOptions,
@@ -47,7 +48,9 @@ export class ResendProvider implements EmailProvider {
       // Only the status is kept: error bodies can echo the recipient (PR-2).
       // 429 and 5xx are transient; other 4xx (bad key, bad payload) are not.
       const retryable = res.status === 429 || res.status >= 500;
-      throw new EmailSendError(`Resend responded ${res.status}`, retryable);
+      const reply = (await res.json().catch(() => ({}))) as { message?: unknown };
+      const detail = typeof reply.message === "string" ? redactDetail(reply.message) : undefined;
+      throw new EmailSendError(`Resend responded ${res.status}`, retryable, detail);
     }
     const body = (await res.json().catch(() => ({}))) as { id?: unknown };
     return typeof body.id === "string" ? { id: body.id } : {};

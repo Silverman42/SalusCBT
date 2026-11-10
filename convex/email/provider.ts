@@ -42,10 +42,21 @@ export class EmailSendError extends Error {
   constructor(
     message: string,
     readonly retryable: boolean,
+    /**
+     * The provider's own explanation, with email addresses redacted. Not part
+     * of `message`, so it never reaches the logs; only `email/test:sendTest`
+     * shows it, to someone with deploy access.
+     */
+    readonly detail?: string,
   ) {
     super(message);
     this.name = "EmailSendError";
   }
+}
+
+/** Provider error text that is safe to show an operator: no addresses, bounded length. */
+export function redactDetail(text: string): string {
+  return text.replace(/[^\s@<>"']+@[^\s@<>"']+/g, "<address>").slice(0, 300);
 }
 
 /** The email settings `getProvider` reads (declared in `convex.config.ts`). */
