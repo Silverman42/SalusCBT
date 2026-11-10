@@ -16,15 +16,15 @@ Single source of truth for task status. Task details live in the linked files; r
 | Stage | Tasks | Not started | In progress | Blocked | In review | Done |
 | --- | --- | --- | --- | --- | --- | --- |
 | 0 · Decisions and inputs | 3 | 0 | 0 | 0 | 0 | 3 |
-| 1 · Setup | 9 | 1 | 0 | 0 | 1 | 7 |
+| 1 · Setup | 9 | 0 | 1 | 0 | 1 | 7 |
 | 2 · Exam engine | 20 | 0 | 0 | 0 | 6 | 14 |
 | 3 · Interactive PBQs | 9 | 0 | 0 | 0 | 1 | 8 |
-| 4 · Admin and tutor sign-in | 10 | 1 | 0 | 0 | 0 | 9 |
+| 4 · Admin and tutor sign-in | 10 | 0 | 1 | 0 | 0 | 9 |
 | 5 · Classes | 10 | 0 | 0 | 0 | 3 | 7 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 0 | 0 | 0 | 0 | 7 |
 | X · Cross-cutting | 4 | 3 | 0 | 0 | 1 | 0 |
-| **Total** | **81** | **5** | 0 | 0 | **14** | **62** |
+| **Total** | **81** | **3** | **2** | 0 | **14** | **62** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -61,7 +61,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-107 | [Markdown exam parser with validation](stage-1-setup/T-107-exam-parser.md) | T-001, T-105 | Done | | 2026-11-08 |  |
 | T-108 | [Parser tests and committed seed JSON](stage-1-setup/T-108-parser-tests-seed-json.md) | T-107 | Done | | 2026-11-08 |  |
 | T-109 | [seed.importExam and the Stage 1 gate](stage-1-setup/T-109-seed-import.md) | T-104, T-108 | Done | | 2026-11-08 | Stage 1 gate passed |
-| T-110 | [Netlify site, environment variables and first deploy](stage-1-setup/T-110-netlify-setup.md) | T-101 | Not started | | |  |
+| T-110 | [Netlify site, environment variables and first deploy](stage-1-setup/T-110-netlify-setup.md) | T-101 | In progress | Claude (subagent) | 2026-11-08 | Convex prod perfect-shrimp-573 (eu-west-1) deployed, seeded (v1, 102 pts), admin created; netlify.toml + docs/DEPLOY.md committed; Netlify env vars and first build pending |
 | T-111 | [CI: lint, type-check, Vitest and convex-test on every PR](stage-1-setup/T-111-ci.md) | T-101 | In review | | 2026-11-08 | CI workflow committed; still to confirm a failing test blocks merge and the run takes under ~10 min |
 
 ### Stage 2 · Exam engine
@@ -115,7 +115,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-406 | [Admin backend: tutors, removal, audit, deleting attempts](stage-4-auth/T-406-admin-backend.md) | T-404 | Done | | 2026-11-08 |  |
 | T-407 | [Sign-in and invitation pages](stage-4-auth/T-407-sign-in-invite-pages.md) | T-403, T-405 | Done | | 2026-11-08 |  |
 | T-408 | [Admin area UI](stage-4-auth/T-408-admin-ui.md) | T-406, T-407 | Done | | 2026-11-08 |  |
-| T-409 | [Resend domain setup for salus.fibreware.app](stage-4-auth/T-409-resend-domain.md) | T-401 | Not started | | |  |
+| T-409 | [Resend domain setup for salus.fibreware.app](stage-4-auth/T-409-resend-domain.md) | T-401 | In progress | Claude (subagent) | 2026-11-08 | Prod env set (EMAIL_PROVIDER=resend, EMAIL_FROM); sendTest got Resend 403: domain salus.fibreware.app not verified yet |
 | T-410 | [Auth tests and Stage 4 gate](stage-4-auth/T-410-auth-tests.md) | T-407, T-408 | Done | | 2026-11-08 | Stage 4 gate passed |
 
 ### Stage 5 · Classes
@@ -184,3 +184,4 @@ From the PRD release plan. Tick when the gate task passes.
 | 2026-11-08 | Fact check: the source file has exactly 4 Choose TWO questions (Q20, Q26, Q50, Q78), so suggestion #1 is correct | T-107, T-202 | `secplus-701-mock-exam.md` lines 419, 462, 631, 828 |
 | 2026-11-08 | All 7 PRD suggestions accepted: EX-9 (4 Choose TWO), EX-20 (export warning), EX-21 (time multiplier), SE-3 (anon ID is a secret), SE-4 (30 s grace), SE-5 (200/hour per IP), LB-9 moves to Stage 3 | T-104, T-107, T-202, T-204, T-206, T-210, T-214, T-308, T-509 | Shared PRD doc rev 80; `docs/PRD.md` |
 | 2026-11-08 | Anonymous token is 256-bit (32 bytes), as in LLD §4; PRD SE-3 changed from 128-bit to match | T-106, T-210 | Shared PRD doc rev 81; `docs/PRD.md` |
+| 2026-11-10 | Convex production is `perfect-shrimp-573` in EU West (aws-eu-west-1), replacing the empty Sydney default; production starts from the committed seed, not a copy of dev | T-110, X-03 | docs/DEPLOY.md |
