@@ -19,12 +19,12 @@ Single source of truth for task status. Task details live in the linked files; r
 | 1 · Setup | 9 | 0 | 1 | 0 | 1 | 7 |
 | 2 · Exam engine | 20 | 0 | 0 | 0 | 6 | 14 |
 | 3 · Interactive PBQs | 9 | 0 | 0 | 0 | 1 | 8 |
-| 4 · Admin and tutor sign-in | 10 | 0 | 1 | 0 | 0 | 9 |
+| 4 · Admin and tutor sign-in | 10 | 0 | 0 | 0 | 1 | 9 |
 | 5 · Classes | 10 | 0 | 0 | 0 | 3 | 7 |
 | 6 · Question editor | 9 | 0 | 0 | 0 | 2 | 7 |
 | 7 · Terminal lab | 7 | 0 | 0 | 0 | 0 | 7 |
 | X · Cross-cutting | 4 | 3 | 0 | 0 | 1 | 0 |
-| **Total** | **81** | **3** | **2** | 0 | **14** | **62** |
+| **Total** | **81** | **3** | **1** | 0 | **15** | **62** |
 
 MVP = Stage 0 + Stages 1–4 + X-01, X-02, X-04.
 
@@ -115,7 +115,7 @@ From the PRD release plan. Tick when the gate task passes.
 | T-406 | [Admin backend: tutors, removal, audit, deleting attempts](stage-4-auth/T-406-admin-backend.md) | T-404 | Done | | 2026-11-08 |  |
 | T-407 | [Sign-in and invitation pages](stage-4-auth/T-407-sign-in-invite-pages.md) | T-403, T-405 | Done | | 2026-11-08 |  |
 | T-408 | [Admin area UI](stage-4-auth/T-408-admin-ui.md) | T-406, T-407 | Done | | 2026-11-08 |  |
-| T-409 | [Resend domain setup for salus.fibreware.dev](stage-4-auth/T-409-resend-domain.md) | T-401 | In progress | Claude (subagent) | 2026-11-08 | salus.fibreware.dev verified in Resend (DKIM, SPF, MX public on Cloudflare); domain-scoped key set; DMARC record and inbox test pending |
+| T-409 | [Resend domain setup for salus.fibreware.dev](stage-4-auth/T-409-resend-domain.md) | T-401 | In review | Claude (subagent) | 2026-11-08 | Domain verified; test email reached the Gmail inbox from no-reply@salus.fibreware.dev; Outlook check and DMARC record pending |
 | T-410 | [Auth tests and Stage 4 gate](stage-4-auth/T-410-auth-tests.md) | T-407, T-408 | Done | | 2026-11-08 | Stage 4 gate passed |
 
 ### Stage 5 · Classes

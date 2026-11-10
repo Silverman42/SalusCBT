@@ -24,9 +24,11 @@ Production email from a verified domain so codes don't land in spam.
 
 ## Acceptance criteria
 
-- [ ] Resend shows the domain verified.
+- [x] Resend shows the domain verified.
 - [ ] A test OTP reaches Gmail and Outlook inboxes, not spam.
 
 ## Notes
 
 - Ops task; only production waits on DNS. Dev and preview use the console provider.
+
+- **2026-11-10:** production sends from `no-reply@salus.fibreware.dev` (Convex prod `perfect-shrimp-573`); `email/test:sendTest` delivered to the Gmail inbox. Outlook not checked yet; DMARC record (`_dmarc.salus`) still to add.
