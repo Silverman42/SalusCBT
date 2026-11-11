@@ -76,19 +76,13 @@ const chips = [
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col">
+  <div class="flex flex-1 flex-col max-w-[1400px] mx-auto">
     <section class="grid flex-1 gap-10 px-4 pt-4 pb-12 sm:px-12 lg:grid-cols-[1fr_520px]">
       <div class="flex min-w-0 flex-col justify-center gap-7">
-        <span
-          class="flex items-center gap-2 self-start rounded-full bg-brand-soft px-3.5 py-2 text-[13px] font-semibold text-brand-ink"
-        >
-          <UIcon name="i-lucide-zap" class="size-3.5" aria-hidden="true" />
-          Security+ style practice exam · SY0-701
-        </span>
         <h1
           class="m-0 text-4xl leading-[1.02] font-extrabold tracking-[-0.035em] text-balance sm:text-[60px]"
         >
-          Sit a full mock exam. No sign-up.
+          Cyber Security mock exams at your fingertips
         </h1>
         <p class="m-0 max-w-[520px] text-[19px] leading-[1.55] text-pretty text-muted-fg">
           Five performance-based questions, then 85 multiple-choice. 90 minutes, marked the moment

@@ -10,7 +10,7 @@ const route = useRoute();
 /** Tutor and admin pages (client-rendered) get "Sign out" (AU-4). */
 const onStaffPage = computed(() => /^\/(tutor|admin)(\/|$)/.test(route.path));
 /** The sign-in and invite pages don't link to themselves. */
-const onAuthPage = computed(() => /^\/(sign-in|invite)(\/|$)/.test(route.path));
+// const onAuthPage = computed(() => /^\/(sign-in|invite)(\/|$)/.test(route.path));
 </script>
 
 <template>
@@ -26,12 +26,12 @@ const onAuthPage = computed(() => /^\/(sign-in|invite)(\/|$)/.test(route.path));
     <ClientOnly v-if="onStaffPage">
       <AuthSignOutButton />
     </ClientOnly>
-    <NuxtLink
+    <!-- <NuxtLink
       v-else-if="!onAuthPage"
       to="/sign-in"
       class="rounded-full border-[1.5px] border-line px-4 py-[11px] whitespace-nowrap sm:px-5 text-sm font-semibold text-fg hover:border-brand"
     >
       Staff sign in
-    </NuxtLink>
+    </NuxtLink> -->
   </header>
 </template>
